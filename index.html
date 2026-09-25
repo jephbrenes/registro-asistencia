@@ -9,6 +9,31 @@
 
     <!-- Librería para generar archivos Excel -->
     <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+
+
+  <!-- Enlazar el manifest para Android / Chrome / Edge -->
+  <link rel="manifest" href="/manifest.json">
+
+  <!-- Color de la barra de navegación superior en móviles -->
+  <meta name="theme-color" content="#000000">
+
+  <!-- ========================================== -->
+  <!-- CONFIGURACIÓN ESPECÍFICA PARA iOS (Safari) -->
+  <!-- ========================================== -->
+  
+  <!-- Ícono específico para iPhone / iPad -->
+  <link rel="apple-touch-icon" href="/ruta/a/tu/icono-180x180.png">
+  
+  <!-- Habilitar modo pantalla completa en iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  
+  <!-- Estilo de la barra de estado en iOS (default, black, black-translucent) -->
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  
+  <!-- Título que aparecerá debajo del ícono en iOS -->
+  <meta name="apple-mobile-web-app-title" content="MiApp">
+
+
 </head>
 
 <body>
@@ -98,7 +123,7 @@
                     </button>
 
                     <button
-                        id="btnEliminarEmpleado"
+                        id="btnEliminarEmpleado" 
                         class="btn-peligro"
                     >
                         🗑️ Eliminar
