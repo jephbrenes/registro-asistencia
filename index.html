@@ -3,390 +3,285 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Registro de Asistencia</title>
 
     <link rel="stylesheet" href="estilos.css">
+
+    <!-- Librería para generar archivos Excel -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 </head>
 
 <body>
 
-<div class="app">
+<header class="encabezado">
+    <div>
+        <h1>Registro de Asistencia</h1>
+        <p>Control semanal de empleados</p>
+    </div>
 
-    <!-- =========================================
-         ENCABEZADO
-    ========================================== -->
+    <button id="btnAgregarEmpleado" class="btn-principal">
+        + Agregar empleado
+    </button>
+</header>
 
-    <header class="header">
 
-        <div>
-            <h1>Registro de Asistencia</h1>
-            <p>Control semanal de empleados</p>
+<div class="contenedor">
+
+    <!-- =========================
+         PANEL DE EMPLEADOS
+    ========================== -->
+    <aside class="panel-empleados">
+
+        <div class="titulo-panel">
+            <div>
+                <h2>Empleados</h2>
+                <span id="cantidadEmpleados">0 empleados</span>
+            </div>
         </div>
 
-        <button
-            id="btnAgregarEmpleado"
-            class="btn-principal"
-            type="button"
-        >
-            + Agregar empleado
-        </button>
-
-    </header>
-
-
-    <!-- =========================================
-         CONTENIDO
-    ========================================== -->
-
-    <main class="contenido">
-
-
-        <!-- =====================================
-             PANEL DE EMPLEADOS
-        ====================================== -->
-
-        <aside class="panel empleados-panel">
-
-            <div class="panel-titulo">
-
-                <h2>Empleados</h2>
-
-                <span id="cantidadEmpleados">
-                    0
-                </span>
-
-            </div>
-
-
+        <div class="buscador">
             <input
                 type="text"
                 id="buscarEmpleado"
-                class="input-buscar"
                 placeholder="Buscar empleado..."
-                autocomplete="off"
             >
+        </div>
+
+        <div id="listaEmpleados" class="lista-empleados"></div>
+
+    </aside>
 
 
-            <div
-                id="listaEmpleados"
-                class="lista-empleados"
-            >
-                <!-- JavaScript -->
-            </div>
+    <!-- =========================
+         CONTENIDO PRINCIPAL
+    ========================== -->
+    <main class="contenido">
 
-        </aside>
+        <div id="estadoVacio" class="estado-vacio">
+
+            <div class="icono-vacio">👤</div>
+
+            <h2>Selecciona un empleado</h2>
+
+            <p>
+                Selecciona un empleado de la lista para consultar
+                y modificar su asistencia.
+            </p>
+
+        </div>
 
 
+        <section id="panelAsistencia" class="panel-asistencia oculto">
 
-        <!-- =====================================
-             PANEL DE ASISTENCIA
-        ====================================== -->
+            <!-- ENCABEZADO DEL EMPLEADO -->
+            <div class="encabezado-empleado">
 
-        <section class="panel asistencia-panel">
-
-
-            <!-- SIN EMPLEADO SELECCIONADO -->
-
-            <div
-                id="sinEmpleadoSeleccionado"
-                class="sin-empleado"
-            >
-
-                <div class="icono-grande">
-                    👤
+                <div>
+                    <h2 id="nombreEmpleadoSeleccionado"></h2>
+                    <p id="identificacionEmpleadoSeleccionado"></p>
                 </div>
 
-                <h2>
-                    Selecciona un empleado
-                </h2>
+                <div class="acciones-empleado">
 
-                <p>
-                    Selecciona un empleado de la lista
-                    para consultar y modificar su asistencia.
-                </p>
+                    <button
+                        id="btnEditarEmpleado"
+                        class="btn-secundario"
+                    >
+                        ✏️ Editar
+                    </button>
 
-            </div>
-
-
-
-            <!-- EMPLEADO SELECCIONADO -->
-
-            <div
-                id="contenidoEmpleado"
-                class="oculto"
-            >
-
-
-                <!-- =================================
-                     CABECERA DEL EMPLEADO
-                ================================== -->
-
-                <div class="empleado-header">
-
-                    <div>
-
-                        <span class="texto-pequeno">
-                            Empleado
-                        </span>
-
-                        <h2 id="nombreEmpleadoSeleccionado">
-                            -
-                        </h2>
-
-                    </div>
-
-
-                    <!-- NAVEGACIÓN SEMANAL -->
-
-                    <div class="navegacion-semana">
-
-                        <button
-                            id="btnSemanaAnterior"
-                            class="btn-navegacion"
-                            type="button"
-                            title="Semana anterior"
-                        >
-                            ‹
-                        </button>
-
-
-                        <button
-                            id="btnSemanaActual"
-                            class="btn-hoy"
-                            type="button"
-                        >
-                            Esta semana
-                        </button>
-
-
-                        <button
-                            id="btnSemanaSiguiente"
-                            class="btn-navegacion"
-                            type="button"
-                            title="Semana siguiente"
-                        >
-                            ›
-                        </button>
-
-                    </div>
+                    <button
+                        id="btnEliminarEmpleado"
+                        class="btn-peligro"
+                    >
+                        🗑️ Eliminar
+                    </button>
 
                 </div>
 
+            </div>
 
 
-                <!-- =================================
-                     BALANCE SEMANAL
-                ================================== -->
+            <!-- =========================
+                 NAVEGACIÓN SEMANAL
+            ========================== -->
+            <div class="navegacion-semana">
+
+                <button id="btnSemanaAnterior" class="btn-navegacion">
+                    ←
+                </button>
+
+                <button id="btnEstaSemana" class="btn-semana">
+                    Esta semana
+                </button>
+
+                <button id="btnSemanaSiguiente" class="btn-navegacion">
+                    →
+                </button>
+
+            </div>
+
+
+            <!-- =========================
+                 INFORMACIÓN DE LA SEMANA
+            ========================== -->
+            <div class="resumen-semana">
+
+                <div class="numero-semana">
+                    <span>Semana</span>
+                    <strong id="numeroSemana">--</strong>
+                </div>
 
                 <div class="balance-semanal">
 
-                    <div class="numero-semana">
+                    <span>Balance semanal</span>
 
-                        <span>
-                            Semana
-                        </span>
-
-                        <strong id="numeroSemana">
-                            -
-                        </strong>
-
-                    </div>
-
-
-                    <div class="balance">
-
-                        <span>
-                            Balance semanal
-                        </span>
-
-                        <strong id="balanceSemanal">
-                            0h 00m
-                        </strong>
-
-                    </div>
+                    <strong id="balanceSemanal">
+                        0 minutos
+                    </strong>
 
                 </div>
-
-
-
-                <!-- =================================
-                     RANGO DE FECHAS
-                ================================== -->
 
                 <div class="rango-semana">
+                    <span id="rangoSemana"></span>
+                </div>
 
-                    <span id="rangoSemana">
-                        -
-                    </span>
+                <!-- BOTÓN ÚNICO DE EXCEL -->
+                <button
+                    id="btnDescargarExcel"
+                    class="btn-excel"
+                    type="button"
+                >
+                    📊 Descargar Excel
+                </button>
+
+            </div>
+
+
+            <!-- =========================
+                 DÍAS DE LA SEMANA
+            ========================== -->
+            <div id="diasSemana" class="dias-semana"></div>
+
+
+            <!-- =========================
+                 EDITOR
+            ========================== -->
+            <div
+                id="editorAsistencia"
+                class="editor-asistencia oculto"
+            >
+
+                <div class="editor-titulo">
+
+                    <div>
+                        <h3 id="tituloEditor"></h3>
+                        <p id="horarioBaseEditor"></p>
+                    </div>
+
+                    <button
+                        id="btnCerrarEditor"
+                        class="btn-cerrar"
+                    >
+                        ×
+                    </button>
 
                 </div>
 
 
+                <div class="formulario-asistencia">
 
-                <!-- =================================
-                     DÍAS
-                ================================== -->
+                    <div class="campo">
+                        <label for="horaEntrada">
+                            Hora de entrada
+                        </label>
 
-                <div
-                    id="diasSemana"
-                    class="dias-semana"
-                >
-                    <!-- JavaScript -->
+                        <input
+                            type="time"
+                            id="horaEntrada"
+                        >
+                    </div>
+
+
+                    <div class="campo">
+                        <label for="horaSalida">
+                            Hora de salida
+                        </label>
+
+                        <input
+                            type="time"
+                            id="horaSalida"
+                        >
+                    </div>
+
+
+                    <div class="campo">
+                        <label for="estadoAsistencia">
+                            Estado
+                        </label>
+
+                        <select id="estadoAsistencia">
+
+                            <option value="Completo">
+                                Completo
+                            </option>
+
+                            <option value="Tarde">
+                                Tarde
+                            </option>
+
+                            <option value="Hora extra">
+                                Hora extra
+                            </option>
+
+                            <option value="Salida antes">
+                                Salida antes
+                            </option>
+
+                            <option value="Ausente">
+                                Ausente
+                            </option>
+
+                            <option value="Justificado">
+                                Justificado
+                            </option>
+
+                        </select>
+                    </div>
+
+
+                    <div class="campo campo-completo">
+
+                        <label for="observacion">
+                            Observación
+                        </label>
+
+                        <textarea
+                            id="observacion"
+                            rows="3"
+                            placeholder="Observación opcional..."
+                        ></textarea>
+
+                    </div>
+
                 </div>
 
 
+                <div class="acciones-editor">
 
-                <!-- =================================
-                     EDITOR DE ASISTENCIA
-                ================================== -->
+                    <button
+                        id="btnRestaurarHorario"
+                        class="btn-secundario"
+                    >
+                        Restaurar horario
+                    </button>
 
-                <div
-                    id="editorAsistencia"
-                    class="editor oculto"
-                >
-
-                    <div class="editor-header">
-
-                        <div>
-
-                            <span class="texto-pequeno">
-                                Modificando
-                            </span>
-
-                            <h3 id="fechaEditor">
-                                -
-                            </h3>
-
-                        </div>
-
-
-                        <button
-                            id="btnCerrarEditor"
-                            class="btn-cerrar"
-                            type="button"
-                        >
-                            ×
-                        </button>
-
-                    </div>
-
-
-
-                    <div class="form-grid">
-
-
-                        <!-- ENTRADA -->
-
-                        <div class="campo">
-
-                            <label for="entrada">
-                                Hora de entrada
-                            </label>
-
-                            <input
-                                type="time"
-                                id="entrada"
-                            >
-
-                        </div>
-
-
-                        <!-- SALIDA -->
-
-                        <div class="campo">
-
-                            <label for="salida">
-                                Hora de salida
-                            </label>
-
-                            <input
-                                type="time"
-                                id="salida"
-                            >
-
-                        </div>
-
-
-                        <!-- ESTADO -->
-
-                        <div class="campo campo-completo">
-
-                            <label for="estado">
-                                Estado
-                            </label>
-
-                            <select id="estado">
-
-                                <option value="Completo">
-                                    Completo
-                                </option>
-
-                                <option value="Tarde">
-                                    Tarde
-                                </option>
-
-                                <option value="Hora extra">
-                                    Hora extra
-                                </option>
-
-                                <option value="Salida antes">
-                                    Salida antes
-                                </option>
-
-                                <option value="Ausente">
-                                    Ausente
-                                </option>
-
-                                <option value="Justificado">
-                                    Justificado
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-                        <!-- OBSERVACIÓN -->
-
-                        <div class="campo campo-completo">
-
-                            <label for="observacion">
-                                Observación
-                            </label>
-
-                            <textarea
-                                id="observacion"
-                                rows="3"
-                                placeholder="Escriba una observación..."
-                            ></textarea>
-
-                        </div>
-
-                    </div>
-
-
-
-                    <div class="editor-botones">
-
-                        <button
-                            id="btnRestaurar"
-                            class="btn-secundario"
-                            type="button"
-                        >
-                            Restaurar horario
-                        </button>
-
-
-                        <button
-                            id="btnGuardar"
-                            class="btn-principal"
-                            type="button"
-                        >
-                            Guardar cambios
-                        </button>
-
-                    </div>
+                    <button
+                        id="btnGuardarAsistencia"
+                        class="btn-principal"
+                    >
+                        Guardar asistencia
+                    </button>
 
                 </div>
 
@@ -399,38 +294,22 @@
 </div>
 
 
-
-<!-- =========================================
-     MODAL AGREGAR / EDITAR EMPLEADO
-========================================== -->
-
-<div
-    id="modalEmpleado"
-    class="modal oculto"
->
+<!-- =========================
+     MODAL EMPLEADO
+========================== -->
+<div id="modalEmpleado" class="modal oculto">
 
     <div class="modal-contenido">
 
+        <div class="modal-encabezado">
 
-        <div class="modal-header">
-
-            <div>
-
-                <span class="texto-pequeno">
-                    Registro de empleado
-                </span>
-
-                <h2 id="tituloModalEmpleado">
-                    Agregar empleado
-                </h2>
-
-            </div>
-
+            <h2 id="tituloModalEmpleado">
+                Agregar empleado
+            </h2>
 
             <button
-                id="btnCerrarModal"
+                id="btnCerrarModalEmpleado"
                 class="btn-cerrar"
-                type="button"
             >
                 ×
             </button>
@@ -438,60 +317,52 @@
         </div>
 
 
+        <div class="formulario-empleado">
 
-        <!-- NOMBRE -->
+            <div class="campo">
 
-        <div class="campo">
+                <label for="nombreEmpleado">
+                    Nombre completo
+                </label>
 
-            <label for="nombreEmpleado">
-                Nombre completo
-            </label>
+                <input
+                    type="text"
+                    id="nombreEmpleado"
+                    placeholder="Ej. Jepherson Brenes"
+                >
 
-            <input
-                type="text"
-                id="nombreEmpleado"
-                placeholder="Ej. Juan Pérez"
-                autocomplete="off"
-            >
-
-        </div>
+            </div>
 
 
+            <div class="campo">
 
-        <!-- IDENTIFICACIÓN -->
+                <label for="identificacionEmpleado">
+                    Identificación
+                </label>
 
-        <div class="campo">
+                <input
+                    type="text"
+                    id="identificacionEmpleado"
+                    placeholder="Número de identificación"
+                >
 
-            <label for="identificacionEmpleado">
-                Identificación
-            </label>
-
-            <input
-                type="text"
-                id="identificacionEmpleado"
-                placeholder="Opcional"
-                autocomplete="off"
-            >
+            </div>
 
         </div>
 
 
-
-        <div class="modal-botones">
+        <div class="acciones-modal">
 
             <button
                 id="btnCancelarEmpleado"
                 class="btn-secundario"
-                type="button"
             >
                 Cancelar
             </button>
 
-
             <button
                 id="btnGuardarEmpleado"
                 class="btn-principal"
-                type="button"
             >
                 Guardar empleado
             </button>
@@ -503,20 +374,8 @@
 </div>
 
 
-
-<!-- =========================================
-     NOTIFICACIÓN
-========================================== -->
-
-<div
-    id="notificacion"
-    class="notificacion"
->
-
-    <span id="textoNotificacion"></span>
-
-</div>
-
+<!-- NOTIFICACIONES -->
+<div id="notificacion" class="notificacion"></div>
 
 
 <script src="script.js"></script>

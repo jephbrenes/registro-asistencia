@@ -1,265 +1,62 @@
 const STORAGE_KEY = "registro_asistencia_v1";
 
-
-// ========================================
-// DATOS
-// ========================================
-
-let datos = cargarDatos();
+let datos = {
+    empleados: []
+};
 
 let empleadoSeleccionadoId = null;
 
-let empleadoEditandoId = null;
+let semanaActual = obtenerInicioSemana(new Date());
 
-let semanaActual =
-    obtenerInicioSemana(new Date());
-
-let fechaSeleccionada = null;
+let fechaEditando = null;
 
 
-// ========================================
-// ELEMENTOS
-// ========================================
+/* =========================================================
+   INICIO
+========================================================= */
 
-const listaEmpleados =
-    document.getElementById("listaEmpleados");
+document.addEventListener("DOMContentLoaded", () => {
 
-const cantidadEmpleados =
-    document.getElementById("cantidadEmpleados");
+    cargarDatos();
 
-const buscarEmpleado =
-    document.getElementById("buscarEmpleado");
+    configurarEventos();
 
-const btnAgregarEmpleado =
-    document.getElementById("btnAgregarEmpleado");
+    renderizarEmpleados();
 
-const sinEmpleadoSeleccionado =
-    document.getElementById(
-        "sinEmpleadoSeleccionado"
-    );
-
-const contenidoEmpleado =
-    document.getElementById(
-        "contenidoEmpleado"
-    );
-
-const nombreEmpleadoSeleccionado =
-    document.getElementById(
-        "nombreEmpleadoSeleccionado"
-    );
-
-const numeroSemana =
-    document.getElementById(
-        "numeroSemana"
-    );
-
-const balanceSemanal =
-    document.getElementById(
-        "balanceSemanal"
-    );
-
-const rangoSemana =
-    document.getElementById(
-        "rangoSemana"
-    );
-
-const diasSemana =
-    document.getElementById(
-        "diasSemana"
-    );
-
-const btnSemanaAnterior =
-    document.getElementById(
-        "btnSemanaAnterior"
-    );
-
-const btnSemanaActual =
-    document.getElementById(
-        "btnSemanaActual"
-    );
-
-const btnSemanaSiguiente =
-    document.getElementById(
-        "btnSemanaSiguiente"
-    );
+    renderizarEmpleado();
+});
 
 
-// ========================================
-// EDITOR ASISTENCIA
-// ========================================
-
-const editorAsistencia =
-    document.getElementById(
-        "editorAsistencia"
-    );
-
-const fechaEditor =
-    document.getElementById(
-        "fechaEditor"
-    );
-
-const entrada =
-    document.getElementById(
-        "entrada"
-    );
-
-const salida =
-    document.getElementById(
-        "salida"
-    );
-
-const estado =
-    document.getElementById(
-        "estado"
-    );
-
-const observacion =
-    document.getElementById(
-        "observacion"
-    );
-
-const btnGuardar =
-    document.getElementById(
-        "btnGuardar"
-    );
-
-const btnRestaurar =
-    document.getElementById(
-        "btnRestaurar"
-    );
-
-const btnCerrarEditor =
-    document.getElementById(
-        "btnCerrarEditor"
-    );
-
-
-// ========================================
-// MODAL EMPLEADO
-// ========================================
-
-const modalEmpleado =
-    document.getElementById(
-        "modalEmpleado"
-    );
-
-const tituloModalEmpleado =
-    document.getElementById(
-        "tituloModalEmpleado"
-    );
-
-const nombreEmpleado =
-    document.getElementById(
-        "nombreEmpleado"
-    );
-
-const identificacionEmpleado =
-    document.getElementById(
-        "identificacionEmpleado"
-    );
-
-const btnCerrarModal =
-    document.getElementById(
-        "btnCerrarModal"
-    );
-
-const btnCancelarEmpleado =
-    document.getElementById(
-        "btnCancelarEmpleado"
-    );
-
-const btnGuardarEmpleado =
-    document.getElementById(
-        "btnGuardarEmpleado"
-    );
-
-
-// ========================================
-// NOTIFICACIÓN
-// ========================================
-
-const notificacion =
-    document.getElementById(
-        "notificacion"
-    );
-
-const textoNotificacion =
-    document.getElementById(
-        "textoNotificacion"
-    );
-
-
-// ========================================
-// CARGAR DATOS
-// ========================================
+/* =========================================================
+   STORAGE
+========================================================= */
 
 function cargarDatos() {
 
-    const guardado =
-        localStorage.getItem(
-            STORAGE_KEY
-        );
-
-
-    if (!guardado) {
-
-        return {
-            empleados: []
-        };
-
-    }
-
-
     try {
 
-        const datosGuardados =
-            JSON.parse(guardado);
+        const guardado = localStorage.getItem(STORAGE_KEY);
 
+        if (guardado) {
 
-        if (!Array.isArray(
-            datosGuardados.empleados
-        )) {
+            const datosGuardados = JSON.parse(guardado);
 
-            datosGuardados.empleados = [];
+            if (
+                datosGuardados &&
+                Array.isArray(datosGuardados.empleados)
+            ) {
+                datos = datosGuardados;
+            }
 
         }
 
-
-        datosGuardados.empleados.forEach(
-            empleado => {
-
-                if (!empleado.registros) {
-
-                    empleado.registros = {};
-
-                }
-
-            }
-        );
-
-
-        return datosGuardados;
-
     } catch (error) {
 
-        console.error(
-            "Error cargando datos:",
-            error
-        );
-
-
-        return {
-            empleados: []
-        };
+        console.error("Error cargando datos:", error);
 
     }
-
 }
 
-
-// ========================================
-// GUARDAR DATOS
-// ========================================
 
 function guardarDatos() {
 
@@ -267,960 +64,630 @@ function guardarDatos() {
         STORAGE_KEY,
         JSON.stringify(datos)
     );
-
 }
 
 
-// ========================================
-// FECHAS
-// ========================================
+/* =========================================================
+   FECHAS
+========================================================= */
 
 function obtenerInicioSemana(fecha) {
 
-    const nuevaFecha =
-        new Date(
-            fecha.getFullYear(),
-            fecha.getMonth(),
-            fecha.getDate()
-        );
+    const nuevaFecha = new Date(fecha);
 
+    nuevaFecha.setHours(0, 0, 0, 0);
 
-    const dia =
-        nuevaFecha.getDay();
+    const dia = nuevaFecha.getDay();
 
-
-    const diferencia =
-        dia === 0
-            ? -6
-            : 1 - dia;
-
+    const diferencia = dia === 0 ? -6 : 1 - dia;
 
     nuevaFecha.setDate(
-        nuevaFecha.getDate() +
-        diferencia
+        nuevaFecha.getDate() + diferencia
     );
 
-
     return nuevaFecha;
-
 }
 
 
-function crearFecha(
-    fecha,
-    cantidadDias
-) {
+function crearFecha(fecha, cantidadDias) {
 
-    const nuevaFecha =
-        new Date(
-            fecha.getFullYear(),
-            fecha.getMonth(),
-            fecha.getDate()
-        );
-
+    const nuevaFecha = new Date(fecha);
 
     nuevaFecha.setDate(
-        nuevaFecha.getDate() +
-        cantidadDias
+        nuevaFecha.getDate() + cantidadDias
     );
 
-
     return nuevaFecha;
-
 }
 
 
 function fechaClave(fecha) {
 
-    const año =
-        fecha.getFullYear();
+    const year = fecha.getFullYear();
 
+    const month = String(
+        fecha.getMonth() + 1
+    ).padStart(2, "0");
 
-    const mes =
-        String(
-            fecha.getMonth() + 1
-        ).padStart(2, "0");
+    const day = String(
+        fecha.getDate()
+    ).padStart(2, "0");
 
-
-    const dia =
-        String(
-            fecha.getDate()
-        ).padStart(2, "0");
-
-
-    return `${año}-${mes}-${dia}`;
-
+    return `${year}-${month}-${day}`;
 }
 
 
-// ========================================
-// NÚMERO DE SEMANA
-// ========================================
+function formatearFecha(fecha) {
+
+    return fecha.toLocaleDateString(
+        "es-CR",
+        {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric"
+        }
+    );
+}
+
+
+/* =========================================================
+   NÚMERO DE SEMANA
+========================================================= */
 
 function obtenerNumeroSemana(fecha) {
 
-    const fechaCopia =
-        new Date(
-            Date.UTC(
-                fecha.getFullYear(),
-                fecha.getMonth(),
-                fecha.getDate()
-            )
-        );
-
-
-    const dia =
-        fechaCopia.getUTCDay() || 7;
-
-
-    fechaCopia.setUTCDate(
-        fechaCopia.getUTCDate() +
-        4 -
-        dia
+    const fechaReferencia = new Date(
+        Date.UTC(
+            fecha.getFullYear(),
+            fecha.getMonth(),
+            fecha.getDate()
+        )
     );
 
+    const diaSemana = fechaReferencia.getUTCDay() || 7;
 
-    const inicioAño =
-        new Date(
-            Date.UTC(
-                fechaCopia.getUTCFullYear(),
-                0,
-                1
-            )
-        );
+    fechaReferencia.setUTCDate(
+        fechaReferencia.getUTCDate() +
+        4 -
+        diaSemana
+    );
 
+    const inicioAno = new Date(
+        Date.UTC(
+            fechaReferencia.getUTCFullYear(),
+            0,
+            1
+        )
+    );
 
     return Math.ceil(
         (
             (
-                fechaCopia -
-                inicioAño
+                fechaReferencia -
+                inicioAno
             ) / 86400000 +
             1
         ) / 7
     );
-
 }
 
 
-// ========================================
-// NOMBRES
-// ========================================
+/* =========================================================
+   HORARIOS
+========================================================= */
 
-const nombresDias = [
+function obtenerHorarioBase(fecha) {
 
-    "Domingo",
-    "Lunes",
-    "Martes",
-    "Miércoles",
-    "Jueves",
-    "Viernes",
-    "Sábado"
-
-];
-
-
-const nombresMeses = [
-
-    "enero",
-    "febrero",
-    "marzo",
-    "abril",
-    "mayo",
-    "junio",
-    "julio",
-    "agosto",
-    "septiembre",
-    "octubre",
-    "noviembre",
-    "diciembre"
-
-];
-
-
-function formatearFechaCompleta(
-    fecha
-) {
-
-    return `${
-        nombresDias[
-            fecha.getDay()
-        ]
-    } ${
-        fecha.getDate()
-    } de ${
-        nombresMeses[
-            fecha.getMonth()
-        ]
-    } de ${
-        fecha.getFullYear()
-    }`;
-
-}
-
-
-function formatearRangoSemana(
-    inicio
-) {
-
-    const fin =
-        crearFecha(
-            inicio,
-            6
-        );
-
-
-    if (
-        inicio.getMonth() ===
-        fin.getMonth() &&
-
-        inicio.getFullYear() ===
-        fin.getFullYear()
-    ) {
-
-        return `${
-            inicio.getDate()
-        } - ${
-            fin.getDate()
-        } de ${
-            nombresMeses[
-                inicio.getMonth()
-            ]
-        } de ${
-            inicio.getFullYear()
-        }`;
-
-    }
-
-
-    return `${
-        inicio.getDate()
-    } de ${
-        nombresMeses[
-            inicio.getMonth()
-        ]
-    } - ${
-        fin.getDate()
-    } de ${
-        nombresMeses[
-            fin.getMonth()
-        ]
-    } de ${
-        fin.getFullYear()
-    }`;
-
-}
-
-
-// ========================================
-// HORARIO BASE
-// ========================================
-
-function obtenerHorarioBase(
-    fecha
-) {
-
-    const dia =
-        fecha.getDay();
-
-
-    // Lunes a viernes
-
-    if (
-        dia >= 1 &&
-        dia <= 5
-    ) {
-
-        return {
-
-            entrada: "07:30",
-
-            salida: "17:30"
-
-        };
-
-    }
-
-
-    // Sábado
-
-    if (dia === 6) {
-
-        return {
-
-            entrada: "07:30",
-
-            salida: "12:00"
-
-        };
-
-    }
-
+    const dia = fecha.getDay();
 
     // Domingo
+    if (dia === 0) {
+        return null;
+    }
 
-    return null;
+    // Lunes a viernes
+    if (dia >= 1 && dia <= 5) {
 
+        return {
+            entrada: "07:30",
+            salida: "17:30"
+        };
+    }
+
+    // Sábado
+    return {
+        entrada: "07:30",
+        salida: "12:00"
+    };
 }
 
-
-// ========================================
-// MINUTOS
-// ========================================
 
 function minutosHora(hora) {
 
     if (!hora) {
-
         return 0;
-
     }
 
-
-    const partes =
-        hora.split(":");
-
+    const partes = hora.split(":");
 
     return (
         Number(partes[0]) * 60 +
         Number(partes[1])
     );
-
 }
 
 
-function calcularDuracion(
-    entradaHora,
-    salidaHora
-) {
+function calcularDuracion(entradaHora, salidaHora) {
 
-    if (
-        !entradaHora ||
-        !salidaHora
-    ) {
-
+    if (!entradaHora || !salidaHora) {
         return 0;
+    }
+
+    let entrada = minutosHora(entradaHora);
+    let salida = minutosHora(salidaHora);
+
+    if (salida < entrada) {
+        salida += 24 * 60;
+    }
+
+    return salida - entrada;
+}
+
+
+function formatearTiempo(minutos) {
+
+    minutos = Math.max(0, Math.round(minutos));
+
+    const horas = Math.floor(minutos / 60);
+
+    const minutosRestantes = minutos % 60;
+
+    return `${horas}h ${String(minutosRestantes).padStart(2, "0")}m`;
+}
+
+
+/* =========================================================
+   FORMATO PARA EXCEL
+========================================================= */
+
+function formatearBalanceExcel(minutos) {
+
+    minutos = Math.round(minutos);
+
+    if (minutos === 0) {
+        return "0 minutos";
+    }
+
+    const signo = minutos > 0 ? "+" : "-";
+
+    const valor = Math.abs(minutos);
+
+    const horas = Math.floor(valor / 60);
+
+    const minutosRestantes = valor % 60;
+
+
+    if (horas > 0 && minutosRestantes > 0) {
+
+        return `${signo}${horas}h ${minutosRestantes}m`;
 
     }
 
 
-    const entradaMinutos =
-        minutosHora(
-            entradaHora
-        );
+    if (horas > 0) {
 
+        if (horas === 1) {
+            return `${signo}1 hora`;
+        }
 
-    const salidaMinutos =
-        minutosHora(
-            salidaHora
-        );
-
-
-    return Math.max(
-        0,
-        salidaMinutos -
-        entradaMinutos
-    );
-
-}
-
-
-// ========================================
-// FORMATO TIEMPO
-// ========================================
-
-function formatearTiempo(
-    minutos
-) {
-
-    const valor =
-        Math.abs(minutos);
-
-
-    const horas =
-        Math.floor(
-            valor / 60
-        );
-
-
-    const minutosRestantes =
-        valor % 60;
-
-
-    return `${horas}h ${String(
-        minutosRestantes
-    ).padStart(2, "0")}m`;
-
-}
-
-
-function formatearBalance(
-    minutos
-) {
-
-    if (minutos > 0) {
-
-        return `+${formatearTiempo(
-            minutos
-        )}`;
-
+        return `${signo}${horas} horas`;
     }
 
 
-    if (minutos < 0) {
-
-        return `-${formatearTiempo(
-            minutos
-        )}`;
-
-    }
-
-
-    return "0h 00m";
-
+    return `${signo}${minutosRestantes} minutos`;
 }
 
 
-// ========================================
-// EMPLEADO SELECCIONADO
-// ========================================
+/* =========================================================
+   INFORMACIÓN DE UN DÍA
+========================================================= */
 
-function obtenerEmpleadoSeleccionado() {
+function obtenerInformacionDia(empleado, fecha) {
 
-    return datos.empleados.find(
-        empleado =>
-            empleado.id ===
-            empleadoSeleccionadoId
-    );
+    const clave = fechaClave(fecha);
 
-}
+    const horario = obtenerHorarioBase(fecha);
 
-
-// ========================================
-// INFORMACIÓN DE DÍA
-// ========================================
-
-function obtenerInformacionDia(
-    empleado,
-    fecha
-) {
-
-    const base =
-        obtenerHorarioBase(
-            fecha
-        );
-
-
-    if (!base) {
+    if (!horario) {
 
         return {
-
-            trabaja: false,
-
+            horario: null,
             entrada: "",
-
             salida: "",
-
-            estado: "Descanso",
-
+            estado: "",
             observacion: "",
-
-            programado: 0,
-
-            trabajado: 0,
-
-            diferencia: 0
-
+            balance: 0
         };
-
     }
-
-
-    const clave =
-        fechaClave(fecha);
 
 
     const registro =
-        empleado.registros?.[
-            clave
-        ];
+        empleado.registros?.[clave];
 
 
-    const entradaDia =
-        registro?.entrada ??
-        base.entrada;
+    if (!registro) {
 
-
-    const salidaDia =
-        registro?.salida ??
-        base.salida;
-
-
-    const estadoDia =
-        registro?.estado ??
-        "Completo";
-
-
-    const programado =
-        calcularDuracion(
-            base.entrada,
-            base.salida
-        );
-
-
-    let trabajado = 0;
-
-    let diferencia = 0;
-
-
-    // AUSENTE
-
-    if (
-        estadoDia ===
-        "Ausente"
-    ) {
-
-        trabajado = 0;
-
-        diferencia =
-            -programado;
-
+        return {
+            horario,
+            entrada: horario.entrada,
+            salida: horario.salida,
+            estado: "Completo",
+            observacion: "",
+            balance: 0
+        };
     }
 
 
-    // JUSTIFICADO SIN HORAS
+    let balance = 0;
 
-    else if (
-        estadoDia ===
-            "Justificado" &&
-        !entradaDia &&
-        !salidaDia
-    ) {
 
-        trabajado = 0;
+    if (registro.estado === "Ausente") {
 
-        diferencia = 0;
+        balance =
+            -calcularDuracion(
+                horario.entrada,
+                horario.salida
+            );
 
     }
 
+    else if (registro.estado === "Justificado") {
 
-    // NORMAL
+        if (
+            registro.entrada &&
+            registro.salida
+        ) {
+
+            const trabajado =
+                calcularDuracion(
+                    registro.entrada,
+                    registro.salida
+                );
+
+            const programado =
+                calcularDuracion(
+                    horario.entrada,
+                    horario.salida
+                );
+
+            balance =
+                trabajado -
+                programado;
+
+        } else {
+
+            balance = 0;
+        }
+
+    }
 
     else {
 
-        trabajado =
+        const entrada =
+            registro.entrada ||
+            horario.entrada;
+
+        const salida =
+            registro.salida ||
+            horario.salida;
+
+        const trabajado =
             calcularDuracion(
-                entradaDia,
-                salidaDia
+                entrada,
+                salida
             );
 
+        const programado =
+            calcularDuracion(
+                horario.entrada,
+                horario.salida
+            );
 
-        diferencia =
+        balance =
             trabajado -
             programado;
-
     }
 
 
     return {
 
-        trabaja: true,
+        horario,
 
-        entrada: entradaDia,
+        entrada:
+            registro.entrada ??
+            horario.entrada,
 
-        salida: salidaDia,
+        salida:
+            registro.salida ??
+            horario.salida,
 
-        estado: estadoDia,
+        estado:
+            registro.estado ||
+            "Completo",
 
         observacion:
-            registro?.observacion ??
+            registro.observacion ||
             "",
 
-        programado,
-
-        trabajado,
-
-        diferencia,
-
-        modificado:
-            Boolean(registro)
-
+        balance
     };
-
 }
 
 
-// ========================================
-// RENDERIZAR EMPLEADOS
-// ========================================
+/* =========================================================
+   EMPLEADO SELECCIONADO
+========================================================= */
+
+function obtenerEmpleadoSeleccionado() {
+
+    return datos.empleados.find(
+        empleado =>
+            empleado.id === empleadoSeleccionadoId
+    );
+}
+
+
+/* =========================================================
+   RENDER EMPLEADOS
+========================================================= */
 
 function renderizarEmpleados() {
 
-    listaEmpleados.innerHTML = "";
+    const lista =
+        document.getElementById(
+            "listaEmpleados"
+        );
+
+    const contador =
+        document.getElementById(
+            "cantidadEmpleados"
+        );
+
+    const busqueda =
+        document.getElementById(
+            "buscarEmpleado"
+        ).value
+        .trim()
+        .toLowerCase();
 
 
-    cantidadEmpleados.textContent =
-        datos.empleados.length;
-
-
-    const texto =
-        buscarEmpleado.value
-            .trim()
-            .toLowerCase();
+    lista.innerHTML = "";
 
 
     const empleadosFiltrados =
-        datos.empleados.filter(
-            empleado => {
+        datos.empleados.filter(empleado => {
 
-                const nombre =
-                    empleado.nombre
-                        .toLowerCase();
+            return (
+                empleado.nombre
+                    .toLowerCase()
+                    .includes(busqueda) ||
 
-
-                const identificacion =
-                    (
-                        empleado.identificacion ||
-                        ""
-                    ).toLowerCase();
-
-
-                return (
-                    nombre.includes(texto) ||
-                    identificacion.includes(texto)
-                );
-
-            }
-        );
-
-
-    if (
-        empleadosFiltrados.length ===
-        0
-    ) {
-
-        const mensaje =
-            document.createElement(
-                "div"
+                empleado.identificacion
+                    .toLowerCase()
+                    .includes(busqueda)
             );
+        });
 
 
-        mensaje.style.textAlign =
-            "center";
+    contador.textContent =
+        `${datos.empleados.length} ${
+            datos.empleados.length === 1
+                ? "empleado"
+                : "empleados"
+        }`;
 
 
-        mensaje.style.padding =
-            "20px";
+    if (empleadosFiltrados.length === 0) {
 
-
-        mensaje.style.color =
-            "#6b7280";
-
-
-        mensaje.textContent =
-            datos.empleados.length ===
-            0
-
-                ? "No hay empleados registrados."
-
-                : "No se encontraron empleados.";
-
-
-        listaEmpleados.appendChild(
-            mensaje
-        );
-
+        lista.innerHTML = `
+            <div style="
+                padding:20px;
+                text-align:center;
+                color:#777;
+                font-size:13px;
+            ">
+                No hay empleados
+            </div>
+        `;
 
         return;
-
     }
 
 
     empleadosFiltrados.forEach(
         empleado => {
 
-            crearElementoEmpleado(
-                empleado
+            lista.appendChild(
+                crearElementoEmpleado(
+                    empleado
+                )
             );
-
         }
     );
-
 }
 
 
-// ========================================
-// CREAR ELEMENTO EMPLEADO
-// ========================================
+function crearElementoEmpleado(empleado) {
 
-function crearElementoEmpleado(
-    empleado
-) {
+    const elemento =
+        document.createElement("div");
 
-    const contenedor =
-        document.createElement(
-            "div"
-        );
-
-
-    contenedor.className =
+    elemento.className =
         "empleado-item";
-
 
     if (
         empleado.id ===
         empleadoSeleccionadoId
     ) {
 
-        contenedor.classList.add(
-            "activo"
+        elemento.classList.add(
+            "seleccionado"
         );
-
     }
 
 
-    // AVATAR
+    elemento.innerHTML = `
 
-    const avatar =
-        document.createElement(
-            "div"
-        );
+        <div class="empleado-avatar">
+            ${obtenerIniciales(
+                empleado.nombre
+            )}
+        </div>
 
+        <div
+            class="empleado-info"
+            style="cursor:pointer;"
+        >
+            <strong>
+                ${escapeHtml(
+                    empleado.nombre
+                )}
+            </strong>
 
-    avatar.className =
-        "avatar";
+            <span>
+                ${escapeHtml(
+                    empleado.identificacion
+                )}
+            </span>
+        </div>
 
+        <div class="empleado-acciones">
 
-    avatar.textContent =
-        obtenerIniciales(
-            empleado.nombre
-        );
+            <button
+                class="btn-mini"
+                title="Editar"
+                data-editar="${empleado.id}"
+            >
+                ✏️
+            </button>
 
+            <button
+                class="btn-mini"
+                title="Eliminar"
+                data-eliminar="${empleado.id}"
+            >
+                🗑️
+            </button>
 
-    // INFORMACIÓN
-
-    const info =
-        document.createElement(
-            "div"
-        );
-
-
-    info.className =
-        "empleado-info";
-
-
-    const nombre =
-        document.createElement(
-            "strong"
-        );
-
-
-    nombre.textContent =
-        empleado.nombre;
-
-
-    const identificacion =
-        document.createElement(
-            "small"
-        );
-
-
-    identificacion.textContent =
-        empleado.identificacion ||
-        "Sin identificación";
+        </div>
+    `;
 
 
-    info.appendChild(
-        nombre
-    );
-
-    info.appendChild(
-        identificacion
-    );
-
-
-    // ACCIONES
-
-    const acciones =
-        document.createElement(
-            "div"
-        );
-
-
-    acciones.className =
-        "acciones-empleado";
-
-
-    // BOTÓN EDITAR
-
-    const btnEditar =
-        document.createElement(
-            "button"
-        );
-
-
-    btnEditar.type =
-        "button";
-
-
-    btnEditar.className =
-        "btn-accion-empleado btn-editar";
-
-
-    btnEditar.title =
-        "Editar empleado";
-
-
-    btnEditar.textContent =
-        "✏️";
-
-
-    btnEditar.addEventListener(
+    elemento.addEventListener(
         "click",
         evento => {
 
-            evento.stopPropagation();
-
-            abrirEditarEmpleado(
-                empleado.id
-            );
-
-        }
-    );
-
-
-    // BOTÓN ELIMINAR
-
-    const btnEliminar =
-        document.createElement(
-            "button"
-        );
-
-
-    btnEliminar.type =
-        "button";
-
-
-    btnEliminar.className =
-        "btn-accion-empleado btn-eliminar";
-
-
-    btnEliminar.title =
-        "Eliminar empleado";
-
-
-    btnEliminar.textContent =
-        "🗑️";
-
-
-    btnEliminar.addEventListener(
-        "click",
-        evento => {
-
-            evento.stopPropagation();
-
-            eliminarEmpleado(
-                empleado.id
-            );
-
-        }
-    );
-
-
-    acciones.appendChild(
-        btnEditar
-    );
-
-    acciones.appendChild(
-        btnEliminar
-    );
-
-
-    contenedor.appendChild(
-        avatar
-    );
-
-    contenedor.appendChild(
-        info
-    );
-
-    contenedor.appendChild(
-        acciones
-    );
-
-
-    // SELECCIONAR EMPLEADO
-
-    contenedor.addEventListener(
-        "click",
-        () => {
+            if (
+                evento.target.closest(
+                    "[data-editar]"
+                ) ||
+                evento.target.closest(
+                    "[data-eliminar]"
+                )
+            ) {
+                return;
+            }
 
             seleccionarEmpleado(
                 empleado.id
             );
-
         }
     );
 
 
-    listaEmpleados.appendChild(
-        contenedor
-    );
+    elemento
+        .querySelector("[data-editar]")
+        .addEventListener(
+            "click",
+            evento => {
 
+                evento.stopPropagation();
+
+                abrirEditarEmpleado(
+                    empleado.id
+                );
+            }
+        );
+
+
+    elemento
+        .querySelector("[data-eliminar]")
+        .addEventListener(
+            "click",
+            evento => {
+
+                evento.stopPropagation();
+
+                eliminarEmpleado(
+                    empleado.id
+                );
+            }
+        );
+
+
+    return elemento;
 }
 
 
-// ========================================
-// INICIALES
-// ========================================
+function obtenerIniciales(nombre) {
 
-function obtenerIniciales(
-    nombre
-) {
+    const palabras =
+        nombre
+            .trim()
+            .split(/\s+/);
 
-    return nombre
-        .split(" ")
-        .filter(Boolean)
-        .slice(0, 2)
-        .map(
-            palabra =>
-                palabra
-                    .charAt(0)
-                    .toUpperCase()
-        )
-        .join("");
+    if (palabras.length === 1) {
 
+        return palabras[0]
+            .substring(0, 2)
+            .toUpperCase();
+    }
+
+    return (
+        palabras[0][0] +
+        palabras[palabras.length - 1][0]
+    ).toUpperCase();
 }
 
 
-// ========================================
-// SELECCIONAR EMPLEADO
-// ========================================
+function seleccionarEmpleado(id) {
 
-function seleccionarEmpleado(
-    id
-) {
-
-    empleadoSeleccionadoId =
-        id;
-
+    empleadoSeleccionadoId = id;
 
     cerrarEditor();
 
-
     renderizarEmpleados();
 
-
     renderizarEmpleado();
-
 }
 
 
-// ========================================
-// RENDERIZAR EMPLEADO
-// ========================================
+/* =========================================================
+   RENDER EMPLEADO
+========================================================= */
 
 function renderizarEmpleado() {
+
+    const vacio =
+        document.getElementById(
+            "estadoVacio"
+        );
+
+    const panel =
+        document.getElementById(
+            "panelAsistencia"
+        );
+
 
     const empleado =
         obtenerEmpleadoSeleccionado();
@@ -1228,76 +695,95 @@ function renderizarEmpleado() {
 
     if (!empleado) {
 
-        sinEmpleadoSeleccionado
-            .classList.remove(
-                "oculto"
-            );
+        vacio.classList.remove(
+            "oculto"
+        );
 
-
-        contenidoEmpleado
-            .classList.add(
-                "oculto"
-            );
-
+        panel.classList.add(
+            "oculto"
+        );
 
         return;
-
     }
 
 
-    sinEmpleadoSeleccionado
-        .classList.add(
-            "oculto"
-        );
+    vacio.classList.add(
+        "oculto"
+    );
+
+    panel.classList.remove(
+        "oculto"
+    );
 
 
-    contenidoEmpleado
-        .classList.remove(
-            "oculto"
-        );
+    document.getElementById(
+        "nombreEmpleadoSeleccionado"
+    ).textContent =
+        empleado.nombre;
 
 
-    nombreEmpleadoSeleccionado
-        .textContent =
-            empleado.nombre;
+    document.getElementById(
+        "identificacionEmpleadoSeleccionado"
+    ).textContent =
+        `Identificación: ${empleado.identificacion}`;
 
 
     renderizarSemana();
-
 }
 
 
-// ========================================
-// RENDERIZAR SEMANA
-// ========================================
+/* =========================================================
+   SEMANA
+========================================================= */
 
 function renderizarSemana() {
 
     const empleado =
         obtenerEmpleadoSeleccionado();
 
-
     if (!empleado) {
-
         return;
-
     }
 
 
-    numeroSemana.textContent =
+    const numero =
         obtenerNumeroSemana(
             semanaActual
         );
 
 
-    rangoSemana.textContent =
-        formatearRangoSemana(
-            semanaActual
+    document.getElementById(
+        "numeroSemana"
+    ).textContent =
+        `#${numero}`;
+
+
+    const fechaInicio =
+        semanaActual;
+
+    const fechaFin =
+        crearFecha(
+            semanaActual,
+            6
         );
 
 
-    diasSemana.innerHTML =
-        "";
+    document.getElementById(
+        "rangoSemana"
+    ).textContent =
+        `${formatearFecha(
+            fechaInicio
+        )} — ${formatearFecha(
+            fechaFin
+        )}`;
+
+
+    const dias =
+        document.getElementById(
+            "diasSemana"
+        );
+
+    dias.innerHTML = "";
 
 
     let balanceTotal = 0;
@@ -1315,7 +801,6 @@ function renderizarSemana() {
                 i
             );
 
-
         const informacion =
             obtenerInformacionDia(
                 empleado,
@@ -1324,66 +809,27 @@ function renderizarSemana() {
 
 
         balanceTotal +=
-            informacion.diferencia;
+            informacion.balance;
 
 
-        const tarjeta =
+        dias.appendChild(
             crearTarjetaDia(
                 fecha,
                 informacion
-            );
-
-
-        diasSemana.appendChild(
-            tarjeta
+            )
         );
-
     }
 
 
-    balanceSemanal.textContent =
-        formatearBalance(
-            balanceTotal
-        );
-
-
-    balanceSemanal.classList.remove(
-        "balance-positivo",
-        "balance-negativo",
-        "balance-neutro"
+    actualizarBalanceSemanal(
+        balanceTotal
     );
-
-
-    if (balanceTotal > 0) {
-
-        balanceSemanal.classList.add(
-            "balance-positivo"
-        );
-
-    }
-
-    else if (balanceTotal < 0) {
-
-        balanceSemanal.classList.add(
-            "balance-negativo"
-        );
-
-    }
-
-    else {
-
-        balanceSemanal.classList.add(
-            "balance-neutro"
-        );
-
-    }
-
 }
 
 
-// ========================================
-// TARJETA DÍA
-// ========================================
+/* =========================================================
+   TARJETA DEL DÍA
+========================================================= */
 
 function crearTarjetaDia(
     fecha,
@@ -1391,871 +837,677 @@ function crearTarjetaDia(
 ) {
 
     const tarjeta =
-        document.createElement(
-            "div"
-        );
+        document.createElement("div");
+
+    const dia =
+        fecha.getDay();
+
+
+    const nombresDias = [
+        "Domingo",
+        "Lunes",
+        "Martes",
+        "Miércoles",
+        "Jueves",
+        "Viernes",
+        "Sábado"
+    ];
 
 
     tarjeta.className =
         "dia-card";
 
 
-    const nombre =
-        document.createElement(
-            "div"
-        );
-
-
-    nombre.className =
-        "dia-nombre";
-
-
-    nombre.textContent =
-        nombresDias[
-            fecha.getDay()
-        ];
-
-
-    const numero =
-        document.createElement(
-            "div"
-        );
-
-
-    numero.className =
-        "dia-numero";
-
-
-    numero.textContent =
-        fecha.getDate();
-
-
-    tarjeta.appendChild(
-        nombre
-    );
-
-
-    tarjeta.appendChild(
-        numero
-    );
-
-
-    // DOMINGO
-
-    if (
-        !informacion.trabaja
-    ) {
+    if (dia === 0) {
 
         tarjeta.classList.add(
             "domingo"
         );
+    }
 
 
-        const descanso =
-            document.createElement(
-                "div"
+    const balance =
+        informacion.balance;
+
+
+    let balanceClase =
+        "balance-neutro";
+
+
+    if (balance > 0) {
+
+        balanceClase =
+            "balance-positivo";
+
+    } else if (balance < 0) {
+
+        balanceClase =
+            "balance-negativo";
+    }
+
+
+    let balanceTexto =
+        balance === 0
+            ? "0 minutos"
+            : formatearBalanceExcel(
+                balance
             );
 
 
-        descanso.className =
-            "descanso";
-
-
-        descanso.textContent =
-            "Día libre";
-
-
-        tarjeta.appendChild(
-            descanso
+    let estadoClase =
+        obtenerClaseEstado(
+            informacion.estado
         );
 
+
+    if (!informacion.horario) {
+
+        tarjeta.innerHTML = `
+
+            <div class="dia-nombre">
+                Domingo
+            </div>
+
+            <div class="dia-fecha">
+                ${formatearFecha(fecha)}
+            </div>
+
+            <div style="
+                color:#777;
+                font-size:13px;
+                margin-top:20px;
+            ">
+                No laborable
+            </div>
+        `;
 
         return tarjeta;
-
     }
 
 
-    // HORARIO
+    tarjeta.innerHTML = `
 
-    const horario =
-        document.createElement(
-            "div"
+        <div class="dia-nombre">
+            ${nombresDias[dia]}
+        </div>
+
+        <div class="dia-fecha">
+            ${formatearFecha(fecha)}
+        </div>
+
+        <div class="horario">
+
+            <strong>
+                Horario
+            </strong>
+
+            <span>
+                ${informacion.horario.entrada}
+                —
+                ${informacion.horario.salida}
+            </span>
+
+        </div>
+
+
+        <div class="horario">
+
+            <strong>
+                Registrado
+            </strong>
+
+            <span>
+                ${informacion.entrada}
+                —
+                ${informacion.salida}
+            </span>
+
+        </div>
+
+
+        <span class="estado ${estadoClase}">
+            ${escapeHtml(
+                informacion.estado
+            )}
+        </span>
+
+
+        <div class="
+            dia-balance
+            ${balanceClase}
+        ">
+            ${balanceTexto}
+        </div>
+
+
+        <button
+            class="dia-accion"
+            type="button"
+        >
+            Editar
+        </button>
+    `;
+
+
+    tarjeta
+        .querySelector(".dia-accion")
+        .addEventListener(
+            "click",
+            () => {
+
+                abrirEditor(fecha);
+            }
         );
-
-
-    horario.className =
-        "horario";
-
-
-    const horarioTitulo =
-        document.createElement(
-            "span"
-        );
-
-
-    horarioTitulo.textContent =
-        "Horario";
-
-
-    const horarioTexto =
-        document.createElement(
-            "strong"
-        );
-
-
-    horarioTexto.textContent =
-        `${
-            informacion.entrada ||
-            "--:--"
-        } - ${
-            informacion.salida ||
-            "--:--"
-        }`;
-
-
-    horario.appendChild(
-        horarioTitulo
-    );
-
-
-    horario.appendChild(
-        horarioTexto
-    );
-
-
-    tarjeta.appendChild(
-        horario
-    );
-
-
-    // ESTADO
-
-    const estadoElemento =
-        document.createElement(
-            "span"
-        );
-
-
-    estadoElemento.className =
-        "estado";
-
-
-    estadoElemento.textContent =
-        informacion.estado;
-
-
-    switch (
-        informacion.estado
-    ) {
-
-        case "Completo":
-
-            estadoElemento.classList.add(
-                "estado-completo"
-            );
-
-            break;
-
-
-        case "Tarde":
-
-            estadoElemento.classList.add(
-                "estado-tarde"
-            );
-
-            break;
-
-
-        case "Hora extra":
-
-            estadoElemento.classList.add(
-                "estado-extra"
-            );
-
-            break;
-
-
-        case "Salida antes":
-
-            estadoElemento.classList.add(
-                "estado-salida"
-            );
-
-            break;
-
-
-        case "Ausente":
-
-            estadoElemento.classList.add(
-                "estado-ausente"
-            );
-
-            break;
-
-
-        case "Justificado":
-
-            estadoElemento.classList.add(
-                "estado-justificado"
-            );
-
-            break;
-
-    }
-
-
-    tarjeta.appendChild(
-        estadoElemento
-    );
-
-
-    // DIFERENCIA
-
-    const diferencia =
-        document.createElement(
-            "div"
-        );
-
-
-    diferencia.className =
-        "diferencia";
-
-
-    if (
-        informacion.diferencia > 0
-    ) {
-
-        diferencia.textContent =
-            `+${
-                formatearTiempo(
-                    informacion.diferencia
-                )
-            }`;
-
-
-        diferencia.classList.add(
-            "positiva"
-        );
-
-    }
-
-    else if (
-        informacion.diferencia < 0
-    ) {
-
-        diferencia.textContent =
-            `-${
-                formatearTiempo(
-                    informacion.diferencia
-                )
-            }`;
-
-
-        diferencia.classList.add(
-            "negativa"
-        );
-
-    }
-
-    else {
-
-        diferencia.textContent =
-            "0h 00m";
-
-
-        diferencia.classList.add(
-            "neutra"
-        );
-
-    }
-
-
-    tarjeta.appendChild(
-        diferencia
-    );
-
-
-    // ABRIR EDITOR
-
-    tarjeta.addEventListener(
-        "click",
-        () => {
-
-            abrirEditor(
-                fecha
-            );
-
-        }
-    );
 
 
     return tarjeta;
-
 }
 
 
-// ========================================
-// ABRIR EDITOR
-// ========================================
+function obtenerClaseEstado(estado) {
 
-function abrirEditor(
-    fecha
+    switch (estado) {
+
+        case "Tarde":
+            return "estado-tarde";
+
+        case "Hora extra":
+            return "estado-extra";
+
+        case "Salida antes":
+            return "estado-salida";
+
+        case "Ausente":
+            return "estado-ausente";
+
+        case "Justificado":
+            return "estado-justificado";
+
+        default:
+            return "estado-completo";
+    }
+}
+
+
+/* =========================================================
+   BALANCE SEMANAL
+========================================================= */
+
+function actualizarBalanceSemanal(
+    minutos
 ) {
+
+    const elemento =
+        document.getElementById(
+            "balanceSemanal"
+        );
+
+
+    elemento.textContent =
+        formatearBalanceExcel(
+            minutos
+        );
+
+
+    elemento.classList.remove(
+        "balance-positivo",
+        "balance-negativo",
+        "balance-neutro"
+    );
+
+
+    if (minutos > 0) {
+
+        elemento.classList.add(
+            "balance-positivo"
+        );
+
+    } else if (minutos < 0) {
+
+        elemento.classList.add(
+            "balance-negativo"
+        );
+
+    } else {
+
+        elemento.classList.add(
+            "balance-neutro"
+        );
+    }
+}
+
+
+/* =========================================================
+   EDITOR DE ASISTENCIA
+========================================================= */
+
+function abrirEditor(fecha) {
 
     const empleado =
         obtenerEmpleadoSeleccionado();
 
-
     if (!empleado) {
-
         return;
-
     }
 
 
     const horario =
-        obtenerHorarioBase(
-            fecha
-        );
+        obtenerHorarioBase(fecha);
 
 
     if (!horario) {
-
         return;
-
     }
 
 
-    fechaSeleccionada =
-        fechaClave(
-            fecha
-        );
+    fechaEditando = new Date(fecha);
+
+
+    const clave =
+        fechaClave(fecha);
 
 
     const registro =
-        empleado.registros?.[
-            fechaSeleccionada
-        ];
+        empleado.registros?.[clave];
 
 
-    fechaEditor.textContent =
-        formatearFechaCompleta(
-            fecha
-        );
+    document.getElementById(
+        "tituloEditor"
+    ).textContent =
+        `${fecha.toLocaleDateString(
+            "es-CR",
+            {
+                weekday: "long",
+                day: "numeric",
+                month: "long"
+            }
+        )}`;
 
 
-    entrada.value =
-        registro?.entrada ??
+    document.getElementById(
+        "horarioBaseEditor"
+    ).textContent =
+        `Horario base: ${horario.entrada} — ${horario.salida}`;
+
+
+    document.getElementById(
+        "horaEntrada"
+    ).value =
+        registro?.entrada ||
         horario.entrada;
 
 
-    salida.value =
-        registro?.salida ??
+    document.getElementById(
+        "horaSalida"
+    ).value =
+        registro?.salida ||
         horario.salida;
 
 
-    estado.value =
-        registro?.estado ??
+    document.getElementById(
+        "estadoAsistencia"
+    ).value =
+        registro?.estado ||
         "Completo";
 
 
-    observacion.value =
-        registro?.observacion ??
+    document.getElementById(
+        "observacion"
+    ).value =
+        registro?.observacion ||
         "";
-
-
-    editorAsistencia
-        .classList.remove(
-            "oculto"
-        );
 
 
     actualizarCamposEstado();
 
 
-    editorAsistencia.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest"
-    });
+    document.getElementById(
+        "editorAsistencia"
+    ).classList.remove(
+        "oculto"
+    );
 
+
+    document.getElementById(
+        "editorAsistencia"
+    ).scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
 }
 
-
-// ========================================
-// ESTADO
-// ========================================
 
 function actualizarCamposEstado() {
 
-    if (
-        estado.value ===
-        "Ausente"
-    ) {
+    const estado =
+        document.getElementById(
+            "estadoAsistencia"
+        ).value;
 
-        entrada.value = "";
 
-        salida.value = "";
+    const entrada =
+        document.getElementById(
+            "horaEntrada"
+        );
+
+    const salida =
+        document.getElementById(
+            "horaSalida"
+        );
+
+
+    if (estado === "Ausente") {
 
         entrada.disabled = true;
-
         salida.disabled = true;
 
-    }
-
-    else {
+    } else {
 
         entrada.disabled = false;
-
         salida.disabled = false;
-
     }
-
 }
 
-
-estado.addEventListener(
-    "change",
-    actualizarCamposEstado
-);
-
-
-// ========================================
-// GUARDAR ASISTENCIA
-// ========================================
-
-btnGuardar.addEventListener(
-    "click",
-    () => {
-
-        if (!fechaSeleccionada) {
-
-            return;
-
-        }
-
-
-        const empleado =
-            obtenerEmpleadoSeleccionado();
-
-
-        if (!empleado) {
-
-            return;
-
-        }
-
-
-        if (!empleado.registros) {
-
-            empleado.registros = {};
-
-        }
-
-
-        empleado.registros[
-            fechaSeleccionada
-        ] = {
-
-            entrada:
-                entrada.value,
-
-            salida:
-                salida.value,
-
-            estado:
-                estado.value,
-
-            observacion:
-                observacion.value.trim()
-
-        };
-
-
-        guardarDatos();
-
-
-        renderizarSemana();
-
-
-        cerrarEditor();
-
-
-        mostrarNotificacion(
-            "Asistencia guardada correctamente."
-        );
-
-    }
-);
-
-
-// ========================================
-// RESTAURAR HORARIO
-// ========================================
-
-btnRestaurar.addEventListener(
-    "click",
-    () => {
-
-        if (!fechaSeleccionada) {
-
-            return;
-
-        }
-
-
-        const empleado =
-            obtenerEmpleadoSeleccionado();
-
-
-        if (!empleado) {
-
-            return;
-
-        }
-
-
-        if (!empleado.registros) {
-
-            empleado.registros = {};
-
-        }
-
-
-        delete empleado.registros[
-            fechaSeleccionada
-        ];
-
-
-        guardarDatos();
-
-
-        renderizarSemana();
-
-
-        cerrarEditor();
-
-
-        mostrarNotificacion(
-            "Horario original restaurado."
-        );
-
-    }
-);
-
-
-// ========================================
-// CERRAR EDITOR
-// ========================================
 
 function cerrarEditor() {
 
-    editorAsistencia
-        .classList.add(
-            "oculto"
-        );
+    fechaEditando = null;
 
-
-    fechaSeleccionada =
-        null;
-
+    document.getElementById(
+        "editorAsistencia"
+    ).classList.add(
+        "oculto"
+    );
 }
 
 
-btnCerrarEditor.addEventListener(
-    "click",
-    cerrarEditor
-);
+/* =========================================================
+   GUARDAR ASISTENCIA
+========================================================= */
 
+function guardarAsistencia() {
 
-// ========================================
-// SEMANA ANTERIOR
-// ========================================
+    const empleado =
+        obtenerEmpleadoSeleccionado();
 
-btnSemanaAnterior.addEventListener(
-    "click",
-    () => {
-
-        semanaActual =
-            crearFecha(
-                semanaActual,
-                -7
-            );
-
-
-        cerrarEditor();
-
-
-        renderizarSemana();
-
+    if (!empleado || !fechaEditando) {
+        return;
     }
-);
 
 
-// ========================================
-// ESTA SEMANA
-// ========================================
-
-btnSemanaActual.addEventListener(
-    "click",
-    () => {
-
-        semanaActual =
-            obtenerInicioSemana(
-                new Date()
-            );
-
-
-        cerrarEditor();
-
-
-        renderizarSemana();
-
+    if (!empleado.registros) {
+        empleado.registros = {};
     }
-);
 
 
-// ========================================
-// SEMANA SIGUIENTE
-// ========================================
-
-btnSemanaSiguiente.addEventListener(
-    "click",
-    () => {
-
-        semanaActual =
-            crearFecha(
-                semanaActual,
-                7
-            );
+    const clave =
+        fechaClave(
+            fechaEditando
+        );
 
 
-        cerrarEditor();
+    const estado =
+        document.getElementById(
+            "estadoAsistencia"
+        ).value;
 
 
-        renderizarSemana();
+    const entrada =
+        document.getElementById(
+            "horaEntrada"
+        ).value;
 
+
+    const salida =
+        document.getElementById(
+            "horaSalida"
+        ).value;
+
+
+    const observacion =
+        document.getElementById(
+            "observacion"
+        ).value.trim();
+
+
+    empleado.registros[clave] = {
+
+        entrada:
+            estado === "Ausente"
+                ? ""
+                : entrada,
+
+        salida:
+            estado === "Ausente"
+                ? ""
+                : salida,
+
+        estado,
+
+        observacion
+    };
+
+
+    guardarDatos();
+
+    cerrarEditor();
+
+    renderizarSemana();
+
+    mostrarNotificacion(
+        "Asistencia guardada correctamente."
+    );
+}
+
+
+/* =========================================================
+   RESTAURAR HORARIO
+========================================================= */
+
+function restaurarHorario() {
+
+    const empleado =
+        obtenerEmpleadoSeleccionado();
+
+    if (!empleado || !fechaEditando) {
+        return;
     }
-);
 
 
-// ========================================
-// ABRIR MODAL AGREGAR
-// ========================================
-
-btnAgregarEmpleado.addEventListener(
-    "click",
-    () => {
-
-        abrirAgregarEmpleado();
-
+    if (!empleado.registros) {
+        empleado.registros = {};
     }
-);
+
+
+    const clave =
+        fechaClave(
+            fechaEditando
+        );
+
+
+    delete empleado.registros[
+        clave
+    ];
+
+
+    guardarDatos();
+
+    cerrarEditor();
+
+    renderizarSemana();
+
+    mostrarNotificacion(
+        "Horario restaurado."
+    );
+}
+
+
+/* =========================================================
+   EMPLEADOS
+========================================================= */
+
+let empleadoEditandoId = null;
 
 
 function abrirAgregarEmpleado() {
 
-    empleadoEditandoId =
-        null;
+    empleadoEditandoId = null;
 
 
-    tituloModalEmpleado.textContent =
+    document.getElementById(
+        "tituloModalEmpleado"
+    ).textContent =
         "Agregar empleado";
 
 
-    btnGuardarEmpleado.textContent =
-        "Guardar empleado";
+    document.getElementById(
+        "nombreEmpleado"
+    ).value = "";
 
 
-    nombreEmpleado.value =
-        "";
+    document.getElementById(
+        "identificacionEmpleado"
+    ).value = "";
 
 
-    identificacionEmpleado.value =
-        "";
-
-
-    modalEmpleado
-        .classList.remove(
-            "oculto"
-        );
-
-
-    setTimeout(
-        () => {
-
-            nombreEmpleado.focus();
-
-        },
-        100
+    document.getElementById(
+        "modalEmpleado"
+    ).classList.remove(
+        "oculto"
     );
 
+
+    document.getElementById(
+        "nombreEmpleado"
+    ).focus();
 }
 
 
-// ========================================
-// EDITAR EMPLEADO
-// ========================================
-
-function abrirEditarEmpleado(
-    id
-) {
+function abrirEditarEmpleado(id) {
 
     const empleado =
         datos.empleados.find(
-            elemento =>
-                elemento.id === id
+            empleado =>
+                empleado.id === id
         );
 
 
     if (!empleado) {
-
         return;
-
     }
 
 
-    empleadoEditandoId =
-        id;
+    empleadoEditandoId = id;
 
 
-    tituloModalEmpleado.textContent =
+    document.getElementById(
+        "tituloModalEmpleado"
+    ).textContent =
         "Editar empleado";
 
 
-    btnGuardarEmpleado.textContent =
-        "Guardar cambios";
-
-
-    nombreEmpleado.value =
+    document.getElementById(
+        "nombreEmpleado"
+    ).value =
         empleado.nombre;
 
 
-    identificacionEmpleado.value =
-        empleado.identificacion ||
-        "";
+    document.getElementById(
+        "identificacionEmpleado"
+    ).value =
+        empleado.identificacion;
 
 
-    modalEmpleado
-        .classList.remove(
-            "oculto"
-        );
-
-
-    setTimeout(
-        () => {
-
-            nombreEmpleado.focus();
-
-        },
-        100
+    document.getElementById(
+        "modalEmpleado"
+    ).classList.remove(
+        "oculto"
     );
-
 }
 
 
-// ========================================
-// GUARDAR EMPLEADO
-// ========================================
+function cerrarModalEmpleado() {
 
-btnGuardarEmpleado.addEventListener(
-    "click",
-    () => {
+    document.getElementById(
+        "modalEmpleado"
+    ).classList.add(
+        "oculto"
+    );
 
-        const nombre =
-            nombreEmpleado.value.trim();
-
-
-        const identificacion =
-            identificacionEmpleado.value.trim();
+    empleadoEditandoId = null;
+}
 
 
-        if (!nombre) {
+function guardarEmpleado() {
 
-            mostrarNotificacion(
-                "Ingrese el nombre del empleado."
+    const nombre =
+        document.getElementById(
+            "nombreEmpleado"
+        ).value.trim();
+
+
+    const identificacion =
+        document.getElementById(
+            "identificacionEmpleado"
+        ).value.trim();
+
+
+    if (!nombre) {
+
+        mostrarNotificacion(
+            "Escribe el nombre del empleado."
+        );
+
+        return;
+    }
+
+
+    if (!identificacion) {
+
+        mostrarNotificacion(
+            "Escribe la identificación."
+        );
+
+        return;
+    }
+
+
+    if (empleadoEditandoId) {
+
+        const empleado =
+            datos.empleados.find(
+                empleado =>
+                    empleado.id ===
+                    empleadoEditandoId
             );
 
 
-            nombreEmpleado.focus();
-
-
-            return;
-
-        }
-
-
-        // =================================
-        // EDITAR
-        // =================================
-
-        if (empleadoEditandoId) {
-
-            const empleado =
-                datos.empleados.find(
-                    elemento =>
-                        elemento.id ===
-                        empleadoEditandoId
-                );
-
-
-            if (!empleado) {
-
-                return;
-
-            }
-
+        if (empleado) {
 
             empleado.nombre =
                 nombre;
 
-
             empleado.identificacion =
                 identificacion;
-
-
-            guardarDatos();
-
-
-            cerrarModalEmpleado();
-
-
-            renderizarEmpleados();
-
-
-            renderizarEmpleado();
-
-
-            mostrarNotificacion(
-                "Empleado actualizado correctamente."
-            );
-
-
-            return;
-
         }
 
 
-        // =================================
-        // AGREGAR
-        // =================================
+        mostrarNotificacion(
+            "Empleado actualizado."
+        );
+
+    } else {
 
         const nuevoEmpleado = {
 
             id:
                 Date.now().toString(),
 
-            nombre:
+            nombre,
 
-                nombre,
+            identificacion,
 
-            identificacion:
-
-                identificacion,
-
-            registros:
-
-                {}
-
+            registros: {}
         };
 
 
@@ -2264,212 +1516,552 @@ btnGuardarEmpleado.addEventListener(
         );
 
 
-        guardarDatos();
-
-
         empleadoSeleccionadoId =
             nuevoEmpleado.id;
 
 
-        cerrarModalEmpleado();
-
-
-        renderizarEmpleados();
-
-
-        renderizarEmpleado();
-
-
         mostrarNotificacion(
-            "Empleado agregado correctamente."
+            "Empleado agregado."
         );
-
     }
-);
 
 
-// ========================================
-// ELIMINAR EMPLEADO
-// ========================================
+    guardarDatos();
 
-function eliminarEmpleado(
-    id
-) {
+    cerrarModalEmpleado();
+
+    renderizarEmpleados();
+
+    renderizarEmpleado();
+}
+
+
+function eliminarEmpleado(id) {
 
     const empleado =
         datos.empleados.find(
-            elemento =>
-                elemento.id === id
+            empleado =>
+                empleado.id === id
         );
 
 
     if (!empleado) {
-
         return;
-
     }
 
 
     const confirmar =
         confirm(
-            `¿Está seguro de eliminar a "${empleado.nombre}"?\n\n` +
-            "También se eliminarán todos sus registros de asistencia.\n\n" +
-            "Esta acción no se puede deshacer."
+            `¿Seguro que quieres eliminar a ${empleado.nombre}?\n\nTambién se eliminarán todos sus registros de asistencia.`
         );
 
 
     if (!confirmar) {
-
         return;
-
     }
 
 
     datos.empleados =
         datos.empleados.filter(
-            elemento =>
-                elemento.id !== id
+            empleado =>
+                empleado.id !== id
         );
 
 
     if (
-        empleadoSeleccionadoId ===
-        id
+        empleadoSeleccionadoId === id
     ) {
 
         empleadoSeleccionadoId =
             null;
 
         cerrarEditor();
-
     }
 
 
     guardarDatos();
 
-
     renderizarEmpleados();
-
 
     renderizarEmpleado();
 
 
     mostrarNotificacion(
-        "Empleado eliminado correctamente."
+        "Empleado eliminado."
     );
-
 }
 
 
-// ========================================
-// CERRAR MODAL
-// ========================================
+/* =========================================================
+   EXCEL
+========================================================= */
 
-function cerrarModalEmpleado() {
+function descargarExcel() {
 
-    modalEmpleado
-        .classList.add(
-            "oculto"
+    if (
+        typeof XLSX ===
+        "undefined"
+    ) {
+
+        mostrarNotificacion(
+            "No se pudo cargar la función de Excel. Revisa tu conexión a Internet."
+        );
+
+        return;
+    }
+
+
+    if (
+        datos.empleados.length === 0
+    ) {
+
+        mostrarNotificacion(
+            "No hay empleados para exportar."
+        );
+
+        return;
+    }
+
+
+    const numeroSemana =
+        obtenerNumeroSemana(
+            semanaActual
         );
 
 
-    empleadoEditandoId =
-        null;
+    const nombresDias = [
+        "Lunes",
+        "Martes",
+        "Miércoles",
+        "Jueves",
+        "Viernes",
+        "Sábado"
+    ];
 
+
+    const filas = [];
+
+
+    /*
+       UNA FILA POR EMPLEADO
+    */
+
+    datos.empleados.forEach(
+        empleado => {
+
+            const fila = {
+
+                "Empleado":
+                    empleado.nombre,
+
+                "Lunes": "",
+                "Martes": "",
+                "Miércoles": "",
+                "Jueves": "",
+                "Viernes": "",
+                "Sábado": "",
+
+                "Total":
+                    "0 minutos"
+            };
+
+
+            let total = 0;
+
+
+            /*
+               LUNES A SÁBADO
+            */
+
+            for (
+                let i = 0;
+                i < 6;
+                i++
+            ) {
+
+                const fecha =
+                    crearFecha(
+                        semanaActual,
+                        i
+                    );
+
+
+                const informacion =
+                    obtenerInformacionDia(
+                        empleado,
+                        fecha
+                    );
+
+
+                const balance =
+                    informacion.balance;
+
+
+                total += balance;
+
+
+                fila[
+                    nombresDias[i]
+                ] =
+                    balance === 0
+                        ? ""
+                        : formatearBalanceExcel(
+                            balance
+                        );
+            }
+
+
+            fila["Total"] =
+                formatearBalanceExcel(
+                    total
+                );
+
+
+            filas.push(fila);
+        }
+    );
+
+
+    /*
+       CREAR HOJA
+    */
+
+    const hoja =
+        XLSX.utils.json_to_sheet(
+            filas
+        );
+
+
+    /*
+       ANCHOS DE COLUMNAS
+    */
+
+    hoja["!cols"] = [
+
+        { wch: 28 },
+        { wch: 18 },
+        { wch: 18 },
+        { wch: 18 },
+        { wch: 18 },
+        { wch: 18 },
+        { wch: 18 },
+        { wch: 20 }
+
+    ];
+
+
+    /*
+       CREAR LIBRO
+    */
+
+    const libro =
+        XLSX.utils.book_new();
+
+
+    XLSX.utils.book_append_sheet(
+        libro,
+        hoja,
+        "Asistencia"
+    );
+
+
+    /*
+       NOMBRE DEL ARCHIVO
+    */
+
+    const nombreArchivo =
+        `Asistencia_Semana_${numeroSemana}.xlsx`;
+
+
+    /*
+       DESCARGAR
+    */
+
+    XLSX.writeFile(
+        libro,
+        nombreArchivo
+    );
+
+
+    mostrarNotificacion(
+        `Excel descargado: ${nombreArchivo}`
+    );
 }
 
 
-btnCerrarModal.addEventListener(
-    "click",
-    cerrarModalEmpleado
-);
+/* =========================================================
+   EVENTOS
+========================================================= */
+
+function configurarEventos() {
+
+    document.getElementById(
+        "btnAgregarEmpleado"
+    ).addEventListener(
+        "click",
+        abrirAgregarEmpleado
+    );
 
 
-btnCancelarEmpleado.addEventListener(
-    "click",
-    cerrarModalEmpleado
-);
+    document.getElementById(
+        "btnGuardarEmpleado"
+    ).addEventListener(
+        "click",
+        guardarEmpleado
+    );
 
 
-// ========================================
-// BUSCAR
-// ========================================
-
-buscarEmpleado.addEventListener(
-    "input",
-    () => {
-
-        renderizarEmpleados();
-
-    }
-);
+    document.getElementById(
+        "btnCancelarEmpleado"
+    ).addEventListener(
+        "click",
+        cerrarModalEmpleado
+    );
 
 
-// ========================================
-// CERRAR MODAL HACIENDO CLICK AFUERA
-// ========================================
+    document.getElementById(
+        "btnCerrarModalEmpleado"
+    ).addEventListener(
+        "click",
+        cerrarModalEmpleado
+    );
 
-modalEmpleado.addEventListener(
-    "click",
-    evento => {
 
-        if (
-            evento.target ===
-            modalEmpleado
-        ) {
+    document.getElementById(
+        "btnEditarEmpleado"
+    ).addEventListener(
+        "click",
+        () => {
 
-            cerrarModalEmpleado();
+            if (empleadoSeleccionadoId) {
 
+                abrirEditarEmpleado(
+                    empleadoSeleccionadoId
+                );
+            }
         }
-
-    }
-);
+    );
 
 
-// ========================================
-// NOTIFICACIÓN
-// ========================================
+    document.getElementById(
+        "btnEliminarEmpleado"
+    ).addEventListener(
+        "click",
+        () => {
 
-let tiempoNotificacion;
+            if (empleadoSeleccionadoId) {
 
+                eliminarEmpleado(
+                    empleadoSeleccionadoId
+                );
+            }
+        }
+    );
+
+
+    document.getElementById(
+        "btnSemanaAnterior"
+    ).addEventListener(
+        "click",
+        () => {
+
+            semanaActual =
+                crearFecha(
+                    semanaActual,
+                    -7
+                );
+
+            cerrarEditor();
+
+            renderizarSemana();
+        }
+    );
+
+
+    document.getElementById(
+        "btnSemanaSiguiente"
+    ).addEventListener(
+        "click",
+        () => {
+
+            semanaActual =
+                crearFecha(
+                    semanaActual,
+                    7
+                );
+
+            cerrarEditor();
+
+            renderizarSemana();
+        }
+    );
+
+
+    document.getElementById(
+        "btnEstaSemana"
+    ).addEventListener(
+        "click",
+        () => {
+
+            semanaActual =
+                obtenerInicioSemana(
+                    new Date()
+                );
+
+            cerrarEditor();
+
+            renderizarSemana();
+        }
+    );
+
+
+    document.getElementById(
+        "btnCerrarEditor"
+    ).addEventListener(
+        "click",
+        cerrarEditor
+    );
+
+
+    document.getElementById(
+        "btnGuardarAsistencia"
+    ).addEventListener(
+        "click",
+        guardarAsistencia
+    );
+
+
+    document.getElementById(
+        "btnRestaurarHorario"
+    ).addEventListener(
+        "click",
+        restaurarHorario
+    );
+
+
+    document.getElementById(
+        "estadoAsistencia"
+    ).addEventListener(
+        "change",
+        actualizarCamposEstado
+    );
+
+
+    document.getElementById(
+        "buscarEmpleado"
+    ).addEventListener(
+        "input",
+        renderizarEmpleados
+    );
+
+
+    /*
+       BOTÓN EXCEL
+    */
+
+    document.getElementById(
+        "btnDescargarExcel"
+    ).addEventListener(
+        "click",
+        descargarExcel
+    );
+
+
+    /*
+       CERRAR MODAL AL HACER CLICK
+       FUERA DEL CONTENIDO
+    */
+
+    document.getElementById(
+        "modalEmpleado"
+    ).addEventListener(
+        "click",
+        evento => {
+
+            if (
+                evento.target.id ===
+                "modalEmpleado"
+            ) {
+
+                cerrarModalEmpleado();
+            }
+        }
+    );
+
+
+    /*
+       ESCAPE
+    */
+
+    document.addEventListener(
+        "keydown",
+        evento => {
+
+            if (
+                evento.key === "Escape"
+            ) {
+
+                cerrarModalEmpleado();
+
+                cerrarEditor();
+            }
+        }
+    );
+}
+
+
+/* =========================================================
+   NOTIFICACIONES
+========================================================= */
 
 function mostrarNotificacion(
     mensaje
 ) {
 
-    textoNotificacion.textContent =
+    const elemento =
+        document.getElementById(
+            "notificacion"
+        );
+
+
+    elemento.textContent =
         mensaje;
 
 
-    notificacion.classList.add(
+    elemento.classList.add(
         "mostrar"
     );
 
 
     clearTimeout(
-        tiempoNotificacion
+        mostrarNotificacion.timeout
     );
 
 
-    tiempoNotificacion =
+    mostrarNotificacion.timeout =
         setTimeout(
             () => {
 
-                notificacion.classList.remove(
+                elemento.classList.remove(
                     "mostrar"
                 );
 
             },
-            2500
+            3000
         );
-
 }
 
 
-// ========================================
-// INICIO
-// ========================================
+/* =========================================================
+   SEGURIDAD HTML
+========================================================= */
 
-renderizarEmpleados();
+function escapeHtml(texto) {
 
-renderizarEmpleado();
+    return String(texto)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
