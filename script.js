@@ -470,6 +470,170 @@ function obtenerJornadaProgramada(
 
 
 /* =====================================================
+   REGISTRO AUTOMÁTICO
+===================================================== */
+
+/*
+    ESTA FUNCIÓN ES LA PRINCIPAL DEL CAMBIO.
+
+    Si un empleado no tiene registro para un día
+    laborable, automáticamente se crea como trabajado
+    utilizando el horario configurado.
+
+    Ejemplo:
+
+    Lunes:
+    07:30 - 17:30
+
+    Se guarda automáticamente como:
+
+    {
+        entrada: "07:30",
+        salida: "17:30",
+        estado: "Completo",
+        observacion: ""
+    }
+
+    No hace falta abrir el día.
+*/
+
+function asegurarRegistroAutomatico(
+    empleado,
+    fecha
+) {
+
+    if (!empleado) {
+        return false;
+    }
+
+
+    if (!empleado.registros) {
+
+        empleado.registros = {};
+
+    }
+
+
+    const clave =
+        fechaClave(fecha);
+
+
+    /*
+        Si ya existe un registro, no lo tocamos.
+
+        Esto es importante porque si el usuario
+        modifica la entrada o salida, su modificación
+        se conserva.
+    */
+
+    if (
+        empleado.registros[clave]
+    ) {
+
+        return false;
+
+    }
+
+
+    const horario =
+        obtenerHorarioBase(fecha);
+
+
+    /*
+        Si el día no tiene horario, no se crea
+        como trabajado.
+
+        Por ejemplo, domingo.
+    */
+
+    if (
+        !horario.entrada ||
+        !horario.salida
+    ) {
+
+        return false;
+
+    }
+
+
+    empleado.registros[clave] = {
+
+        entrada:
+            horario.entrada,
+
+        salida:
+            horario.salida,
+
+        estado:
+            "Completo",
+
+        observacion:
+            ""
+
+    };
+
+
+    return true;
+
+}
+
+
+/*
+    Crea automáticamente los registros de toda
+    la semana que se está mostrando.
+*/
+
+function asegurarSemanaAutomatica(
+    empleado
+) {
+
+    if (!empleado) {
+        return;
+    }
+
+
+    let huboCambios = false;
+
+
+    for (
+        let i = 0;
+        i < 7;
+        i++
+    ) {
+
+        const fecha =
+            crearFecha(
+                fechaInicioSemana,
+                i
+            );
+
+
+        const creado =
+            asegurarRegistroAutomatico(
+                empleado,
+                fecha
+            );
+
+
+        if (creado) {
+
+            huboCambios = true;
+
+        }
+
+    }
+
+
+    if (huboCambios) {
+
+        guardarDatos();
+
+    }
+
+}
+
+
+/* =====================================================
    INFORMACIÓN DEL DÍA
 ===================================================== */
 
@@ -477,6 +641,17 @@ function obtenerInformacionDia(
     empleado,
     fecha
 ) {
+
+    /*
+        Antes de calcular el día, aseguramos que
+        exista automáticamente si es laborable.
+    */
+
+    asegurarRegistroAutomatico(
+        empleado,
+        fecha
+    );
+
 
     const clave =
         fechaClave(fecha);
@@ -502,9 +677,14 @@ function obtenerInformacionDia(
         return {
 
             programado: 0,
+
             trabajado: 0,
+
             balance: 0,
-            registro: registro || null,
+
+            registro:
+                registro || null,
+
             horario
 
         };
@@ -519,10 +699,17 @@ function obtenerInformacionDia(
 
         return {
 
-            programado: jornada,
-            trabajado: 0,
-            balance: -jornada,
+            programado:
+                jornada,
+
+            trabajado:
+                0,
+
+            balance:
+                -jornada,
+
             registro,
+
             horario
 
         };
@@ -539,10 +726,17 @@ function obtenerInformacionDia(
 
         return {
 
-            programado: jornada,
-            trabajado: jornada,
-            balance: 0,
+            programado:
+                jornada,
+
+            trabajado:
+                jornada,
+
+            balance:
+                0,
+
             registro,
+
             horario
 
         };
@@ -576,7 +770,8 @@ function obtenerInformacionDia(
 
         return {
 
-            programado: jornada,
+            programado:
+                jornada,
 
             trabajado,
 
@@ -594,10 +789,18 @@ function obtenerInformacionDia(
 
     return {
 
-        programado: jornada,
-        trabajado: 0,
-        balance: 0,
-        registro: registro || null,
+        programado:
+            jornada,
+
+        trabajado:
+            0,
+
+        balance:
+            0,
+
+        registro:
+            registro || null,
+
         horario
 
     };
@@ -795,6 +998,17 @@ function agregarEmpleado(
 
 
     datos.empleados.push(
+        empleado
+    );
+
+
+    /*
+        Al crear el empleado también se crean
+        automáticamente los días laborables
+        de la semana actual.
+    */
+
+    asegurarSemanaAutomatica(
         empleado
     );
 
@@ -1160,6 +1374,18 @@ function renderizarSemana() {
     }
 
 
+    /*
+        AQUÍ SE CREA AUTOMÁTICAMENTE LA ASISTENCIA
+        DE TODA LA SEMANA.
+
+        Por eso ya no hace falta abrir cada día.
+    */
+
+    asegurarSemanaAutomatica(
+        empleado
+    );
+
+
     document.getElementById(
         "emptyState"
     ).style.display = "none";
@@ -1469,90 +1695,125 @@ function crearTarjetaDia(
    RESUMEN
 ===================================================== */
 
-function actualizarResumen(
-    resumen
-) {
+function actualizarResumen(resumen) {
+
+    const horasProgramadas =
+        document.getElementById(
+            "horasProgramadas"
+        );
+
+    const balanceSemanal =
+        document.getElementById(
+            "balanceSemanal"
+        );
+
+
+    /*
+        Si no hay empleado seleccionado
+    */
 
     if (!resumen) {
 
-        document.getElementById(
-            "horasProgramadas"
-        ).textContent =
-            "0h 0m";
+        if (horasProgramadas) {
+
+            horasProgramadas.textContent =
+                "0h 0m";
+
+        }
 
 
-        document.getElementById(
-            "horasTrabajadas"
-        ).textContent =
-            "0h 0m";
+        if (balanceSemanal) {
 
+            balanceSemanal.textContent =
+                "0 minutos";
 
-        document.getElementById(
-            "balanceSemanal"
-        ).textContent =
-            "0 minutos";
+            balanceSemanal.classList.remove(
+                "positive",
+                "negative",
+                "neutral"
+            );
+
+            balanceSemanal.classList.add(
+                "neutral"
+            );
+
+        }
 
         return;
 
     }
 
 
-    document.getElementById(
-        "horasProgramadas"
-    ).textContent =
-        formatearDuracion(
-            resumen.programado
-        );
+    /*
+        HORAS PROGRAMADAS
+
+        Seguimos mostrando las horas programadas,
+        pero YA NO mostramos "Tiempo trabajado".
+    */
+
+    if (horasProgramadas) {
+
+        horasProgramadas.textContent =
+            formatearDuracion(
+                resumen.programado
+            );
+
+    }
 
 
-    document.getElementById(
-        "horasTrabajadas"
-    ).textContent =
-        formatearDuracion(
-            resumen.trabajado
-        );
+    /*
+        BALANCE SEMANAL
+
+        El cálculo sigue utilizando:
+
+        trabajado - programado
+
+        pero no necesita mostrar
+        "Tiempo trabajado".
+    */
+
+    if (balanceSemanal) {
+
+        balanceSemanal.textContent =
+            formatearBalance(
+                resumen.balance
+            );
 
 
-    const balance =
-        document.getElementById(
-            "balanceSemanal"
-        );
-
-
-    balance.textContent =
-        formatearBalance(
-            resumen.balance
-        );
-
-
-    balance.classList.remove(
-        "positive",
-        "negative",
-        "neutral"
-    );
-
-
-    if (
-        resumen.balance > 0
-    ) {
-
-        balance.classList.add(
-            "positive"
-        );
-
-    } else if (
-        resumen.balance < 0
-    ) {
-
-        balance.classList.add(
-            "negative"
-        );
-
-    } else {
-
-        balance.classList.add(
+        balanceSemanal.classList.remove(
+            "positive",
+            "negative",
             "neutral"
         );
+
+
+        if (
+            resumen.balance > 0
+        ) {
+
+            balanceSemanal.classList.add(
+                "positive"
+            );
+
+        }
+
+        else if (
+            resumen.balance < 0
+        ) {
+
+            balanceSemanal.classList.add(
+                "negative"
+            );
+
+        }
+
+        else {
+
+            balanceSemanal.classList.add(
+                "neutral"
+            );
+
+        }
 
     }
 
@@ -1728,6 +1989,17 @@ function abrirModalAsistencia(
     }
 
 
+    /*
+        Aseguramos que el día tenga su registro
+        automático antes de mostrar el modal.
+    */
+
+    asegurarRegistroAutomatico(
+        empleado,
+        fecha
+    );
+
+
     fechaAsistenciaActual =
         fecha;
 
@@ -1813,12 +2085,18 @@ function abrirModalAsistencia(
 }
 
 
-function guardarAsistencia(
-    event
-) {
+/* =====================================================
+   GUARDADO AUTOMÁTICO DEL TIEMPO
+===================================================== */
 
-    event.preventDefault();
+/*
+    Esta función guarda solamente las modificaciones
+    de tiempo.
 
+    Ya no es necesario pulsar "Guardar asistencia".
+*/
+
+function guardarCambiosTiempoAutomaticamente() {
 
     const empleado =
         datos.empleados.find(
@@ -1839,6 +2117,11 @@ function guardarAsistencia(
         ).value;
 
 
+    if (!fecha) {
+        return;
+    }
+
+
     const entrada =
         document.getElementById(
             "horaEntrada"
@@ -1851,18 +2134,6 @@ function guardarAsistencia(
         ).value;
 
 
-    const estado =
-        document.getElementById(
-            "estadoAsistencia"
-        ).value;
-
-
-    const observacion =
-        document.getElementById(
-            "observacionAsistencia"
-        ).value.trim();
-
-
     if (!empleado.registros) {
 
         empleado.registros = {};
@@ -1870,15 +2141,29 @@ function guardarAsistencia(
     }
 
 
+    /*
+        Conservamos información existente.
+    */
+
+    const registroAnterior =
+        empleado.registros[fecha] || {};
+
+
     empleado.registros[fecha] = {
+
+        ...registroAnterior,
 
         entrada,
 
         salida,
 
-        estado,
+        estado:
+            registroAnterior.estado ||
+            "Completo",
 
-        observacion
+        observacion:
+            registroAnterior.observacion ||
+            ""
 
     };
 
@@ -1886,20 +2171,53 @@ function guardarAsistencia(
     guardarDatos();
 
 
+    /*
+        Actualizamos las tarjetas y los totales
+        inmediatamente.
+    */
+
+    renderizarSemana();
+
+}
+
+
+/* =====================================================
+   GUARDAR ASISTENCIA
+===================================================== */
+
+/*
+    Se conserva esta función para que el HTML existente
+    siga funcionando.
+
+    Sin embargo, ahora guardar asistencia solamente
+    ejecuta el mismo guardado automático de tiempo.
+*/
+
+function guardarAsistencia(
+    event
+) {
+
+    event.preventDefault();
+
+
+    guardarCambiosTiempoAutomaticamente();
+
+
     cerrarModal(
         "modalAsistencia"
     );
 
 
-    renderizarSemana();
-
-
     mostrarToast(
-        "Asistencia guardada"
+        "Tiempo actualizado automáticamente"
     );
 
 }
 
+
+/* =====================================================
+   RESTAURAR HORARIO
+===================================================== */
 
 function restaurarHorario() {
 
@@ -1946,6 +2264,13 @@ function restaurarHorario() {
         horario.salida;
 
 
+    /*
+        Guardamos inmediatamente.
+    */
+
+    guardarCambiosTiempoAutomaticamente();
+
+
     document.getElementById(
         "estadoAsistencia"
     ).value =
@@ -1955,6 +2280,11 @@ function restaurarHorario() {
     document.getElementById(
         "observacionAsistencia"
     ).value = "";
+
+
+    mostrarToast(
+        "Horario restaurado"
+    );
 
 }
 
@@ -1997,6 +2327,16 @@ function descargarExcel() {
 
     datos.empleados.forEach(
         empleado => {
+
+            /*
+                Antes de exportar también aseguramos
+                que la semana tenga sus registros.
+            */
+
+            asegurarSemanaAutomatica(
+                empleado
+            );
+
 
             const fila = {
 
@@ -2317,6 +2657,33 @@ document.addEventListener(
         }
 
 
+        /*
+            Al iniciar la aplicación se crean
+            automáticamente los registros de la
+            semana actual.
+        */
+
+        if (empleadoSeleccionadoId) {
+
+            const empleado =
+                datos.empleados.find(
+                    e =>
+                        e.id ===
+                        empleadoSeleccionadoId
+                );
+
+
+            if (empleado) {
+
+                asegurarSemanaAutomatica(
+                    empleado
+                );
+
+            }
+
+        }
+
+
         renderizarTodo();
 
 
@@ -2390,6 +2757,49 @@ document.addEventListener(
             "click",
             restaurarHorario
         );
+
+
+        /*
+            =================================================
+            GUARDADO AUTOMÁTICO DE ENTRADA Y SALIDA
+            =================================================
+
+            En cuanto se modifica la hora de entrada
+            o salida, se guarda automáticamente.
+
+            No hace falta pulsar Guardar.
+        */
+
+        const horaEntrada =
+            document.getElementById(
+                "horaEntrada"
+            );
+
+
+        const horaSalida =
+            document.getElementById(
+                "horaSalida"
+            );
+
+
+        if (horaEntrada) {
+
+            horaEntrada.addEventListener(
+                "change",
+                guardarCambiosTiempoAutomaticamente
+            );
+
+        }
+
+
+        if (horaSalida) {
+
+            horaSalida.addEventListener(
+                "change",
+                guardarCambiosTiempoAutomaticamente
+            );
+
+        }
 
 
         document.getElementById(
