@@ -4,9 +4,7 @@
     padding: 0;
 }
 
-
 :root {
-
     --bg: #f5f5f7;
     --surface: #ffffff;
     --surface-2: #f1f1f3;
@@ -28,20 +26,20 @@
     --orange: #c76b00;
     --orange-bg: #fff5e6;
 
-    --shadow:
-        0 10px 30px rgba(
-            0,
-            0,
-            0,
-            .06
-        );
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
 
     --radius: 18px;
-
 }
 
+html {
+    width: 100%;
+    min-height: 100%;
+    overflow-x: hidden;
+}
 
 body {
+    width: 100%;
+    min-height: 100vh;
 
     font-family:
         -apple-system,
@@ -51,160 +49,96 @@ body {
         Arial,
         sans-serif;
 
-    background:
-        var(--bg);
-
-    color:
-        var(--text);
-
-    min-height:
-        100vh;
+    background: var(--bg);
+    color: var(--text);
 
     transition:
-        background .25s ease,
-        color .25s ease;
+        background 0.25s ease,
+        color 0.25s ease;
 
+    overflow-x: hidden;
 }
-
 
 button,
 input,
 select,
 textarea {
-
     font: inherit;
-
 }
-
 
 button {
-
-    cursor:
-        pointer;
-
+    cursor: pointer;
 }
 
+img {
+    max-width: 100%;
+}
 
 /* =========================================
    TOPBAR
 ========================================= */
 
 .topbar {
+    height: 76px;
 
-    height:
-        76px;
+    background: var(--surface);
 
-    background:
-        var(--surface);
+    border-bottom: 1px solid var(--border);
 
-    border-bottom:
-        1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
-    display:
-        flex;
+    padding: 0 28px;
 
-    align-items:
-        center;
+    position: sticky;
+    top: 0;
 
-    justify-content:
-        space-between;
-
-    padding:
-        0 28px;
-
-    position:
-        sticky;
-
-    top:
-        0;
-
-    z-index:
-        20;
-
+    z-index: 20;
 }
-
 
 .topbar-left {
+    display: flex;
+    align-items: center;
 
-    display:
-        flex;
+    gap: 12px;
 
-    align-items:
-        center;
-
-    gap:
-        12px;
-
+    min-width: 0;
 }
-
 
 .app-icon {
+    width: 42px;
+    min-width: 42px;
+    height: 42px;
 
-    width:
-        42px;
+    border-radius: 12px;
 
-    height:
-        42px;
+    background: var(--primary);
+    color: white;
 
-    border-radius:
-        12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    background:
-        var(--primary);
-
-    color:
-        white;
-
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    justify-content:
-        center;
-
-    font-size:
-        22px;
-
-    font-weight:
-        700;
-
+    font-size: 22px;
+    font-weight: 700;
 }
-
 
 .topbar h1 {
-
-    font-size:
-        19px;
-
-    line-height:
-        1.1;
-
+    font-size: 19px;
+    line-height: 1.1;
 }
-
 
 .topbar-left span {
-
-    color:
-        var(--text-secondary);
-
-    font-size:
-        12px;
-
+    color: var(--text-secondary);
+    font-size: 12px;
 }
-
 
 .topbar-actions {
-
-    display:
-        flex;
-
-    gap:
-        10px;
-
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
 }
-
 
 /* =========================================
    BOTONES
@@ -214,2195 +148,1340 @@ button {
 .btn-secondary,
 .btn-excel,
 .btn-danger-outline {
+    border: 0;
+    border-radius: 12px;
 
-    border:
-        0;
+    padding: 11px 16px;
 
-    border-radius:
-        12px;
-
-    padding:
-        11px 16px;
-
-    font-weight:
-        600;
+    font-weight: 600;
 
     transition:
-        .2s;
-
+        transform 0.2s ease,
+        background 0.2s ease,
+        border-color 0.2s ease;
 }
-
 
 .btn-primary {
-
-    background:
-        var(--primary);
-
-    color:
-        var(--primary-text);
-
+    background: var(--primary);
+    color: var(--primary-text);
 }
-
 
 .btn-primary:hover {
-
-    transform:
-        translateY(-1px);
-
+    transform: translateY(-1px);
 }
-
 
 .btn-secondary {
+    background: var(--surface-2);
+    color: var(--text);
 
-    background:
-        var(--surface-2);
-
-    color:
-        var(--text);
-
-    border:
-        1px solid var(--border);
-
+    border: 1px solid var(--border);
 }
-
 
 .btn-excel {
-
-    background:
-        #16803c;
-
-    color:
-        white;
-
+    background: #16803c;
+    color: white;
 }
-
 
 .btn-danger-outline {
+    background: transparent;
 
-    background:
-        transparent;
+    border: 1px solid #e8b0aa;
 
-    border:
-        1px solid #e8b0aa;
-
-    color:
-        var(--red);
-
+    color: var(--red);
 }
-
 
 .back-button {
+    width: 40px;
+    height: 40px;
 
-    width:
-        40px;
+    border: 0;
 
-    height:
-        40px;
+    background: var(--surface-2);
+    color: var(--text);
 
-    border:
-        0;
+    border-radius: 10px;
 
-    background:
-        var(--surface-2);
-
-    color:
-        var(--text);
-
-    border-radius:
-        10px;
-
-    font-size:
-        20px;
-
+    font-size: 20px;
 }
-
 
 /* =========================================
    APP
 ========================================= */
 
 .app-container {
+    width: 100%;
 
-    display:
-        grid;
+    display: grid;
+    grid-template-columns: 300px minmax(0, 1fr);
 
-    grid-template-columns:
-        300px 1fr;
-
-    min-height:
-        calc(100vh - 76px);
-
+    min-height: calc(100vh - 76px);
 }
-
 
 /* =========================================
    SIDEBAR
 ========================================= */
 
 .sidebar {
+    min-width: 0;
 
-    background:
-        var(--surface);
+    background: var(--surface);
 
-    border-right:
-        1px solid var(--border);
+    border-right: 1px solid var(--border);
 
-    padding:
-        22px;
-
+    padding: 22px;
 }
-
 
 .sidebar-header {
+    display: flex;
 
-    display:
-        flex;
+    justify-content: space-between;
+    align-items: center;
 
-    justify-content:
-        space-between;
-
-    align-items:
-        center;
-
-    margin-bottom:
-        20px;
-
+    margin-bottom: 20px;
 }
-
 
 .sidebar-header h2 {
-
-    font-size:
-        18px;
-
+    font-size: 18px;
 }
-
 
 .sidebar-header span {
-
-    color:
-        var(--text-secondary);
-
-    font-size:
-        12px;
-
+    color: var(--text-secondary);
+    font-size: 12px;
 }
-
 
 .btn-add {
+    width: 40px;
+    height: 40px;
 
-    width:
-        40px;
+    border: 0;
+    border-radius: 12px;
 
-    height:
-        40px;
+    background: var(--primary);
+    color: white;
 
-    border:
-        0;
-
-    border-radius:
-        12px;
-
-    background:
-        var(--primary);
-
-    color:
-        white;
-
-    font-size:
-        25px;
-
-    line-height:
-        1;
-
+    font-size: 25px;
+    line-height: 1;
 }
-
 
 .search-box {
+    width: 100%;
 
-    display:
-        flex;
+    display: flex;
+    align-items: center;
 
-    align-items:
-        center;
+    gap: 8px;
 
-    gap:
-        8px;
+    padding: 11px 13px;
 
-    padding:
-        11px 13px;
+    border: 1px solid var(--border);
 
-    border:
-        1px solid var(--border);
+    background: var(--surface-2);
 
-    background:
-        var(--surface-2);
+    border-radius: 12px;
 
-    border-radius:
-        12px;
-
-    margin-bottom:
-        16px;
-
+    margin-bottom: 16px;
 }
-
 
 .search-box span {
-
-    font-size:
-        20px;
-
-    color:
-        var(--text-secondary);
-
+    font-size: 20px;
+    color: var(--text-secondary);
 }
-
 
 .search-box input {
+    width: 100%;
 
-    width:
-        100%;
+    min-width: 0;
 
-    border:
-        0;
+    border: 0;
+    outline: 0;
 
-    outline:
-        0;
+    background: transparent;
 
-    background:
-        transparent;
-
-    color:
-        var(--text);
-
+    color: var(--text);
 }
-
 
 .lista-empleados {
+    display: flex;
 
-    display:
-        flex;
+    flex-direction: column;
 
-    flex-direction:
-        column;
+    gap: 6px;
 
-    gap:
-        6px;
-
+    min-width: 0;
 }
-
 
 .employee-item {
+    width: 100%;
 
-    display:
-        flex;
+    display: flex;
+    align-items: center;
 
-    align-items:
-        center;
+    gap: 10px;
 
-    gap:
-        10px;
+    padding: 10px;
 
-    padding:
-        10px;
+    border-radius: 14px;
 
-    border-radius:
-        14px;
+    cursor: pointer;
 
-    cursor:
-        pointer;
-
-    transition:
-        .2s;
-
+    transition: 0.2s;
 }
-
 
 .employee-item:hover {
-
-    background:
-        var(--surface-2);
-
+    background: var(--surface-2);
 }
-
 
 .employee-item.active {
-
-    background:
-        var(--surface-2);
-
+    background: var(--surface-2);
 }
-
 
 .employee-avatar {
+    min-width: 40px;
+    width: 40px;
+    height: 40px;
 
-    min-width:
-        40px;
+    border-radius: 50%;
 
-    width:
-        40px;
+    background: var(--primary);
+    color: white;
 
-    height:
-        40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    border-radius:
-        50%;
-
-    background:
-        var(--primary);
-
-    color:
-        white;
-
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    justify-content:
-        center;
-
-    font-weight:
-        700;
-
+    font-weight: 700;
 }
-
 
 .employee-info {
-
-    min-width:
-        0;
-
-    flex:
-        1;
-
+    min-width: 0;
+    flex: 1;
 }
-
 
 .employee-info strong {
+    display: block;
 
-    display:
-        block;
+    font-size: 14px;
 
-    font-size:
-        14px;
+    white-space: nowrap;
 
-    white-space:
-        nowrap;
+    overflow: hidden;
 
-    overflow:
-        hidden;
-
-    text-overflow:
-        ellipsis;
-
+    text-overflow: ellipsis;
 }
-
 
 .employee-info span {
+    display: block;
 
-    display:
-        block;
+    color: var(--text-secondary);
 
-    color:
-        var(--text-secondary);
+    font-size: 11px;
 
-    font-size:
-        11px;
-
-    margin-top:
-        2px;
-
+    margin-top: 2px;
 }
-
 
 .employee-actions {
+    display: flex;
 
-    display:
-        flex;
+    gap: 2px;
 
-    gap:
-        2px;
+    opacity: 0;
 
-    opacity:
-        0;
-
-    transition:
-        .2s;
-
+    transition: 0.2s;
 }
 
-
-.employee-item:hover
-.employee-actions,
-.employee-item.active
-.employee-actions {
-
-    opacity:
-        1;
-
+.employee-item:hover .employee-actions,
+.employee-item.active .employee-actions {
+    opacity: 1;
 }
-
 
 .icon-btn {
+    border: 0;
 
-    border:
-        0;
+    background: transparent;
 
-    background:
-        transparent;
+    width: 28px;
+    height: 28px;
 
-    width:
-        28px;
-
-    height:
-        28px;
-
-    border-radius:
-        8px;
-
+    border-radius: 8px;
 }
-
 
 .icon-btn:hover {
-
-    background:
-        var(--border);
-
+    background: var(--border);
 }
-
 
 .no-employees {
+    text-align: center;
 
-    text-align:
-        center;
+    padding: 30px 10px;
 
-    padding:
-        30px 10px;
-
-    color:
-        var(--text-secondary);
-
+    color: var(--text-secondary);
 }
-
 
 .no-employees div {
+    font-size: 30px;
 
-    font-size:
-        30px;
-
-    margin-bottom:
-        8px;
-
+    margin-bottom: 8px;
 }
-
 
 /* =========================================
    CONTENT
 ========================================= */
 
 .content {
+    width: 100%;
+    max-width: 1500px;
 
-    padding:
-        28px;
+    min-width: 0;
 
-    max-width:
-        1500px;
+    padding: 28px;
 
-    width:
-        100%;
+    margin: 0 auto;
 
-    margin:
-        0 auto;
-
+    overflow: hidden;
 }
-
 
 .content-header {
+    display: flex;
 
-    display:
-        flex;
+    justify-content: space-between;
+    align-items: center;
 
-    justify-content:
-        space-between;
+    gap: 20px;
 
-    align-items:
-        center;
+    margin-bottom: 22px;
 
-    gap:
-        20px;
-
-    margin-bottom:
-        22px;
-
+    min-width: 0;
 }
 
+.content-header > div:first-child {
+    min-width: 0;
+}
 
 .content-header h2 {
+    font-size: 25px;
 
-    font-size:
-        25px;
-
+    overflow-wrap: anywhere;
 }
-
 
 .content-header p,
 .content-header > div > p {
+    color: var(--text-secondary);
 
-    color:
-        var(--text-secondary);
+    font-size: 13px;
 
-    font-size:
-        13px;
-
-    margin-top:
-        4px;
-
+    margin-top: 4px;
 }
 
+/* =========================================
+   NAVEGACIÓN DE SEMANA
+========================================= */
 
 .week-navigation {
+    display: flex;
 
-    display:
-        flex;
+    align-items: center;
 
-    align-items:
-        center;
+    gap: 8px;
 
-    gap:
-        8px;
-
+    flex-shrink: 0;
 }
-
 
 .week-btn {
+    width: 38px;
+    min-width: 38px;
 
-    width:
-        38px;
+    height: 38px;
 
-    height:
-        38px;
+    border: 1px solid var(--border);
 
-    border:
-        1px solid var(--border);
+    background: var(--surface);
 
-    background:
-        var(--surface);
+    color: var(--text);
 
-    color:
-        var(--text);
+    border-radius: 10px;
 
-    border-radius:
-        10px;
+    font-size: 24px;
 
-    font-size:
-        24px;
-
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-
 
 .week-info {
+    text-align: center;
 
-    text-align:
-        center;
+    min-width: 130px;
 
-    min-width:
-        130px;
-
+    overflow: hidden;
 }
-
 
 .week-info strong {
+    display: block;
 
-    display:
-        block;
+    font-size: 14px;
 
-    font-size:
-        14px;
-
+    white-space: nowrap;
 }
-
 
 .week-info span {
+    color: var(--text-secondary);
 
-    color:
-        var(--text-secondary);
+    font-size: 11px;
 
-    font-size:
-        11px;
-
+    white-space: nowrap;
 }
-
 
 /* =========================================
    SUMMARY
 ========================================= */
 
 .summary-grid {
+    width: 100%;
 
-    display:
-        grid;
+    display: grid;
 
     grid-template-columns:
-        repeat(3, 1fr);
+        repeat(3, minmax(0, 1fr));
 
-    gap:
-        14px;
+    gap: 14px;
 
-    margin-bottom:
-        28px;
-
+    margin-bottom: 28px;
 }
-
 
 .summary-card {
+    min-width: 0;
 
-    background:
-        var(--surface);
+    background: var(--surface);
 
-    border:
-        1px solid var(--border);
+    border: 1px solid var(--border);
 
-    border-radius:
-        var(--radius);
+    border-radius: var(--radius);
 
-    padding:
-        18px;
+    padding: 18px;
 
-    display:
-        flex;
+    display: flex;
+    align-items: center;
 
-    align-items:
-        center;
+    gap: 14px;
 
-    gap:
-        14px;
-
-    box-shadow:
-        var(--shadow);
-
+    box-shadow: var(--shadow);
 }
-
 
 .summary-icon {
+    width: 45px;
+    min-width: 45px;
 
-    width:
-        45px;
+    height: 45px;
 
-    height:
-        45px;
+    border-radius: 13px;
 
-    border-radius:
-        13px;
+    background: var(--surface-2);
 
-    background:
-        var(--surface-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    justify-content:
-        center;
-
-    font-size:
-        20px;
-
+    font-size: 20px;
 }
-
 
 .summary-card small {
+    display: block;
 
-    display:
-        block;
+    color: var(--text-secondary);
 
-    color:
-        var(--text-secondary);
+    font-size: 12px;
 
-    font-size:
-        12px;
-
-    margin-bottom:
-        5px;
-
+    margin-bottom: 5px;
 }
-
 
 .summary-card strong {
+    font-size: 20px;
 
-    font-size:
-        20px;
-
+    overflow-wrap: anywhere;
 }
-
 
 .positive {
-
-    color:
-        var(--green) !important;
-
+    color: var(--green) !important;
 }
-
 
 .negative {
-
-    color:
-        var(--red) !important;
-
+    color: var(--red) !important;
 }
-
 
 .neutral {
-
-    color:
-        var(--text) !important;
-
+    color: var(--text) !important;
 }
-
 
 /* =========================================
    WEEK
 ========================================= */
 
 .week-title {
+    width: 100%;
 
-    margin-bottom:
-        14px;
-
+    margin-bottom: 14px;
 }
-
 
 .week-title h3 {
-
-    font-size:
-        18px;
-
+    font-size: 18px;
 }
-
 
 .week-title span {
+    color: var(--text-secondary);
 
-    color:
-        var(--text-secondary);
-
-    font-size:
-        12px;
-
+    font-size: 12px;
 }
 
+/* =========================================
+   GRID DE LOS 7 DÍAS
+========================================= */
 
 .week-grid {
+    width: 100%;
+    max-width: 100%;
 
-    display:
-        grid;
+    display: grid;
 
     grid-template-columns:
         repeat(7, minmax(150px, 1fr));
 
-    gap:
-        10px;
+    gap: 10px;
 
-    overflow-x:
-        auto;
+    overflow-x: auto;
+    overflow-y: hidden;
 
-    padding-bottom:
-        5px;
+    padding-bottom: 8px;
 
+    min-width: 0;
+
+    -webkit-overflow-scrolling: touch;
 }
 
+/* =========================================
+   TARJETA DE DÍA
+========================================= */
 
 .day-card {
+    min-width: 150px;
 
-    min-width:
-        150px;
+    background: var(--surface);
 
-    background:
-        var(--surface);
+    border: 1px solid var(--border);
 
-    border:
-        1px solid var(--border);
+    border-radius: 16px;
 
-    border-radius:
-        16px;
+    padding: 14px;
 
-    padding:
-        14px;
-
-    cursor:
-        pointer;
+    cursor: pointer;
 
     transition:
-        .2s;
-
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
 }
-
 
 .day-card:hover {
+    transform: translateY(-2px);
 
-    transform:
-        translateY(-2px);
-
-    box-shadow:
-        var(--shadow);
-
+    box-shadow: var(--shadow);
 }
-
 
 .day-card.today {
-
-    border:
-        2px solid var(--primary);
-
+    border: 2px solid var(--primary);
 }
-
 
 .day-card.sunday {
-
-    opacity:
-        .65;
-
+    opacity: 0.65;
 }
-
 
 .day-header {
+    display: flex;
 
-    display:
-        flex;
+    justify-content: space-between;
+    align-items: center;
 
-    justify-content:
-        space-between;
+    gap: 8px;
 
-    align-items:
-        center;
-
-    margin-bottom:
-        15px;
-
+    margin-bottom: 15px;
 }
-
 
 .day-header strong {
+    display: block;
 
-    display:
-        block;
+    font-size: 13px;
 
-    font-size:
-        13px;
-
+    white-space: nowrap;
 }
-
 
 .day-header span:not(.today-badge) {
+    color: var(--text-secondary);
 
-    color:
-        var(--text-secondary);
+    font-size: 11px;
 
-    font-size:
-        11px;
-
+    white-space: nowrap;
 }
-
 
 .today-badge {
+    background: var(--primary);
 
-    background:
-        var(--primary);
+    color: var(--primary-text);
 
-    color:
-        white;
+    font-size: 8px;
 
-    font-size:
-        8px;
+    padding: 4px 6px;
 
-    padding:
-        4px 6px;
-
-    border-radius:
-        5px;
-
+    border-radius: 5px;
 }
-
 
 .day-schedule {
+    display: flex;
 
-    display:
-        flex;
+    justify-content: space-between;
 
-    justify-content:
-        space-between;
+    gap: 8px;
 
-    background:
-        var(--surface-2);
+    background: var(--surface-2);
 
-    border-radius:
-        9px;
+    border-radius: 9px;
 
-    padding:
-        8px;
+    padding: 8px;
 
-    font-size:
-        11px;
+    font-size: 11px;
 
-    margin-bottom:
-        12px;
-
+    margin-bottom: 12px;
 }
-
 
 .day-status {
+    display: flex;
 
-    display:
-        flex;
+    align-items: center;
 
-    align-items:
-        center;
+    gap: 6px;
 
-    gap:
-        6px;
+    color: var(--text-secondary);
 
-    color:
-        var(--text-secondary);
+    font-size: 11px;
 
-    font-size:
-        11px;
-
-    margin-bottom:
-        10px;
-
+    margin-bottom: 10px;
 }
-
 
 .status-dot {
+    width: 7px;
+    min-width: 7px;
 
-    width:
-        7px;
+    height: 7px;
 
-    height:
-        7px;
+    background: #999;
 
-    background:
-        #999;
-
-    border-radius:
-        50%;
-
+    border-radius: 50%;
 }
-
 
 .day-balance {
+    font-size: 15px;
 
-    font-size:
-        15px;
+    font-weight: 700;
 
-    font-weight:
-        700;
+    margin-bottom: 12px;
 
-    margin-bottom:
-        12px;
-
+    overflow-wrap: anywhere;
 }
-
 
 .day-edit {
+    width: 100%;
 
-    width:
-        100%;
+    border: 1px solid var(--border);
 
-    border:
-        1px solid var(--border);
+    background: transparent;
 
-    background:
-        transparent;
+    color: var(--text);
 
-    color:
-        var(--text);
+    border-radius: 9px;
 
-    border-radius:
-        9px;
+    padding: 7px;
 
-    padding:
-        7px;
-
-    font-size:
-        11px;
-
+    font-size: 11px;
 }
 
+/* =========================================
+   EMPTY STATE
+========================================= */
 
 .empty-state {
+    min-height: 350px;
 
-    min-height:
-        350px;
+    display: none;
 
-    display:
-        none;
+    align-items: center;
+    justify-content: center;
 
-    align-items:
-        center;
+    flex-direction: column;
 
-    justify-content:
-        center;
+    text-align: center;
 
-    flex-direction:
-        column;
-
-    text-align:
-        center;
-
-    color:
-        var(--text-secondary);
-
+    color: var(--text-secondary);
 }
-
 
 .empty-icon {
+    font-size: 50px;
 
-    font-size:
-        50px;
-
-    margin-bottom:
-        10px;
-
+    margin-bottom: 10px;
 }
-
 
 .empty-state h3 {
+    color: var(--text);
 
-    color:
-        var(--text);
-
-    margin-bottom:
-        5px;
-
+    margin-bottom: 5px;
 }
-
 
 /* =========================================
    MODALS
 ========================================= */
 
 .modal-overlay {
+    position: fixed;
 
-    position:
-        fixed;
+    inset: 0;
 
-    inset:
-        0;
+    background: rgba(0, 0, 0, 0.45);
 
-    background:
-        rgba(
-            0,
-            0,
-            0,
-            .45
-        );
+    display: none;
 
-    display:
-        none;
+    align-items: center;
+    justify-content: center;
 
-    align-items:
-        center;
+    padding: 20px;
 
-    justify-content:
-        center;
-
-    padding:
-        20px;
-
-    z-index:
-        100;
-
+    z-index: 100;
 }
-
 
 .modal-overlay.show {
-
-    display:
-        flex;
-
+    display: flex;
 }
-
 
 .modal {
+    width: 100%;
 
-    width:
-        100%;
+    max-width: 500px;
 
-    max-width:
-        500px;
+    max-height: 90vh;
 
-    max-height:
-        90vh;
+    overflow-y: auto;
 
-    overflow-y:
-        auto;
+    background: var(--surface);
 
-    background:
-        var(--surface);
+    color: var(--text);
 
-    color:
-        var(--text);
+    border-radius: 22px;
 
-    border-radius:
-        22px;
+    padding: 25px;
 
-    padding:
-        25px;
-
-    position:
-        relative;
+    position: relative;
 
     box-shadow:
-        0 25px 80px rgba(
-            0,
-            0,
-            0,
-            .2
-        );
-
+        0 25px 80px rgba(0, 0, 0, 0.2);
 }
-
 
 .modal-close {
+    position: absolute;
 
-    position:
-        absolute;
+    right: 18px;
+    top: 15px;
 
-    right:
-        18px;
+    width: 35px;
+    height: 35px;
 
-    top:
-        15px;
+    border: 0;
 
-    width:
-        35px;
+    background: var(--surface-2);
 
-    height:
-        35px;
+    color: var(--text);
 
-    border:
-        0;
+    border-radius: 50%;
 
-    background:
-        var(--surface-2);
-
-    color:
-        var(--text);
-
-    border-radius:
-        50%;
-
-    font-size:
-        20px;
-
+    font-size: 20px;
 }
-
 
 .modal-header {
+    display: flex;
 
-    display:
-        flex;
+    align-items: center;
 
-    align-items:
-        center;
+    gap: 12px;
 
-    gap:
-        12px;
+    margin-bottom: 25px;
 
-    margin-bottom:
-        25px;
-
+    padding-right: 35px;
 }
-
 
 .modal-icon {
+    width: 45px;
+    min-width: 45px;
 
-    width:
-        45px;
+    height: 45px;
 
-    height:
-        45px;
+    border-radius: 13px;
 
-    border-radius:
-        13px;
+    background: var(--surface-2);
 
-    background:
-        var(--surface-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    justify-content:
-        center;
-
-    font-size:
-        20px;
-
+    font-size: 20px;
 }
-
 
 .modal-header h2 {
-
-    font-size:
-        19px;
-
+    font-size: 19px;
 }
-
 
 .modal-header p {
+    color: var(--text-secondary);
 
-    color:
-        var(--text-secondary);
+    font-size: 12px;
 
-    font-size:
-        12px;
-
-    margin-top:
-        3px;
-
+    margin-top: 3px;
 }
-
 
 .modal label {
+    display: block;
 
-    display:
-        block;
+    color: var(--text-secondary);
 
-    color:
-        var(--text-secondary);
+    font-size: 12px;
 
-    font-size:
-        12px;
+    font-weight: 600;
 
-    font-weight:
-        600;
-
-    margin-bottom:
-        15px;
-
+    margin-bottom: 15px;
 }
-
 
 .modal input,
 .modal select,
 .modal textarea {
+    width: 100%;
 
-    width:
-        100%;
+    margin-top: 7px;
 
-    margin-top:
-        7px;
+    border: 1px solid var(--border);
 
-    border:
-        1px solid var(--border);
+    background: var(--surface);
 
-    background:
-        var(--surface);
+    color: var(--text);
 
-    color:
-        var(--text);
+    border-radius: 10px;
 
-    border-radius:
-        10px;
+    padding: 11px;
 
-    padding:
-        11px;
-
-    outline:
-        none;
-
+    outline: none;
 }
-
 
 .modal textarea {
-
-    resize:
-        vertical;
-
+    resize: vertical;
 }
-
 
 .form-grid {
-
-    display:
-        grid;
+    display: grid;
 
     grid-template-columns:
-        1fr 1fr;
+        repeat(2, minmax(0, 1fr));
 
-    gap:
-        12px;
-
+    gap: 12px;
 }
-
 
 .modal-actions {
+    display: flex;
 
-    display:
-        flex;
+    justify-content: flex-end;
 
-    justify-content:
-        flex-end;
+    gap: 8px;
 
-    gap:
-        8px;
+    margin-top: 20px;
 
-    margin-top:
-        20px;
-
-    flex-wrap:
-        wrap;
-
+    flex-wrap: wrap;
 }
-
 
 /* =========================================
    CONFIGURACIÓN
 ========================================= */
 
 .settings-container {
+    width: min(900px, calc(100% - 32px));
 
-    width:
-        min(
-            900px,
-            calc(100% - 32px)
-        );
+    margin: 30px auto;
 
-    margin:
-        30px auto;
+    display: flex;
 
-    display:
-        flex;
+    flex-direction: column;
 
-    flex-direction:
-        column;
-
-    gap:
-        18px;
-
+    gap: 18px;
 }
-
 
 .settings-card {
+    background: var(--surface);
 
-    background:
-        var(--surface);
+    border: 1px solid var(--border);
 
-    border:
-        1px solid var(--border);
+    border-radius: 20px;
 
-    border-radius:
-        20px;
+    padding: 24px;
 
-    padding:
-        24px;
-
-    box-shadow:
-        var(--shadow);
-
+    box-shadow: var(--shadow);
 }
-
 
 .settings-card-header {
+    display: flex;
 
-    display:
-        flex;
+    align-items: center;
 
-    align-items:
-        center;
+    gap: 14px;
 
-    gap:
-        14px;
-
-    position:
-        relative;
-
+    position: relative;
 }
-
 
 .settings-card-icon {
+    width: 48px;
+    min-width: 48px;
 
-    width:
-        48px;
+    height: 48px;
 
-    height:
-        48px;
+    border-radius: 14px;
 
-    border-radius:
-        14px;
+    background: var(--surface-2);
 
-    background:
-        var(--surface-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    justify-content:
-        center;
-
-    font-size:
-        21px;
-
+    font-size: 21px;
 }
-
 
 .settings-card h2 {
-
-    font-size:
-        18px;
-
+    font-size: 18px;
 }
-
 
 .settings-card-header p {
+    color: var(--text-secondary);
 
-    color:
-        var(--text-secondary);
+    font-size: 12px;
 
-    font-size:
-        12px;
-
-    margin-top:
-        4px;
-
+    margin-top: 4px;
 }
-
 
 .schedule-list {
+    margin-top: 25px;
 
-    margin-top:
-        25px;
-
-    border-top:
-        1px solid var(--border);
-
+    border-top: 1px solid var(--border);
 }
-
 
 .schedule-row {
+    display: flex;
 
-    display:
-        flex;
+    justify-content: space-between;
+    align-items: center;
 
-    justify-content:
-        space-between;
+    gap: 20px;
 
-    align-items:
-        center;
+    padding: 15px 0;
 
-    gap:
-        20px;
-
-    padding:
-        15px 0;
-
-    border-bottom:
-        1px solid var(--border);
-
+    border-bottom: 1px solid var(--border);
 }
-
 
 .day-name strong {
+    display: block;
 
-    display:
-        block;
-
-    font-size:
-        14px;
-
+    font-size: 14px;
 }
-
 
 .day-name span {
+    font-size: 11px;
 
-    font-size:
-        11px;
-
-    color:
-        var(--text-secondary);
-
+    color: var(--text-secondary);
 }
-
 
 .schedule-input {
+    display: flex;
 
-    display:
-        flex;
+    align-items: center;
 
-    align-items:
-        center;
-
-    gap:
-        10px;
-
+    gap: 10px;
 }
-
 
 .schedule-input label {
+    color: var(--text-secondary);
 
-    color:
-        var(--text-secondary);
-
-    font-size:
-        10px;
-
+    font-size: 10px;
 }
-
 
 .schedule-input input,
 .lunch-controls input {
+    display: block;
 
-    display:
-        block;
+    margin-top: 5px;
 
-    margin-top:
-        5px;
+    border: 1px solid var(--border);
 
-    border:
-        1px solid var(--border);
+    background: var(--surface);
 
-    background:
-        var(--surface);
+    color: var(--text);
 
-    color:
-        var(--text);
+    padding: 9px;
 
-    padding:
-        9px;
-
-    border-radius:
-        9px;
-
+    border-radius: 9px;
 }
-
 
 .lunch-section {
+    margin-top: 25px;
 
-    margin-top:
-        25px;
+    padding-top: 25px;
 
-    padding-top:
-        25px;
-
-    border-top:
-        1px solid var(--border);
-
+    border-top: 1px solid var(--border);
 }
-
 
 .section-title {
+    display: flex;
 
-    display:
-        flex;
+    gap: 12px;
 
-    gap:
-        12px;
-
-    align-items:
-        flex-start;
-
+    align-items: flex-start;
 }
-
 
 .section-title > span {
-
-    font-size:
-        25px;
-
+    font-size: 25px;
 }
-
 
 .section-title h3 {
-
-    font-size:
-        16px;
-
+    font-size: 16px;
 }
-
 
 .section-title p {
+    color: var(--text-secondary);
 
-    color:
-        var(--text-secondary);
+    font-size: 12px;
 
-    font-size:
-        12px;
-
-    margin-top:
-        4px;
-
+    margin-top: 4px;
 }
-
 
 .lunch-controls {
+    display: flex;
 
-    display:
-        flex;
+    align-items: flex-end;
 
-    align-items:
-        flex-end;
+    gap: 30px;
 
-    gap:
-        30px;
-
-    margin-top:
-        20px;
-
+    margin-top: 20px;
 }
-
 
 .lunch-controls label {
+    color: var(--text-secondary);
 
-    color:
-        var(--text-secondary);
-
-    font-size:
-        11px;
-
+    font-size: 11px;
 }
-
 
 .check-option {
+    display: flex !important;
 
-    display:
-        flex !important;
+    align-items: center;
 
-    align-items:
-        center;
+    gap: 8px;
 
-    gap:
-        8px;
-
-    padding-bottom:
-        9px;
-
+    padding-bottom: 9px;
 }
-
 
 .check-option input {
+    width: 18px;
+    height: 18px;
 
-    width:
-        18px;
-
-    height:
-        18px;
-
-    margin:
-        0;
-
+    margin: 0;
 }
-
 
 .info-box {
+    display: flex;
 
-    display:
-        flex;
+    gap: 10px;
 
-    gap:
-        10px;
+    margin-top: 20px;
 
-    margin-top:
-        20px;
+    padding: 13px;
 
-    padding:
-        13px;
+    background: var(--surface-2);
 
-    background:
-        var(--surface-2);
+    border-radius: 12px;
 
-    border-radius:
-        12px;
+    font-size: 12px;
 
-    font-size:
-        12px;
-
-    color:
-        var(--text-secondary);
-
+    color: var(--text-secondary);
 }
-
 
 .settings-footer {
+    display: flex;
 
-    display:
-        flex;
+    justify-content: flex-end;
 
-    justify-content:
-        flex-end;
-
-    margin-top:
-        25px;
-
+    margin-top: 25px;
 }
-
 
 .dark-mode-option {
+    display: flex;
 
-    display:
-        flex;
+    justify-content: space-between;
+    align-items: center;
 
-    justify-content:
-        space-between;
+    gap: 20px;
 
-    align-items:
-        center;
+    margin-top: 22px;
 
-    gap:
-        20px;
+    padding-top: 20px;
 
-    margin-top:
-        22px;
-
-    padding-top:
-        20px;
-
-    border-top:
-        1px solid var(--border);
-
+    border-top: 1px solid var(--border);
 }
-
 
 .dark-mode-option strong {
+    display: block;
 
-    display:
-        block;
-
-    font-size:
-        14px;
-
+    font-size: 14px;
 }
-
 
 .dark-mode-option span {
+    display: block;
 
-    display:
-        block;
+    color: var(--text-secondary);
 
-    color:
-        var(--text-secondary);
+    font-size: 11px;
 
-    font-size:
-        11px;
-
-    margin-top:
-        3px;
-
+    margin-top: 3px;
 }
-
 
 .switch {
+    position: relative;
 
-    position:
-        relative;
+    display: inline-block;
 
-    display:
-        inline-block;
+    width: 48px;
+    min-width: 48px;
 
-    width:
-        48px;
-
-    height:
-        26px;
-
+    height: 26px;
 }
-
 
 .switch input {
+    opacity: 0;
 
-    opacity:
-        0;
-
-    width:
-        0;
-
-    height:
-        0;
-
+    width: 0;
+    height: 0;
 }
-
 
 .slider {
+    position: absolute;
 
-    position:
-        absolute;
+    inset: 0;
 
-    inset:
-        0;
+    background: #cfcfd4;
 
-    background:
-        #cfcfd4;
+    border-radius: 30px;
 
-    border-radius:
-        30px;
-
-    transition:
-        .25s;
-
+    transition: 0.25s;
 }
-
 
 .slider::before {
+    content: "";
 
-    content:
-        "";
+    position: absolute;
 
-    position:
-        absolute;
+    width: 20px;
+    height: 20px;
 
-    width:
-        20px;
+    left: 3px;
+    top: 3px;
 
-    height:
-        20px;
+    background: white;
 
-    left:
-        3px;
+    border-radius: 50%;
 
-    top:
-        3px;
-
-    background:
-        white;
-
-    border-radius:
-        50%;
-
-    transition:
-        .25s;
-
+    transition: 0.25s;
 }
-
 
 .switch input:checked + .slider {
-
-    background:
-        #111;
-
+    background: #111;
 }
-
 
 .switch input:checked + .slider::before {
-
-    transform:
-        translateX(22px);
-
+    transform: translateX(22px);
 }
-
 
 .clickable-card {
-
-    cursor:
-        pointer;
-
+    cursor: pointer;
 }
-
 
 .clickable-card:hover {
-
-    transform:
-        translateY(-1px);
-
+    transform: translateY(-1px);
 }
-
 
 .card-arrow {
+    margin-left: auto;
 
-    margin-left:
-        auto;
+    font-size: 22px;
 
-    font-size:
-        22px;
-
-    color:
-        var(--text-secondary);
-
+    color: var(--text-secondary);
 }
-
 
 /* =========================================
    ABOUT
 ========================================= */
 
 .about-container {
+    width: min(650px, calc(100% - 32px));
 
-    width:
-        min(
-            650px,
-            calc(100% - 32px)
-        );
+    margin: 50px auto;
 
-    margin:
-        50px auto;
+    text-align: center;
 
-    text-align:
-        center;
+    background: var(--surface);
 
-    background:
-        var(--surface);
+    border: 1px solid var(--border);
 
-    border:
-        1px solid var(--border);
+    border-radius: 25px;
 
-    border-radius:
-        25px;
+    padding: 40px;
 
-    padding:
-        40px;
-
-    box-shadow:
-        var(--shadow);
-
+    box-shadow: var(--shadow);
 }
-
 
 .about-logo {
+    width: 80px;
+    height: 80px;
 
-    width:
-        80px;
+    margin: 0 auto 20px;
 
-    height:
-        80px;
+    border-radius: 22px;
 
-    margin:
-        0 auto 20px;
+    background: var(--primary);
 
-    border-radius:
-        22px;
+    color: white;
 
-    background:
-        var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    color:
-        white;
+    font-size: 40px;
 
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    justify-content:
-        center;
-
-    font-size:
-        40px;
-
-    font-weight:
-        700;
-
+    font-weight: 700;
 }
-
 
 .about-container h1 {
-
-    font-size:
-        25px;
-
+    font-size: 25px;
 }
-
 
 .about-version {
+    color: var(--text-secondary);
 
-    color:
-        var(--text-secondary);
+    font-size: 12px;
 
-    font-size:
-        12px;
-
-    margin-top:
-        5px;
-
+    margin-top: 5px;
 }
-
 
 .about-description {
+    margin: 25px auto;
 
-    margin:
-        25px auto;
+    max-width: 500px;
 
-    max-width:
-        500px;
+    color: var(--text-secondary);
 
-    color:
-        var(--text-secondary);
+    font-size: 14px;
 
-    font-size:
-        14px;
-
-    line-height:
-        1.6;
-
+    line-height: 1.6;
 }
-
 
 .about-description p + p {
-
-    margin-top:
-        10px;
-
+    margin-top: 10px;
 }
-
 
 .about-features {
-
-    display:
-        grid;
+    display: grid;
 
     grid-template-columns:
-        1fr 1fr;
+        repeat(2, minmax(0, 1fr));
 
-    gap:
-        10px;
+    gap: 10px;
 
-    text-align:
-        left;
+    text-align: left;
 
-    margin:
-        25px 0;
-
+    margin: 25px 0;
 }
-
 
 .about-features div {
+    padding: 12px;
 
-    padding:
-        12px;
+    background: var(--surface-2);
 
-    background:
-        var(--surface-2);
+    border-radius: 10px;
 
-    border-radius:
-        10px;
-
-    font-size:
-        12px;
-
+    font-size: 12px;
 }
-
 
 .about-features span {
+    color: var(--green);
 
-    color:
-        var(--green);
-
-    margin-right:
-        5px;
-
+    margin-right: 5px;
 }
-
 
 .about-footer {
+    border-top: 1px solid var(--border);
 
-    border-top:
-        1px solid var(--border);
+    padding-top: 20px;
 
-    padding-top:
-        20px;
+    display: flex;
 
-    display:
-        flex;
+    flex-direction: column;
 
-    flex-direction:
-        column;
+    align-items: center;
 
-    align-items:
-        center;
-
-    gap:
-        15px;
-
+    gap: 15px;
 }
-
 
 .about-footer p {
+    color: var(--text-secondary);
 
-    color:
-        var(--text-secondary);
-
-    font-size:
-        11px;
-
+    font-size: 11px;
 }
-
 
 /* =========================================
    TOAST
 ========================================= */
 
 .toast {
+    position: fixed;
 
-    position:
-        fixed;
+    bottom: 25px;
+    left: 50%;
 
-    bottom:
-        25px;
+    transform: translate(-50%, 100px);
 
-    left:
-        50%;
+    background: #111;
 
-    transform:
-        translate(
-            -50%,
-            100px
-        );
+    color: white;
 
-    background:
-        #111;
+    padding: 12px 18px;
 
-    color:
-        white;
+    border-radius: 12px;
 
-    padding:
-        12px 18px;
+    font-size: 13px;
 
-    border-radius:
-        12px;
+    z-index: 200;
 
-    font-size:
-        13px;
+    opacity: 0;
 
-    z-index:
-        200;
-
-    opacity:
-        0;
-
-    transition:
-        .3s;
-
+    transition: 0.3s;
 }
-
 
 .toast.show {
+    opacity: 1;
 
-    opacity:
-        1;
-
-    transform:
-        translate(
-            -50%,
-            0
-        );
-
+    transform: translate(-50%, 0);
 }
-
-
 
 /* =========================================
    MODO OSCURO
 ========================================= */
 
 body.dark-mode {
-
     --bg: #0f0f10;
     --surface: #18181a;
     --surface-2: #232326;
@@ -2424,850 +1503,981 @@ body.dark-mode {
     --orange: #ffb454;
     --orange-bg: #3a2915;
 
-    --shadow:
-        0 10px 30px rgba(
-            0,
-            0,
-            0,
-            .35
-        );
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
 
     color-scheme: dark;
 }
 
-
-/* TOPBAR */
-
 body.dark-mode .topbar {
+    background: var(--surface);
 
-    background:
-        var(--surface);
-
-    border-color:
-        var(--border);
-
+    border-color: var(--border);
 }
-
-
-/* ICONO PRINCIPAL */
 
 body.dark-mode .app-icon {
+    background: #f5f5f7;
 
-    background:
-        #f5f5f7;
-
-    color:
-        #111111;
-
+    color: #111111;
 }
-
-
-/* BOTONES */
 
 body.dark-mode .btn-secondary {
+    background: #252527;
 
-    background:
-        #252527;
+    border-color: #3a3a3e;
 
-    border-color:
-        #3a3a3e;
-
-    color:
-        #f5f5f7;
-
+    color: #f5f5f7;
 }
-
 
 body.dark-mode .btn-primary {
+    background: #f5f5f7;
 
-    background:
-        #f5f5f7;
-
-    color:
-        #111111;
-
+    color: #111111;
 }
-
 
 body.dark-mode .btn-danger-outline {
+    background: transparent;
 
-    background:
-        transparent;
+    border-color: #713c39;
 
-    border-color:
-        #713c39;
-
-    color:
-        #ff7068;
-
+    color: #ff7068;
 }
-
-
-/* BUSCADOR */
 
 body.dark-mode .search-box {
+    background: #232326;
 
-    background:
-        #232326;
-
-    border-color:
-        #343438;
-
+    border-color: #343438;
 }
-
 
 body.dark-mode .search-box input {
-
-    color:
-        #f5f5f7;
-
+    color: #f5f5f7;
 }
-
 
 body.dark-mode .search-box input::placeholder {
-
-    color:
-        #77777d;
-
+    color: #77777d;
 }
-
-
-/* EMPLEADOS */
 
 body.dark-mode .employee-item:hover {
-
-    background:
-        #252527;
-
+    background: #252527;
 }
-
 
 body.dark-mode .employee-item.active {
-
-    background:
-        #29292c;
-
+    background: #29292c;
 }
-
 
 body.dark-mode .employee-avatar {
+    background: #f5f5f7;
 
-    background:
-        #f5f5f7;
-
-    color:
-        #111111;
-
+    color: #111111;
 }
-
-
-/* NAVEGACIÓN DE SEMANAS */
 
 body.dark-mode .week-btn {
+    background: #19191b;
 
-    background:
-        #19191b;
+    border-color: #343438;
 
-    border-color:
-        #343438;
-
-    color:
-        #f5f5f7;
-
+    color: #f5f5f7;
 }
-
 
 body.dark-mode .week-btn:hover {
-
-    background:
-        #29292c;
-
+    background: #29292c;
 }
-
-
-/* TARJETAS DE RESUMEN */
 
 body.dark-mode .summary-card {
+    background: #18181a;
 
-    background:
-        #18181a;
-
-    border-color:
-        #343438;
-
+    border-color: #343438;
 }
-
 
 body.dark-mode .summary-icon {
+    background: #252527;
 
-    background:
-        #252527;
-
-    color:
-        #f5f5f7;
-
+    color: #f5f5f7;
 }
-
-
-/* TARJETAS DE DÍAS */
 
 body.dark-mode .day-card {
+    background: #18181a;
 
-    background:
-        #18181a;
-
-    border-color:
-        #343438;
-
+    border-color: #343438;
 }
-
 
 body.dark-mode .day-card:hover {
-
-    background:
-        #1e1e20;
-
+    background: #1e1e20;
 }
-
 
 body.dark-mode .day-card.today {
-
-    border-color:
-        #f5f5f7;
-
+    border-color: #f5f5f7;
 }
-
 
 body.dark-mode .day-schedule {
+    background: #242427;
 
-    background:
-        #242427;
-
-    color:
-        #f5f5f7;
-
+    color: #f5f5f7;
 }
-
 
 body.dark-mode .day-edit {
+    background: #1c1c1f;
 
-    background:
-        #1c1c1f;
+    border-color: #38383c;
 
-    border-color:
-        #38383c;
-
-    color:
-        #f5f5f7;
-
+    color: #f5f5f7;
 }
-
 
 body.dark-mode .day-edit:hover {
-
-    background:
-        #29292c;
-
+    background: #29292c;
 }
-
-
-/* MODALES */
 
 body.dark-mode .modal-overlay {
-
-    background:
-        rgba(
-            0,
-            0,
-            0,
-            .75
-        );
-
+    background: rgba(0, 0, 0, 0.75);
 }
-
 
 body.dark-mode .modal {
+    background: #18181a;
 
-    background:
-        #18181a;
-
-    color:
-        #f5f5f7;
-
+    color: #f5f5f7;
 }
-
 
 body.dark-mode .modal-close {
+    background: #29292c;
 
-    background:
-        #29292c;
-
-    color:
-        #f5f5f7;
-
+    color: #f5f5f7;
 }
-
 
 body.dark-mode .modal input,
 body.dark-mode .modal select,
 body.dark-mode .modal textarea {
+    background: #232326;
 
-    background:
-        #232326;
+    border-color: #3a3a3e;
 
-    border-color:
-        #3a3a3e;
-
-    color:
-        #f5f5f7;
-
+    color: #f5f5f7;
 }
-
 
 body.dark-mode .modal input::placeholder,
 body.dark-mode .modal textarea::placeholder {
-
-    color:
-        #77777d;
-
+    color: #77777d;
 }
-
 
 body.dark-mode .modal input:focus,
 body.dark-mode .modal select:focus,
 body.dark-mode .modal textarea:focus {
-
-    border-color:
-        #77777d;
-
+    border-color: #77777d;
 }
-
-
-/* CONFIGURACIÓN */
 
 body.dark-mode .settings-card {
+    background: #18181a;
 
-    background:
-        #18181a;
-
-    border-color:
-        #343438;
-
+    border-color: #343438;
 }
-
 
 body.dark-mode .settings-card-icon {
+    background: #252527;
 
-    background:
-        #252527;
-
-    color:
-        #f5f5f7;
-
+    color: #f5f5f7;
 }
-
 
 body.dark-mode .schedule-row {
-
-    border-color:
-        #303034;
-
+    border-color: #303034;
 }
-
 
 body.dark-mode .schedule-input input,
 body.dark-mode .lunch-controls input {
+    background: #232326;
 
-    background:
-        #232326;
+    border-color: #3a3a3e;
 
-    border-color:
-        #3a3a3e;
-
-    color:
-        #f5f5f7;
-
+    color: #f5f5f7;
 }
-
 
 body.dark-mode .schedule-input input:focus,
 body.dark-mode .lunch-controls input:focus {
-
-    border-color:
-        #77777d;
-
+    border-color: #77777d;
 }
-
-
-/* INPUTS DE TIPO TIME */
 
 body.dark-mode input[type="time"] {
-
-    color-scheme:
-        dark;
-
+    color-scheme: dark;
 }
-
-
-/* SELECT */
 
 body.dark-mode select {
-
-    color-scheme:
-        dark;
-
+    color-scheme: dark;
 }
-
-
-/* CAJA DE INFORMACIÓN */
 
 body.dark-mode .info-box {
+    background: #232326;
 
-    background:
-        #232326;
-
-    color:
-        #b4b4b9;
-
+    color: #b4b4b9;
 }
-
-
-/* SWITCH */
 
 body.dark-mode .slider {
-
-    background:
-        #45454a;
-
+    background: #45454a;
 }
-
 
 body.dark-mode .switch input:checked + .slider {
-
-    background:
-        #f5f5f7;
-
+    background: #f5f5f7;
 }
-
 
 body.dark-mode .switch input:checked + .slider::before {
-
-    background:
-        #111111;
-
+    background: #111111;
 }
-
-
-/* ACERCA DE */
 
 body.dark-mode .about-container {
+    background: #18181a;
 
-    background:
-        #18181a;
-
-    border-color:
-        #343438;
-
+    border-color: #343438;
 }
-
 
 body.dark-mode .about-logo {
+    background: #f5f5f7;
 
-    background:
-        #f5f5f7;
-
-    color:
-        #111111;
-
+    color: #111111;
 }
-
 
 body.dark-mode .about-features div {
-
-    background:
-        #232326;
-
+    background: #232326;
 }
-
 
 body.dark-mode .about-footer {
-
-    border-color:
-        #343438;
-
+    border-color: #343438;
 }
-
-
-/* BOTÓN VOLVER */
 
 body.dark-mode .back-button {
+    background: #252527;
 
-    background:
-        #252527;
-
-    color:
-        #f5f5f7;
-
+    color: #f5f5f7;
 }
-
-
-/* TOAST */
 
 body.dark-mode .toast {
+    background: #f5f5f7;
 
-    background:
-        #f5f5f7;
-
-    color:
-        #111111;
-
+    color: #111111;
 }
-
-
-/* TEXTO DE ESTADO */
 
 body.dark-mode .positive {
-
-    color:
-        #55d98b !important;
-
+    color: #55d98b !important;
 }
-
 
 body.dark-mode .negative {
-
-    color:
-        #ff7068 !important;
-
+    color: #ff7068 !important;
 }
-
 
 body.dark-mode .neutral {
-
-    color:
-        #f5f5f7 !important;
-
+    color: #f5f5f7 !important;
 }
-
-
-/* BORDES Y SEPARADORES */
 
 body.dark-mode .schedule-list,
 body.dark-mode .lunch-section,
 body.dark-mode .dark-mode-option {
-
-    border-color:
-        #303034;
-
+    border-color: #303034;
 }
 
-
-/* SCROLLBAR */
-
-body.dark-mode::-webkit-scrollbar {
-
-    width:
-        10px;
-
-    height:
-        10px;
-
+body.dark-mode input,
+body.dark-mode textarea,
+body.dark-mode select,
+body.dark-mode button {
+    color-scheme: dark;
 }
 
-
-body.dark-mode::-webkit-scrollbar-track {
-
-    background:
-        #101011;
-
+body.dark-mode input[type="checkbox"] {
+    accent-color: #f5f5f7;
 }
 
-
-body.dark-mode::-webkit-scrollbar-thumb {
-
-    background:
-        #3a3a3e;
-
-    border-radius:
-        10px;
-
+body.dark-mode input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
 }
 
+body.dark-mode ::selection {
+    background: #f5f5f7;
 
-body.dark-mode::-webkit-scrollbar-thumb:hover {
-
-    background:
-        #55555b;
-
+    color: #111111;
 }
-
-
 
 /* =========================================
-   RESPONSIVE
+   SCROLLBAR GENERAL
 ========================================= */
 
-@media (
-    max-width: 1100px
-) {
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c8c8cc;
+
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #99999f;
+}
+
+body.dark-mode::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+body.dark-mode::-webkit-scrollbar-track {
+    background: #101011;
+}
+
+body.dark-mode::-webkit-scrollbar-thumb {
+    background: #3a3a3e;
+
+    border-radius: 10px;
+}
+
+body.dark-mode::-webkit-scrollbar-thumb:hover {
+    background: #55555b;
+}
+
+/* =========================================
+   RESPONSIVE - TABLET
+========================================= */
+
+@media (max-width: 1100px) {
 
     .week-grid {
-
         grid-template-columns:
-            repeat(
-                4,
-                minmax(150px, 1fr)
-            );
-
+            repeat(4, minmax(150px, 1fr));
     }
 
 }
 
+/* =========================================
+   RESPONSIVE - TABLET PEQUEÑA
+========================================= */
 
-@media (
-    max-width: 850px
-) {
+@media (max-width: 850px) {
 
     .app-container {
-
-        grid-template-columns:
-            1fr;
-
+        grid-template-columns: 1fr;
     }
 
-
     .sidebar {
-
-        border-right:
-            0;
+        border-right: 0;
 
         border-bottom:
             1px solid var(--border);
-
     }
-
 
     .lista-empleados {
-
-        display:
-            grid;
+        display: grid;
 
         grid-template-columns:
-            repeat(
-                2,
-                1fr
-            );
-
+            repeat(2, minmax(0, 1fr));
     }
-
 
     .content-header {
+        flex-direction: column;
 
-        flex-direction:
-            column;
-
-        align-items:
-            flex-start;
-
+        align-items: stretch;
     }
-
 
     .summary-grid {
-
-        grid-template-columns:
-            1fr;
-
+        grid-template-columns: 1fr;
     }
-
 
     .week-grid {
+        display: flex;
 
-        display:
-            flex;
+        flex-direction: row;
 
-        overflow-x:
-            auto;
+        flex-wrap: nowrap;
 
+        gap: 10px;
+
+        overflow-x: auto;
+
+        overflow-y: hidden;
+
+        padding-bottom: 12px;
+
+        -webkit-overflow-scrolling: touch;
     }
 
+    .week-grid .day-card {
+        flex: 0 0 190px;
+
+        width: 190px;
+
+        min-width: 190px;
+
+        max-width: 190px;
+    }
 }
 
+/* =========================================
+   RESPONSIVE - CELULAR
+========================================= */
 
-@media (
-    max-width: 600px
-) {
+@media (max-width: 600px) {
+
+    /* =====================================
+       TOPBAR
+    ===================================== */
 
     .topbar {
+        height: auto;
 
-        height:
-            auto;
+        min-height: 70px;
 
-        min-height:
-            70px;
-
-        padding:
-            12px 15px;
-
+        padding: 12px 15px;
     }
 
+    .topbar-left {
+        min-width: 0;
+    }
+
+    .topbar-left > div:last-child {
+        min-width: 0;
+    }
+
+    .topbar h1 {
+        font-size: 17px;
+    }
+
+    .topbar-left span {
+        font-size: 10px;
+    }
+
+    .app-icon {
+        width: 38px;
+        min-width: 38px;
+
+        height: 38px;
+
+        border-radius: 11px;
+
+        font-size: 19px;
+    }
 
     .topbar-actions {
+        gap: 5px;
 
-        gap:
-            5px;
-
+        flex-shrink: 0;
     }
-
 
     .topbar-actions button {
+        width: 40px;
+        min-width: 40px;
 
-        padding:
-            9px;
+        height: 40px;
 
-        font-size:
-            0;
+        padding: 0;
 
+        font-size: 0;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
-
 
     .topbar-actions button:first-letter {
-
-        font-size:
-            17px;
-
+        font-size: 18px;
     }
 
+    /* =====================================
+       APP
+    ===================================== */
 
-    .content {
+    .app-container {
+        width: 100%;
 
-        padding:
-            18px 14px;
+        display: block;
 
+        min-height: auto;
     }
 
+    /* =====================================
+       SIDEBAR
+    ===================================== */
 
     .sidebar {
+        width: 100%;
 
-        padding:
-            15px;
-
+        padding: 15px;
     }
-
 
     .lista-empleados {
-
-        grid-template-columns:
-            1fr;
-
+        grid-template-columns: 1fr;
     }
 
+    /* =====================================
+       CONTENT
+    ===================================== */
+
+    .content {
+        width: 100%;
+        max-width: 100%;
+
+        padding: 18px 14px;
+
+        overflow: hidden;
+    }
+
+    /* =====================================
+       ENCABEZADO
+    ===================================== */
+
+    .content-header {
+        width: 100%;
+
+        display: flex;
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+        gap: 16px;
+
+        margin-bottom: 20px;
+    }
+
+    .content-header > div:first-child {
+        width: 100%;
+
+        min-width: 0;
+    }
+
+    .content-header h2 {
+        font-size: 21px;
+
+        line-height: 1.25;
+
+        overflow-wrap: anywhere;
+    }
+
+    .content-header p {
+        font-size: 12px;
+
+        line-height: 1.4;
+    }
+
+    /* =====================================
+       SELECTOR DE SEMANA
+    ===================================== */
 
     .week-navigation {
+        width: 100%;
+        max-width: 100%;
 
-        width:
-            100%;
-
-        justify-content:
-            space-between;
-
-    }
-
-
-    .settings-container {
-
-        width:
-            calc(100% - 20px);
-
-        margin:
-            15px auto;
-
-    }
-
-
-    .settings-card {
-
-        padding:
-            18px;
-
-    }
-
-
-    .schedule-row {
-
-        align-items:
-            flex-start;
-
-        flex-direction:
-            column;
-
-        gap:
-            10px;
-
-    }
-
-
-    .schedule-input {
-
-        width:
-            100%;
-
-    }
-
-
-    .schedule-input label {
-
-        flex:
-            1;
-
-    }
-
-
-    .schedule-input input {
-
-        width:
-            100%;
-
-    }
-
-
-    .lunch-controls {
-
-        flex-direction:
-            column;
-
-        align-items:
-            flex-start;
-
-        gap:
-            15px;
-
-    }
-
-
-    .about-container {
-
-        padding:
-            28px 18px;
-
-        margin:
-            25px auto;
-
-    }
-
-
-    .about-features {
+        display: grid;
 
         grid-template-columns:
-            1fr;
+            44px minmax(0, 1fr) 44px;
 
+        grid-template-rows:
+            44px 40px;
+
+        gap: 8px;
+
+        align-items: center;
+
+        box-sizing: border-box;
     }
 
+    .week-navigation #btnSemanaAnterior {
+        grid-column: 1;
+
+        grid-row: 1;
+    }
+
+    .week-navigation .week-info {
+        grid-column: 2;
+
+        grid-row: 1;
+
+        width: 100%;
+
+        min-width: 0;
+
+        display: flex;
+
+        flex-direction: column;
+
+        align-items: center;
+
+        justify-content: center;
+
+        text-align: center;
+
+        overflow: hidden;
+    }
+
+    .week-navigation .week-info strong {
+        display: block;
+
+        width: 100%;
+
+        font-size: 15px;
+
+        line-height: 19px;
+
+        white-space: nowrap;
+
+        overflow: hidden;
+
+        text-overflow: ellipsis;
+    }
+
+    .week-navigation .week-info span {
+        display: block;
+
+        width: 100%;
+
+        font-size: 11px;
+
+        line-height: 16px;
+
+        white-space: nowrap;
+
+        overflow: hidden;
+
+        text-overflow: ellipsis;
+    }
+
+    .week-navigation #btnSemanaSiguiente {
+        grid-column: 3;
+
+        grid-row: 1;
+    }
+
+    .week-navigation #btnSemanaActual {
+        grid-column: 1 / 4;
+
+        grid-row: 2;
+
+        width: 100%;
+
+        height: 40px;
+
+        margin: 0;
+    }
+
+    .week-navigation .week-btn {
+        width: 44px;
+        min-width: 44px;
+        max-width: 44px;
+
+        height: 44px;
+        min-height: 44px;
+
+        padding: 0;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        font-size: 25px;
+
+        border-radius: 12px;
+    }
+
+    /* =====================================
+       RESUMEN
+    ===================================== */
+
+    .summary-grid {
+        width: 100%;
+
+        grid-template-columns: 1fr;
+
+        gap: 10px;
+
+        margin-bottom: 24px;
+    }
+
+    .summary-card {
+        width: 100%;
+
+        min-width: 0;
+    }
+
+    /* =====================================
+       TÍTULO SEMANAL
+    ===================================== */
+
+    .week-title {
+        width: 100%;
+
+        margin-bottom: 12px;
+    }
+
+    .week-title h3 {
+        font-size: 18px;
+    }
+
+    .week-title span {
+        display: block;
+
+        font-size: 11px;
+
+        line-height: 1.4;
+    }
+
+    /* =====================================
+       DÍAS DE LA SEMANA
+    ===================================== */
+
+    .week-grid {
+        width: 100%;
+        max-width: 100%;
+
+        display: flex;
+
+        flex-direction: row;
+
+        flex-wrap: nowrap;
+
+        gap: 10px;
+
+        overflow-x: auto;
+
+        overflow-y: hidden;
+
+        padding:
+            3px 3px 15px 3px;
+
+        margin: 0;
+
+        box-sizing: border-box;
+
+        -webkit-overflow-scrolling: touch;
+
+        scroll-snap-type: x mandatory;
+
+        scrollbar-width: none;
+    }
+
+    .week-grid::-webkit-scrollbar {
+        display: none;
+    }
+
+    .week-grid .day-card {
+        flex: 0 0 245px;
+
+        width: 245px;
+
+        min-width: 245px;
+
+        max-width: 245px;
+
+        box-sizing: border-box;
+
+        scroll-snap-align: start;
+    }
+
+    .day-header {
+        margin-bottom: 14px;
+    }
+
+    .day-header strong {
+        font-size: 13px;
+    }
+
+    .day-schedule {
+        font-size: 11px;
+    }
+
+    .day-status {
+        font-size: 11px;
+    }
+
+    .day-balance {
+        font-size: 15px;
+    }
+
+    /* =====================================
+       MODALES
+    ===================================== */
+
+    .modal-overlay {
+        padding: 12px;
+    }
+
+    .modal {
+        max-height: 92vh;
+
+        padding: 20px;
+
+        border-radius: 18px;
+    }
 
     .form-grid {
-
-        grid-template-columns:
-            1fr;
-
+        grid-template-columns: 1fr;
     }
 
+    .modal-actions {
+        flex-direction: column;
+    }
+
+    .modal-actions button {
+        width: 100%;
+    }
+
+    /* =====================================
+       CONFIGURACIÓN
+    ===================================== */
+
+    .settings-container {
+        width: calc(100% - 20px);
+
+        margin: 15px auto;
+    }
+
+    .settings-card {
+        padding: 18px;
+    }
+
+    .schedule-row {
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 10px;
+    }
+
+    .schedule-input {
+        width: 100%;
+    }
+
+    .schedule-input label {
+        flex: 1;
+    }
+
+    .schedule-input input {
+        width: 100%;
+    }
+
+    .lunch-controls {
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 15px;
+    }
+
+    /* =====================================
+       ACERCA DE
+    ===================================== */
+
+    .about-container {
+        width: calc(100% - 20px);
+
+        padding: 28px 18px;
+
+        margin: 25px auto;
+    }
+
+    .about-features {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================================
+   CELULARES MUY PEQUEÑOS
+========================================= */
+
+@media (max-width: 380px) {
+
+    .content {
+        padding: 16px 10px;
+    }
+
+    .topbar {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .topbar h1 {
+        font-size: 16px;
+    }
+
+    .topbar-left span {
+        display: none;
+    }
+
+    .app-icon {
+        width: 36px;
+        min-width: 36px;
+
+        height: 36px;
+    }
+
+    .topbar-actions button {
+        width: 38px;
+        min-width: 38px;
+
+        height: 38px;
+    }
+
+    /* =====================================
+       SEMANA
+    ===================================== */
+
+    .week-navigation {
+        grid-template-columns:
+            40px minmax(0, 1fr) 40px;
+
+        gap: 6px;
+    }
+
+    .week-navigation .week-btn {
+        width: 40px;
+        min-width: 40px;
+        max-width: 40px;
+
+        height: 40px;
+        min-height: 40px;
+    }
+
+    .week-navigation .week-info strong {
+        font-size: 14px;
+    }
+
+    .week-navigation .week-info span {
+        font-size: 10px;
+    }
+
+    /* =====================================
+       DÍAS
+    ===================================== */
+
+    .week-grid .day-card {
+        flex: 0 0 225px;
+
+        width: 225px;
+
+        min-width: 225px;
+
+        max-width: 225px;
+    }
+}
+
+/* =========================================
+   ACCESIBILIDAD / CONTROLES NATIVOS
+========================================= */
+
+body.dark-mode input,
+body.dark-mode textarea,
+body.dark-mode select,
+body.dark-mode button {
+    color-scheme: dark;
+}
+
+body.dark-mode input[type="checkbox"] {
+    accent-color: #f5f5f7;
+}
+
+body.dark-mode input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
+
+body.dark-mode ::selection {
+    background: #f5f5f7;
+
+    color: #111111;
 }
