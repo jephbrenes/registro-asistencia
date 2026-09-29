@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="theme-color"
+        content="#111111">
+
+    <title>Configuración - Asistencia</title>
+
+    <link
+        rel="stylesheet"
+        href="estilos.css">
+
+</head>
+
+
+<body class="settings-page">
+
+
+<header class="topbar">
+
+    <div class="topbar-left">
+
+        <button
+            class="back-button"
+            onclick="window.location.href='index.html'">
+            ←
+        </button>
+
+        <div class="app-icon">
+            ⚙
+        </div>
+
+        <div>
+
+            <h1>Configuración</h1>
+
+            <span>
+                Ajustes del sistema
+            </span>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<main class="settings-container">
+
+
+    <!-- HORARIOS -->
+
+    <section class="settings-card">
+
+        <div class="settings-card-header">
+
+            <div class="settings-card-icon">
+                🕐
+            </div>
+
+            <div>
+
+                <h2>Ajuste de horarios</h2>
+
+                <p>
+                    Configure el horario laboral de cada día.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="schedule-list">
+
+
+            <!-- LUNES -->
+
+            <div class="schedule-row">
+
+                <div class="day-name">
+                    <strong>Lunes</strong>
+                </div>
+
+                <div class="schedule-input">
+
+                    <label>
+                        Entrada
+
+                        <input
+                            type="time"
+                            class="horario-entrada"
+                            data-dia="lunes">
+                    </label>
+
+                    <span>→</span>
+
+                    <label>
+                        Salida
+
+                        <input
+                            type="time"
+                            class="horario-salida"
+                            data-dia="lunes">
+                    </label>
+
+                </div>
+
+            </div>
+
+
+            <!-- MARTES -->
+
+            <div class="schedule-row">
+
+                <div class="day-name">
+                    <strong>Martes</strong>
+                </div>
+
+                <div class="schedule-input">
+
+                    <label>
+                        Entrada
+
+                        <input
+                            type="time"
+                            class="horario-entrada"
+                            data-dia="martes">
+                    </label>
+
+                    <span>→</span>
+
+                    <label>
+                        Salida
+
+                        <input
+                            type="time"
+                            class="horario-salida"
+                            data-dia="martes">
+                    </label>
+
+                </div>
+
+            </div>
+
+
+            <!-- MIÉRCOLES -->
+
+            <div class="schedule-row">
+
+                <div class="day-name">
+                    <strong>Miércoles</strong>
+                </div>
+
+                <div class="schedule-input">
+
+                    <label>
+                        Entrada
+
+                        <input
+                            type="time"
+                            class="horario-entrada"
+                            data-dia="miercoles">
+
+                    </label>
+
+                    <span>→</span>
+
+                    <label>
+                        Salida
+
+                        <input
+                            type="time"
+                            class="horario-salida"
+                            data-dia="miercoles">
+
+                    </label>
+
+                </div>
+
+            </div>
+
+
+            <!-- JUEVES -->
+
+            <div class="schedule-row">
+
+                <div class="day-name">
+                    <strong>Jueves</strong>
+                </div>
+
+                <div class="schedule-input">
+
+                    <label>
+                        Entrada
+
+                        <input
+                            type="time"
+                            class="horario-entrada"
+                            data-dia="jueves">
+
+                    </label>
+
+                    <span>→</span>
+
+                    <label>
+                        Salida
+
+                        <input
+                            type="time"
+                            class="horario-salida"
+                            data-dia="jueves">
+
+                    </label>
+
+                </div>
+
+            </div>
+
+
+            <!-- VIERNES -->
+
+            <div class="schedule-row">
+
+                <div class="day-name">
+                    <strong>Viernes</strong>
+                </div>
+
+                <div class="schedule-input">
+
+                    <label>
+                        Entrada
+
+                        <input
+                            type="time"
+                            class="horario-entrada"
+                            data-dia="viernes">
+
+                    </label>
+
+                    <span>→</span>
+
+                    <label>
+                        Salida
+
+                        <input
+                            type="time"
+                            class="horario-salida"
+                            data-dia="viernes">
+
+                    </label>
+
+                </div>
+
+            </div>
+
+
+            <!-- SÁBADO -->
+
+            <div class="schedule-row">
+
+                <div class="day-name">
+                    <strong>Sábado</strong>
+                </div>
+
+                <div class="schedule-input">
+
+                    <label>
+                        Entrada
+
+                        <input
+                            type="time"
+                            class="horario-entrada"
+                            data-dia="sabado">
+
+                    </label>
+
+                    <span>→</span>
+
+                    <label>
+                        Salida
+
+                        <input
+                            type="time"
+                            class="horario-salida"
+                            data-dia="sabado">
+
+                    </label>
+
+                </div>
+
+            </div>
+
+
+            <!-- DOMINGO -->
+
+            <div class="schedule-row sunday-row">
+
+                <div class="day-name">
+
+                    <strong>Domingo</strong>
+
+                    <span>
+                        No laborable
+                    </span>
+
+                </div>
+
+                <div>
+
+                    <label class="switch">
+
+                        <input
+                            type="checkbox"
+                            id="domingoLaborable">
+
+                        <span class="slider"></span>
+
+                    </label>
+
+                    <small>
+                        Activar domingo
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ALMUERZO -->
+
+        <div class="lunch-section">
+
+            <div class="section-title">
+
+                <span>🍽️</span>
+
+                <div>
+
+                    <h3>Tiempo de almuerzo</h3>
+
+                    <p>
+                        Esta configuración se aplicará automáticamente
+                        a todos los días laborales.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="lunch-controls">
+
+                <label>
+
+                    Duración del almuerzo
+
+                    <input
+                        type="time"
+                        id="duracionAlmuerzo"
+                        value="01:00">
+
+                </label>
+
+
+                <label class="check-option">
+
+                    <input
+                        type="checkbox"
+                        id="almuerzoPagado">
+
+                    <span>
+                        El almuerzo es pagado
+                    </span>
+
+                </label>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <span>ⓘ</span>
+
+                <p id="ejemploAlmuerzo">
+                    Si trabaja de 07:00 a 17:00 y el almuerzo
+                    no es pagado, la jornada laboral será de 9 horas.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="settings-footer">
+
+            <button
+                class="btn-primary"
+                id="guardarHorarios">
+
+                💾 Guardar configuración
+
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- MODO OSCURO -->
+
+    <section class="settings-card">
+
+        <div class="settings-card-header">
+
+            <div class="settings-card-icon">
+                🌙
+            </div>
+
+            <div>
+
+                <h2>Modo oscuro</h2>
+
+                <p>
+                    Cambia la apariencia de la aplicación.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="dark-mode-option">
+
+            <div>
+
+                <strong>
+                    Usar modo oscuro
+                </strong>
+
+                <span>
+                    La configuración se aplicará a todas las páginas.
+                </span>
+
+            </div>
+
+
+            <label class="switch">
+
+                <input
+                    type="checkbox"
+                    id="modoOscuro">
+
+                <span class="slider"></span>
+
+            </label>
+
+        </div>
+
+    </section>
+
+
+    <!-- ACERCA DE -->
+
+    <section class="settings-card clickable-card"
+        onclick="window.location.href='acerca.html'">
+
+        <div class="settings-card-header">
+
+            <div class="settings-card-icon">
+                ℹ️
+            </div>
+
+            <div>
+
+                <h2>Acerca de</h2>
+
+                <p>
+                    Información de la aplicación.
+                </p>
+
+            </div>
+
+            <span class="card-arrow">
+                →
+            </span>
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+<div
+    id="toast"
+    class="toast">
+</div>
+
+
+<script src="configuracion.js"></script>
+
+</body>
+</html>

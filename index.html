@@ -3,411 +3,468 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#111111">
+    <meta name="description" content="Sistema de registro y control de asistencia">
+
     <title>Registro de Asistencia</title>
 
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="estilos.css">
 
-    <!-- Librería para generar archivos Excel -->
     <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
-
-
-  <!-- Enlazar el manifest para Android / Chrome / Edge -->
-  <link rel="manifest" href="/manifest.json">
-
-  <!-- Color de la barra de navegación superior en móviles -->
-  <meta name="theme-color" content="#000000">
-
-  <!-- ========================================== -->
-  <!-- CONFIGURACIÓN ESPECÍFICA PARA iOS (Safari) -->
-  <!-- ========================================== -->
-  
-  <!-- Ícono específico para iPhone / iPad -->
-  <link rel="apple-touch-icon" href="icono.png">
-  
-  <!-- Habilitar modo pantalla completa en iOS -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  
-  <!-- Estilo de la barra de estado en iOS (default, black, black-translucent) -->
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  
-  <!-- Título que aparecerá debajo del ícono en iOS -->
-  <meta name="apple-mobile-web-app-title" content="Asistencia Ya">
-
-
 </head>
 
 <body>
 
-<header class="encabezado">
-    <div>
-        <h1>Registro de Asistencia</h1>
-        <p>Control semanal de empleados</p>
+<header class="topbar">
+
+    <div class="topbar-left">
+        <div class="app-icon">✓</div>
+
+        <div>
+            <h1>Asistencia</h1>
+            <span>Registro de asistencia</span>
+        </div>
     </div>
 
-    <button id="btnAgregarEmpleado" class="btn-principal">
-        + Agregar empleado
-    </button>
-    <button
-                    id="btnDescargarExcel"
-                    class="btn-excel"
-                    type="button"
-                >
-                    📊 Descargar Excel
-                </button>
+    <div class="topbar-actions">
+
+        <button
+            class="btn-excel"
+            id="btnDescargarExcel"
+            type="button">
+            📊 <span>Descargar Excel</span>
+        </button>
+
+        <button
+            class="btn-secondary"
+            onclick="window.location.href='configuracion.html'">
+            ⚙️ <span></span>
+        </button>
+
+    </div>
+
 </header>
 
 
-<div class="contenedor">
+<main class="app-container">
 
-    <!-- =========================
-         PANEL DE EMPLEADOS
-    ========================== -->
-    <aside class="panel-empleados">
+    <!-- PANEL DE EMPLEADOS -->
 
-        <div class="titulo-panel">
+    <aside class="sidebar">
+
+        <div class="sidebar-header">
+
             <div>
                 <h2>Empleados</h2>
-                <span id="cantidadEmpleados">0 empleados</span>
+                <span id="contadorEmpleados">0 empleados</span>
             </div>
+
+            <button
+                class="btn-add"
+                id="btnNuevoEmpleado"
+                title="Agregar empleado">
+                ➕
+            </button>
+
         </div>
 
-        <div class="buscador">
+
+        <div class="search-box">
+
+            <span>⌕</span>
+
             <input
                 type="text"
                 id="buscarEmpleado"
-                placeholder="Buscar empleado..."
-            >
+                placeholder="Buscar empleado...">
+
         </div>
 
-        <div id="listaEmpleados" class="lista-empleados"></div>
+
+        <div
+            class="lista-empleados"
+            id="listaEmpleados">
+        </div>
 
     </aside>
 
 
-    <!-- =========================
-         CONTENIDO PRINCIPAL
-    ========================== -->
-    <main class="contenido">
+    <!-- CONTENIDO -->
 
-        <div id="estadoVacio" class="estado-vacio">
+    <section class="content">
 
-            <div class="icono-vacio">👤</div>
+        <div class="content-header">
 
-            <h2>Selecciona un empleado</h2>
+            <div>
+
+                <h2 id="nombreEmpleadoSeleccionado">
+                    Seleccione un empleado
+                </h2>
+
+                <p id="identificacionEmpleado">
+                    Seleccione un empleado para ver su asistencia
+                </p>
+
+            </div>
+
+
+            <div class="week-navigation">
+
+                <button
+                    id="btnSemanaAnterior"
+                    class="week-btn">
+                    ‹
+                </button>
+
+                <div class="week-info">
+
+                    <strong id="numeroSemana">
+                        Semana 1
+                    </strong>
+
+                    <span id="rangoSemana">
+                        —
+                    </span>
+
+                </div>
+
+                <button
+                    id="btnSemanaSiguiente"
+                    class="week-btn">
+                    ›
+                </button>
+
+                <button
+                    id="btnSemanaActual"
+                    class="btn-secondary">
+                    Hoy
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- RESUMEN -->
+
+        <div class="summary-grid">
+
+            <div class="summary-card">
+
+                <span class="summary-icon">🕐</span>
+
+                <div>
+                    <small>Jornada programada</small>
+                    <strong id="horasProgramadas">
+                        0h 0m
+                    </strong>
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <span class="summary-icon">✓</span>
+
+                <div>
+                    <small>Tiempo trabajado</small>
+                    <strong id="horasTrabajadas">
+                        0h 0m
+                    </strong>
+                </div>
+
+            </div>
+
+
+            <div class="summary-card balance-card">
+
+                <span class="summary-icon">±</span>
+
+                <div>
+                    <small>Balance semanal</small>
+                    <strong id="balanceSemanal">
+                        0 minutos
+                    </strong>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- SEMANA -->
+
+        <div class="week-title">
+
+            <div>
+                <h3>Asistencia semanal</h3>
+                <span>
+                    Seleccione un día para modificar el registro
+                </span>
+            </div>
+
+        </div>
+
+
+        <div
+            class="week-grid"
+            id="weekGrid">
+        </div>
+
+
+        <div
+            id="emptyState"
+            class="empty-state">
+
+            <div class="empty-icon">👤</div>
+
+            <h3>No hay empleado seleccionado</h3>
 
             <p>
-                Selecciona un empleado de la lista para consultar
-                y modificar su asistencia.
+                Seleccione un empleado de la lista para consultar
+                su asistencia.
             </p>
 
         </div>
 
+    </section>
 
-        <section id="panelAsistencia" class="panel-asistencia oculto">
+</main>
 
-            <!-- ENCABEZADO DEL EMPLEADO -->
-            <div class="encabezado-empleado">
 
-                <div>
-                    <h2 id="nombreEmpleadoSeleccionado"></h2>
-                    <p id="identificacionEmpleadoSeleccionado"></p>
-                </div>
+<!-- MODAL EMPLEADO -->
 
-                <div class="acciones-empleado">
+<div
+    class="modal-overlay"
+    id="modalEmpleado">
 
-                    <button
-                        id="btnEditarEmpleado"
-                        class="btn-secundario"
-                    >
-                        ✏️ Editar
-                    </button>
+    <div class="modal">
 
-                    <button
-                        id="btnEliminarEmpleado" 
-                        class="btn-peligro"
-                    >
-                        🗑️ Eliminar
-                    </button>
+        <button
+            class="modal-close"
+            id="cerrarModalEmpleado">
+            ×
+        </button>
 
-                </div>
+        <div class="modal-header">
 
+            <div class="modal-icon">
+                👤
             </div>
 
+            <div>
+                <h2 id="tituloModalEmpleado">
+                    Nuevo empleado
+                </h2>
 
-            <!-- =========================
-                 NAVEGACIÓN SEMANAL
-            ========================== -->
-            <div class="navegacion-semana">
-
-                <button id="btnSemanaAnterior" class="btn-navegacion">
-                    ←
-                </button>
-
-                <button id="btnEstaSemana" class="btn-semana">
-                    Esta semana
-                </button>
-
-                <button id="btnSemanaSiguiente" class="btn-navegacion">
-                    →
-                </button>
-
+                <p>
+                    Complete la información del empleado
+                </p>
             </div>
-
-
-            <!-- =========================
-                 INFORMACIÓN DE LA SEMANA
-            ========================== -->
-            <div class="resumen-semana">
-
-                <div class="numero-semana">
-                    <span>Semana</span>
-                    <strong id="numeroSemana">--</strong>
-                </div>
-
-                <div class="balance-semanal">
-
-                    <span>Balance semanal</span>
-
-                    <strong id="balanceSemanal">
-                        0 minutos
-                    </strong>
-
-                </div>
-
-                <div class="rango-semana">
-                    <span id="rangoSemana"></span>
-                </div>
-
-                <!-- BOTÓN ÚNICO DE EXCEL -->
-                <!-- <button
-                    id="btnDescargarExcel"
-                    class="btn-excel"
-                    type="button"
-                >
-                    📊 Descargar Excel
-                </button> -->
-
-            </div>
-
-
-            <!-- =========================
-                 DÍAS DE LA SEMANA
-            ========================== -->
-            <div id="diasSemana" class="dias-semana"></div>
-
-
-            <!-- =========================
-                 EDITOR
-            ========================== -->
-            <div
-                id="editorAsistencia"
-                class="editor-asistencia oculto"
-            >
-
-                <div class="editor-titulo">
-
-                    <div>
-                        <h3 id="tituloEditor"></h3>
-                        <p id="horarioBaseEditor"></p>
-                    </div>
-
-                    <button
-                        id="btnCerrarEditor"
-                        class="btn-cerrar"
-                    >
-                        ×
-                    </button>
-
-                </div>
-
-
-                <div class="formulario-asistencia">
-
-                    <div class="campo">
-                        <label for="horaEntrada">
-                            Hora de entrada
-                        </label>
-
-                        <input
-                            type="time"
-                            id="horaEntrada"
-                        >
-                    </div>
-
-
-                    <div class="campo">
-                        <label for="horaSalida">
-                            Hora de salida
-                        </label>
-
-                        <input
-                            type="time"
-                            id="horaSalida"
-                        >
-                    </div>
-
-
-                    <div class="campo">
-                        <label for="estadoAsistencia">
-                            Estado
-                        </label>
-
-                        <select id="estadoAsistencia">
-
-                            <option value="Completo">
-                                Completo
-                            </option>
-
-                            <option value="Tarde">
-                                Tarde
-                            </option>
-
-                            <option value="Hora extra">
-                                Hora extra
-                            </option>
-
-                            <option value="Salida antes">
-                                Salida antes
-                            </option>
-
-                            <option value="Ausente">
-                                Ausente
-                            </option>
-
-                            <option value="Justificado">
-                                Justificado
-                            </option>
-
-                        </select>
-                    </div>
-
-
-                    <div class="campo campo-completo">
-
-                        <label for="observacion">
-                            Observación
-                        </label>
-
-                        <textarea
-                            id="observacion"
-                            rows="3"
-                            placeholder="Observación opcional..."
-                        ></textarea>
-
-                    </div>
-
-                </div>
-
-
-                <div class="acciones-editor">
-
-                    <button
-                        id="btnRestaurarHorario"
-                        class="btn-secundario"
-                    >
-                        Restaurar horario
-                    </button>
-
-                    <button
-                        id="btnGuardarAsistencia"
-                        class="btn-principal"
-                    >
-                        Guardar asistencia
-                    </button>
-
-                </div>
-
-            </div>
-
-        </section>
-
-    </main>
-
-</div>
-
-
-<!-- =========================
-     MODAL EMPLEADO
-========================== -->
-<div id="modalEmpleado" class="modal oculto">
-
-    <div class="modal-contenido">
-
-        <div class="modal-encabezado">
-
-            <h2 id="tituloModalEmpleado">
-                Agregar empleado
-            </h2>
-
-            <button
-                id="btnCerrarModalEmpleado"
-                class="btn-cerrar"
-            >
-                ×
-            </button>
 
         </div>
 
 
-        <div class="formulario-empleado">
+        <form id="formEmpleado">
 
-            <div class="campo">
+            <input
+                type="hidden"
+                id="empleadoId">
 
-                <label for="nombreEmpleado">
-                    Nombre completo
-                </label>
+            <label>
+                Nombre completo
 
                 <input
                     type="text"
                     id="nombreEmpleado"
-                    placeholder="Ej. Jepherson Brenes"
-                >
+                    placeholder="Ej. Juan Pérez"
+                    required>
+            </label>
 
-            </div>
 
-
-            <div class="campo">
-
-                <label for="identificacionEmpleado">
-                    Identificación
-                </label>
+            <label>
+                Identificación
 
                 <input
                     type="text"
-                    id="identificacionEmpleado"
-                    placeholder="Número de identificación"
-                >
+                    id="identificacionEmpleadoInput"
+                    placeholder="Ej. 1-2345-6789"
+                    required>
+            </label>
+
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="btn-secondary"
+                    id="cancelarEmpleado">
+                    Cancelar
+                </button>
+
+                <button
+                    type="submit"
+                    class="btn-primary">
+                    Guardar empleado
+                </button>
 
             </div>
 
-        </div>
-
-
-        <div class="acciones-modal">
-
-            <button
-                id="btnCancelarEmpleado"
-                class="btn-secundario"
-            >
-                Cancelar
-            </button>
-
-            <button
-                id="btnGuardarEmpleado"
-                class="btn-principal"
-            >
-                Guardar empleado
-            </button>
-
-        </div>
+        </form>
 
     </div>
 
 </div>
 
 
-<!-- NOTIFICACIONES -->
-<div id="notificacion" class="notificacion"></div>
+<!-- MODAL ASISTENCIA -->
+
+<div
+    class="modal-overlay"
+    id="modalAsistencia">
+
+    <div class="modal">
+
+        <button
+            class="modal-close"
+            id="cerrarModalAsistencia">
+            ×
+        </button>
+
+        <div class="modal-header">
+
+            <div class="modal-icon">
+                🕐
+            </div>
+
+            <div>
+
+                <h2 id="tituloModalAsistencia">
+                    Registro de asistencia
+                </h2>
+
+                <p id="fechaModalAsistencia">
+                    —
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <form id="formAsistencia">
+
+            <input
+                type="hidden"
+                id="asistenciaFecha">
+
+
+            <div class="form-grid">
+
+                <label>
+                    Entrada
+
+                    <input
+                        type="time"
+                        id="horaEntrada">
+                </label>
+
+
+                <label>
+                    Salida
+
+                    <input
+                        type="time"
+                        id="horaSalida">
+                </label>
+
+            </div>
+
+
+            <label>
+                Estado
+
+                <select id="estadoAsistencia">
+
+                    <option value="Completo">
+                        Completo
+                    </option>
+
+                    <option value="Tarde">
+                        Llegó tarde
+                    </option>
+
+                    <option value="Hora extra">
+                        Hora extra
+                    </option>
+
+                    <option value="Salida antes">
+                        Salió antes
+                    </option>
+
+                    <option value="Ausente">
+                        Ausente
+                    </option>
+
+                    <option value="Justificado">
+                        Justificado
+                    </option>
+
+                </select>
+
+            </label>
+
+
+            <label>
+                Observación
+
+                <textarea
+                    id="observacionAsistencia"
+                    rows="3"
+                    placeholder="Observación opcional...">
+                </textarea>
+
+            </label>
+
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="btn-danger-outline"
+                    id="btnRestaurarHorario">
+                    Restaurar horario
+                </button>
+
+                <button
+                    type="button"
+                    class="btn-secondary"
+                    id="cancelarAsistencia">
+                    Cancelar
+                </button>
+
+                <button
+                    type="submit"
+                    class="btn-primary">
+                    Guardar
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<div
+    id="toast"
+    class="toast">
+</div>
 
 
 <script src="script.js"></script>

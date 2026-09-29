@@ -1,60 +1,175 @@
-const STORAGE_KEY = "registro_asistencia_v1";
+const STORAGE_KEY =
+    "registro_asistencia_v1";
+
+const CONFIG_KEY =
+    "configuracion_asistencia_v1";
+
 
 let datos = {
     empleados: []
 };
 
+
 let empleadoSeleccionadoId = null;
 
-let semanaActual = obtenerInicioSemana(new Date());
-
-let fechaEditando = null;
-
-
-/* =========================================================
-   INICIO
-========================================================= */
-
-document.addEventListener("DOMContentLoaded", () => {
-
-    cargarDatos();
-
-    configurarEventos();
-
-    renderizarEmpleados();
-
-    renderizarEmpleado();
-});
+let fechaInicioSemana =
+    obtenerInicioSemana(new Date());
 
 
-/* =========================================================
-   STORAGE
-========================================================= */
+/* =====================================================
+   CONFIGURACIÓN
+===================================================== */
 
-function cargarDatos() {
+const configuracionPredeterminada = {
+
+    horarios: {
+
+        lunes: {
+            entrada: "07:30",
+            salida: "17:30"
+        },
+
+        martes: {
+            entrada: "07:30",
+            salida: "17:30"
+        },
+
+        miercoles: {
+            entrada: "07:30",
+            salida: "17:30"
+        },
+
+        jueves: {
+            entrada: "07:30",
+            salida: "17:30"
+        },
+
+        viernes: {
+            entrada: "07:30",
+            salida: "17:30"
+        },
+
+        sabado: {
+            entrada: "07:30",
+            salida: "12:00"
+        },
+
+        domingo: {
+            entrada: "",
+            salida: "",
+            laborable: false
+        }
+
+    },
+
+    almuerzo: {
+        duracion: "01:00",
+        pagado: false
+    },
+
+    modoOscuro: false
+
+};
+
+
+function obtenerConfiguracion() {
+
+    const guardada =
+        localStorage.getItem(CONFIG_KEY);
+
+    if (!guardada) {
+
+        localStorage.setItem(
+            CONFIG_KEY,
+            JSON.stringify(
+                configuracionPredeterminada
+            )
+        );
+
+        return JSON.parse(
+            JSON.stringify(
+                configuracionPredeterminada
+            )
+        );
+    }
+
 
     try {
 
-        const guardado = localStorage.getItem(STORAGE_KEY);
+        const config =
+            JSON.parse(guardada);
 
-        if (guardado) {
+        return {
 
-            const datosGuardados = JSON.parse(guardado);
+            ...configuracionPredeterminada,
 
-            if (
-                datosGuardados &&
-                Array.isArray(datosGuardados.empleados)
-            ) {
-                datos = datosGuardados;
+            ...config,
+
+            horarios: {
+
+                ...configuracionPredeterminada.horarios,
+
+                ...(config.horarios || {})
+
+            },
+
+            almuerzo: {
+
+                ...configuracionPredeterminada.almuerzo,
+
+                ...(config.almuerzo || {})
+
             }
 
-        }
+        };
 
-    } catch (error) {
+    } catch {
 
-        console.error("Error cargando datos:", error);
+        return JSON.parse(
+            JSON.stringify(
+                configuracionPredeterminada
+            )
+        );
 
     }
+
+}
+
+
+/* =====================================================
+   LOCAL STORAGE
+===================================================== */
+
+function cargarDatos() {
+
+    const guardado =
+        localStorage.getItem(
+            STORAGE_KEY
+        );
+
+    if (!guardado) {
+
+        datos = {
+            empleados: []
+        };
+
+        return;
+    }
+
+
+    try {
+
+        datos =
+            JSON.parse(guardado);
+
+    } catch {
+
+        datos = {
+            empleados: []
+        };
+
+    }
+
 }
 
 
@@ -64,56 +179,79 @@ function guardarDatos() {
         STORAGE_KEY,
         JSON.stringify(datos)
     );
+
 }
 
 
-/* =========================================================
+/* =====================================================
    FECHAS
-========================================================= */
+===================================================== */
 
 function obtenerInicioSemana(fecha) {
 
-    const nuevaFecha = new Date(fecha);
+    const resultado =
+        new Date(fecha);
 
-    nuevaFecha.setHours(0, 0, 0, 0);
-
-    const dia = nuevaFecha.getDay();
-
-    const diferencia = dia === 0 ? -6 : 1 - dia;
-
-    nuevaFecha.setDate(
-        nuevaFecha.getDate() + diferencia
+    resultado.setHours(
+        0, 0, 0, 0
     );
 
-    return nuevaFecha;
+
+    const dia =
+        resultado.getDay();
+
+
+    const diferencia =
+        dia === 0
+            ? -6
+            : 1 - dia;
+
+
+    resultado.setDate(
+        resultado.getDate() + diferencia
+    );
+
+
+    return resultado;
+
 }
 
 
-function crearFecha(fecha, cantidadDias) {
+function crearFecha(
+    fechaBase,
+    dias
+) {
 
-    const nuevaFecha = new Date(fecha);
+    const fecha =
+        new Date(fechaBase);
 
-    nuevaFecha.setDate(
-        nuevaFecha.getDate() + cantidadDias
+    fecha.setDate(
+        fecha.getDate() + dias
     );
 
-    return nuevaFecha;
+    return fecha;
+
 }
 
 
 function fechaClave(fecha) {
 
-    const year = fecha.getFullYear();
+    const año =
+        fecha.getFullYear();
 
-    const month = String(
-        fecha.getMonth() + 1
-    ).padStart(2, "0");
+    const mes =
+        String(
+            fecha.getMonth() + 1
+        ).padStart(2, "0");
 
-    const day = String(
-        fecha.getDate()
-    ).padStart(2, "0");
+    const dia =
+        String(
+            fecha.getDate()
+        ).padStart(2, "0");
 
-    return `${year}-${month}-${day}`;
+
+    return `${año}-${mes}-${dia}`;
+
 }
 
 
@@ -122,83 +260,117 @@ function formatearFecha(fecha) {
     return fecha.toLocaleDateString(
         "es-CR",
         {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric"
+            weekday: "long",
+            day: "numeric",
+            month: "long"
         }
     );
+
 }
 
 
-/* =========================================================
-   NÚMERO DE SEMANA
-========================================================= */
+function formatearFechaCorta(fecha) {
+
+    return fecha.toLocaleDateString(
+        "es-CR",
+        {
+            day: "2-digit",
+            month: "2-digit"
+        }
+    );
+
+}
+
+
+/* =====================================================
+   SEMANA
+===================================================== */
 
 function obtenerNumeroSemana(fecha) {
 
-    const fechaReferencia = new Date(
-        Date.UTC(
-            fecha.getFullYear(),
-            fecha.getMonth(),
-            fecha.getDate()
-        )
+    const copia =
+        new Date(
+            Date.UTC(
+                fecha.getFullYear(),
+                fecha.getMonth(),
+                fecha.getDate()
+            )
+        );
+
+
+    const dia =
+        copia.getUTCDay() || 7;
+
+
+    copia.setUTCDate(
+        copia.getUTCDate() + 4 - dia
     );
 
-    const diaSemana = fechaReferencia.getUTCDay() || 7;
 
-    fechaReferencia.setUTCDate(
-        fechaReferencia.getUTCDate() +
-        4 -
-        diaSemana
-    );
+    const inicio =
+        new Date(
+            Date.UTC(
+                copia.getUTCFullYear(),
+                0,
+                1
+            )
+        );
 
-    const inicioAno = new Date(
-        Date.UTC(
-            fechaReferencia.getUTCFullYear(),
-            0,
-            1
-        )
-    );
 
     return Math.ceil(
         (
             (
-                fechaReferencia -
-                inicioAno
-            ) / 86400000 +
-            1
+                (
+                    copia - inicio
+                ) / 86400000
+            ) + 1
         ) / 7
     );
+
 }
 
 
-/* =========================================================
+/* =====================================================
    HORARIOS
-========================================================= */
+===================================================== */
+
+function obtenerDiaSemana(fecha) {
+
+    const dias = [
+        "domingo",
+        "lunes",
+        "martes",
+        "miercoles",
+        "jueves",
+        "viernes",
+        "sabado"
+    ];
+
+
+    return dias[
+        fecha.getDay()
+    ];
+
+}
+
 
 function obtenerHorarioBase(fecha) {
 
-    const dia = fecha.getDay();
+    const config =
+        obtenerConfiguracion();
 
-    // Domingo
-    if (dia === 0) {
-        return null;
-    }
 
-    // Lunes a viernes
-    if (dia >= 1 && dia <= 5) {
+    const dia =
+        obtenerDiaSemana(fecha);
 
-        return {
-            entrada: "07:30",
-            salida: "17:30"
-        };
-    }
 
-    // Sábado
-    return {
-        entrada: "07:30",
-        salida: "12:00"
+    return config.horarios[dia] || {
+
+        entrada: "",
+        salida: ""
+
     };
+
 }
 
 
@@ -208,1197 +380,445 @@ function minutosHora(hora) {
         return 0;
     }
 
-    const partes = hora.split(":");
+
+    const partes =
+        hora.split(":");
+
 
     return (
         Number(partes[0]) * 60 +
         Number(partes[1])
     );
+
 }
 
 
-function calcularDuracion(entradaHora, salidaHora) {
+function calcularDuracion(
+    entrada,
+    salida
+) {
 
-    if (!entradaHora || !salidaHora) {
+    if (!entrada || !salida) {
         return 0;
     }
 
-    let entrada = minutosHora(entradaHora);
-    let salida = minutosHora(salidaHora);
 
-    if (salida < entrada) {
-        salida += 24 * 60;
-    }
-
-    return salida - entrada;
-}
-
-
-function formatearTiempo(minutos) {
-
-    minutos = Math.max(0, Math.round(minutos));
-
-    const horas = Math.floor(minutos / 60);
-
-    const minutosRestantes = minutos % 60;
-
-    return `${horas}h ${String(minutosRestantes).padStart(2, "0")}m`;
-}
-
-
-/* =========================================================
-   FORMATO PARA EXCEL
-========================================================= */
-
-function formatearBalanceExcel(minutos) {
-
-    minutos = Math.round(minutos);
-
-    if (minutos === 0) {
-        return "0 minutos";
-    }
-
-    const signo = minutos > 0 ? "+" : "-";
-
-    const valor = Math.abs(minutos);
-
-    const horas = Math.floor(valor / 60);
-
-    const minutosRestantes = valor % 60;
-
-
-    if (horas > 0 && minutosRestantes > 0) {
-
-        return `${signo}${horas}h ${minutosRestantes}m`;
-
-    }
-
-
-    if (horas > 0) {
-
-        if (horas === 1) {
-            return `${signo}1 hora`;
-        }
-
-        return `${signo}${horas} horas`;
-    }
-
-
-    return `${signo}${minutosRestantes} minutos`;
-}
-
-
-/* =========================================================
-   INFORMACIÓN DE UN DÍA
-========================================================= */
-
-function obtenerInformacionDia(empleado, fecha) {
-
-    const clave = fechaClave(fecha);
-
-    const horario = obtenerHorarioBase(fecha);
-
-    if (!horario) {
-
-        return {
-            horario: null,
-            entrada: "",
-            salida: "",
-            estado: "",
-            observacion: "",
-            balance: 0
-        };
-    }
-
-
-    const registro =
-        empleado.registros?.[clave];
-
-
-    if (!registro) {
-
-        return {
-            horario,
-            entrada: horario.entrada,
-            salida: horario.salida,
-            estado: "Completo",
-            observacion: "",
-            balance: 0
-        };
-    }
-
-
-    let balance = 0;
-
-
-    if (registro.estado === "Ausente") {
-
-        balance =
-            -calcularDuracion(
-                horario.entrada,
-                horario.salida
-            );
-
-    }
-
-    else if (registro.estado === "Justificado") {
-
-        if (
-            registro.entrada &&
-            registro.salida
-        ) {
-
-            const trabajado =
-                calcularDuracion(
-                    registro.entrada,
-                    registro.salida
-                );
-
-            const programado =
-                calcularDuracion(
-                    horario.entrada,
-                    horario.salida
-                );
-
-            balance =
-                trabajado -
-                programado;
-
-        } else {
-
-            balance = 0;
-        }
-
-    }
-
-    else {
-
-        const entrada =
-            registro.entrada ||
-            horario.entrada;
-
-        const salida =
-            registro.salida ||
-            horario.salida;
-
-        const trabajado =
-            calcularDuracion(
-                entrada,
-                salida
-            );
-
-        const programado =
-            calcularDuracion(
-                horario.entrada,
-                horario.salida
-            );
-
-        balance =
-            trabajado -
-            programado;
-    }
-
-
-    return {
-
-        horario,
-
-        entrada:
-            registro.entrada ??
-            horario.entrada,
-
-        salida:
-            registro.salida ??
-            horario.salida,
-
-        estado:
-            registro.estado ||
-            "Completo",
-
-        observacion:
-            registro.observacion ||
-            "",
-
-        balance
-    };
-}
-
-
-/* =========================================================
-   EMPLEADO SELECCIONADO
-========================================================= */
-
-function obtenerEmpleadoSeleccionado() {
-
-    return datos.empleados.find(
-        empleado =>
-            empleado.id === empleadoSeleccionadoId
+    return Math.max(
+        0,
+        minutosHora(salida) -
+        minutosHora(entrada)
     );
+
 }
 
 
-/* =========================================================
-   RENDER EMPLEADOS
-========================================================= */
+function obtenerAlmuerzoMinutos() {
 
-function renderizarEmpleados() {
+    const config =
+        obtenerConfiguracion();
 
-    const lista =
-        document.getElementById(
-            "listaEmpleados"
-        );
-
-    const contador =
-        document.getElementById(
-            "cantidadEmpleados"
-        );
-
-    const busqueda =
-        document.getElementById(
-            "buscarEmpleado"
-        ).value
-        .trim()
-        .toLowerCase();
-
-
-    lista.innerHTML = "";
-
-
-    const empleadosFiltrados =
-        datos.empleados.filter(empleado => {
-
-            return (
-                empleado.nombre
-                    .toLowerCase()
-                    .includes(busqueda) ||
-
-                empleado.identificacion
-                    .toLowerCase()
-                    .includes(busqueda)
-            );
-        });
-
-
-    contador.textContent =
-        `${datos.empleados.length} ${
-            datos.empleados.length === 1
-                ? "empleado"
-                : "empleados"
-        }`;
-
-
-    if (empleadosFiltrados.length === 0) {
-
-        lista.innerHTML = `
-            <div style="
-                padding:20px;
-                text-align:center;
-                color:#777;
-                font-size:13px;
-            ">
-                No hay empleados
-            </div>
-        `;
-
-        return;
-    }
-
-
-    empleadosFiltrados.forEach(
-        empleado => {
-
-            lista.appendChild(
-                crearElementoEmpleado(
-                    empleado
-                )
-            );
-        }
-    );
-}
-
-
-function crearElementoEmpleado(empleado) {
-
-    const elemento =
-        document.createElement("div");
-
-    elemento.className =
-        "empleado-item";
 
     if (
-        empleado.id ===
-        empleadoSeleccionadoId
+        config.almuerzo.pagado
     ) {
-
-        elemento.classList.add(
-            "seleccionado"
-        );
+        return 0;
     }
 
 
-    elemento.innerHTML = `
-
-        <div class="empleado-avatar">
-            ${obtenerIniciales(
-                empleado.nombre
-            )}
-        </div>
-
-        <div
-            class="empleado-info"
-            style="cursor:pointer;"
-        >
-            <strong>
-                ${escapeHtml(
-                    empleado.nombre
-                )}
-            </strong>
-
-            <span>
-                ${escapeHtml(
-                    empleado.identificacion
-                )}
-            </span>
-        </div>
-
-        <div class="empleado-acciones">
-
-            <button
-                class="btn-mini"
-                title="Editar"
-                data-editar="${empleado.id}"
-            >
-                ✏️
-            </button>
-
-            <button
-                class="btn-mini"
-                title="Eliminar"
-                data-eliminar="${empleado.id}"
-            >
-                🗑️
-            </button>
-
-        </div>
-    `;
-
-
-    elemento.addEventListener(
-        "click",
-        evento => {
-
-            if (
-                evento.target.closest(
-                    "[data-editar]"
-                ) ||
-                evento.target.closest(
-                    "[data-eliminar]"
-                )
-            ) {
-                return;
-            }
-
-            seleccionarEmpleado(
-                empleado.id
-            );
-        }
+    return minutosHora(
+        config.almuerzo.duracion
     );
 
-
-    elemento
-        .querySelector("[data-editar]")
-        .addEventListener(
-            "click",
-            evento => {
-
-                evento.stopPropagation();
-
-                abrirEditarEmpleado(
-                    empleado.id
-                );
-            }
-        );
-
-
-    elemento
-        .querySelector("[data-eliminar]")
-        .addEventListener(
-            "click",
-            evento => {
-
-                evento.stopPropagation();
-
-                eliminarEmpleado(
-                    empleado.id
-                );
-            }
-        );
-
-
-    return elemento;
 }
 
 
-function obtenerIniciales(nombre) {
-
-    const palabras =
-        nombre
-            .trim()
-            .split(/\s+/);
-
-    if (palabras.length === 1) {
-
-        return palabras[0]
-            .substring(0, 2)
-            .toUpperCase();
-    }
-
-    return (
-        palabras[0][0] +
-        palabras[palabras.length - 1][0]
-    ).toUpperCase();
-}
-
-
-function seleccionarEmpleado(id) {
-
-    empleadoSeleccionadoId = id;
-
-    cerrarEditor();
-
-    renderizarEmpleados();
-
-    renderizarEmpleado();
-}
-
-
-/* =========================================================
-   RENDER EMPLEADO
-========================================================= */
-
-function renderizarEmpleado() {
-
-    const vacio =
-        document.getElementById(
-            "estadoVacio"
-        );
-
-    const panel =
-        document.getElementById(
-            "panelAsistencia"
-        );
-
-
-    const empleado =
-        obtenerEmpleadoSeleccionado();
-
-
-    if (!empleado) {
-
-        vacio.classList.remove(
-            "oculto"
-        );
-
-        panel.classList.add(
-            "oculto"
-        );
-
-        return;
-    }
-
-
-    vacio.classList.add(
-        "oculto"
-    );
-
-    panel.classList.remove(
-        "oculto"
-    );
-
-
-    document.getElementById(
-        "nombreEmpleadoSeleccionado"
-    ).textContent =
-        empleado.nombre;
-
-
-    document.getElementById(
-        "identificacionEmpleadoSeleccionado"
-    ).textContent =
-        `Identificación: ${empleado.identificacion}`;
-
-
-    renderizarSemana();
-}
-
-
-/* =========================================================
-   SEMANA
-========================================================= */
-
-function renderizarSemana() {
-
-    const empleado =
-        obtenerEmpleadoSeleccionado();
-
-    if (!empleado) {
-        return;
-    }
-
-
-    const numero =
-        obtenerNumeroSemana(
-            semanaActual
-        );
-
-
-    document.getElementById(
-        "numeroSemana"
-    ).textContent =
-        `#${numero}`;
-
-
-    const fechaInicio =
-        semanaActual;
-
-    const fechaFin =
-        crearFecha(
-            semanaActual,
-            6
-        );
-
-
-    document.getElementById(
-        "rangoSemana"
-    ).textContent =
-        `${formatearFecha(
-            fechaInicio
-        )} — ${formatearFecha(
-            fechaFin
-        )}`;
-
-
-    const dias =
-        document.getElementById(
-            "diasSemana"
-        );
-
-    dias.innerHTML = "";
-
-
-    let balanceTotal = 0;
-
-
-    for (
-        let i = 0;
-        i < 7;
-        i++
-    ) {
-
-        const fecha =
-            crearFecha(
-                semanaActual,
-                i
-            );
-
-        const informacion =
-            obtenerInformacionDia(
-                empleado,
-                fecha
-            );
-
-
-        balanceTotal +=
-            informacion.balance;
-
-
-        dias.appendChild(
-            crearTarjetaDia(
-                fecha,
-                informacion
-            )
-        );
-    }
-
-
-    actualizarBalanceSemanal(
-        balanceTotal
-    );
-}
-
-
-/* =========================================================
-   TARJETA DEL DÍA
-========================================================= */
-
-function crearTarjetaDia(
-    fecha,
-    informacion
+function obtenerJornadaProgramada(
+    fecha
 ) {
 
-    const tarjeta =
-        document.createElement("div");
-
-    const dia =
-        fecha.getDay();
+    const horario =
+        obtenerHorarioBase(fecha);
 
 
-    const nombresDias = [
-        "Domingo",
-        "Lunes",
-        "Martes",
-        "Miércoles",
-        "Jueves",
-        "Viernes",
-        "Sábado"
-    ];
+    if (
+        !horario.entrada ||
+        !horario.salida
+    ) {
 
+        return 0;
 
-    tarjeta.className =
-        "dia-card";
-
-
-    if (dia === 0) {
-
-        tarjeta.classList.add(
-            "domingo"
-        );
     }
 
 
-    const balance =
-        informacion.balance;
-
-
-    let balanceClase =
-        "balance-neutro";
-
-
-    if (balance > 0) {
-
-        balanceClase =
-            "balance-positivo";
-
-    } else if (balance < 0) {
-
-        balanceClase =
-            "balance-negativo";
-    }
-
-
-    let balanceTexto =
-        balance === 0
-            ? "0 minutos"
-            : formatearBalanceExcel(
-                balance
-            );
-
-
-    let estadoClase =
-        obtenerClaseEstado(
-            informacion.estado
+    let minutos =
+        calcularDuracion(
+            horario.entrada,
+            horario.salida
         );
 
 
-    if (!informacion.horario) {
-
-        tarjeta.innerHTML = `
-
-            <div class="dia-nombre">
-                Domingo
-            </div>
-
-            <div class="dia-fecha">
-                ${formatearFecha(fecha)}
-            </div>
-
-            <div style="
-                color:#777;
-                font-size:13px;
-                margin-top:20px;
-            ">
-                No laborable
-            </div>
-        `;
-
-        return tarjeta;
-    }
+    minutos -=
+        obtenerAlmuerzoMinutos();
 
 
-    tarjeta.innerHTML = `
-
-        <div class="dia-nombre">
-            ${nombresDias[dia]}
-        </div>
-
-        <div class="dia-fecha">
-            ${formatearFecha(fecha)}
-        </div>
-
-        <div class="horario">
-
-            <strong>
-                Horario
-            </strong>
-
-            <span>
-                ${informacion.horario.entrada}
-                —
-                ${informacion.horario.salida}
-            </span>
-
-        </div>
-
-
-        <div class="horario">
-
-            <strong>
-                Registrado
-            </strong>
-
-            <span>
-                ${informacion.entrada}
-                —
-                ${informacion.salida}
-            </span>
-
-        </div>
-
-
-        <span class="estado ${estadoClase}">
-            ${escapeHtml(
-                informacion.estado
-            )}
-        </span>
-
-
-        <div class="
-            dia-balance
-            ${balanceClase}
-        ">
-            ${balanceTexto}
-        </div>
-
-
-        <button
-            class="dia-accion"
-            type="button"
-        >
-            Editar
-        </button>
-    `;
-
-
-    tarjeta
-        .querySelector(".dia-accion")
-        .addEventListener(
-            "click",
-            () => {
-
-                abrirEditor(fecha);
-            }
-        );
-
-
-    return tarjeta;
-}
-
-
-function obtenerClaseEstado(estado) {
-
-    switch (estado) {
-
-        case "Tarde":
-            return "estado-tarde";
-
-        case "Hora extra":
-            return "estado-extra";
-
-        case "Salida antes":
-            return "estado-salida";
-
-        case "Ausente":
-            return "estado-ausente";
-
-        case "Justificado":
-            return "estado-justificado";
-
-        default:
-            return "estado-completo";
-    }
-}
-
-
-/* =========================================================
-   BALANCE SEMANAL
-========================================================= */
-
-function actualizarBalanceSemanal(
-    minutos
-) {
-
-    const elemento =
-        document.getElementById(
-            "balanceSemanal"
-        );
-
-
-    elemento.textContent =
-        formatearBalanceExcel(
-            minutos
-        );
-
-
-    elemento.classList.remove(
-        "balance-positivo",
-        "balance-negativo",
-        "balance-neutro"
+    return Math.max(
+        0,
+        minutos
     );
 
-
-    if (minutos > 0) {
-
-        elemento.classList.add(
-            "balance-positivo"
-        );
-
-    } else if (minutos < 0) {
-
-        elemento.classList.add(
-            "balance-negativo"
-        );
-
-    } else {
-
-        elemento.classList.add(
-            "balance-neutro"
-        );
-    }
 }
 
 
-/* =========================================================
-   EDITOR DE ASISTENCIA
-========================================================= */
+/* =====================================================
+   INFORMACIÓN DEL DÍA
+===================================================== */
 
-function abrirEditor(fecha) {
+function obtenerInformacionDia(
+    empleado,
+    fecha
+) {
 
-    const empleado =
-        obtenerEmpleadoSeleccionado();
-
-    if (!empleado) {
-        return;
-    }
+    const clave =
+        fechaClave(fecha);
 
 
     const horario =
         obtenerHorarioBase(fecha);
 
 
-    if (!horario) {
-        return;
-    }
-
-
-    fechaEditando = new Date(fecha);
-
-
-    const clave =
-        fechaClave(fecha);
-
-
     const registro =
         empleado.registros?.[clave];
 
 
-    document.getElementById(
-        "tituloEditor"
-    ).textContent =
-        `${fecha.toLocaleDateString(
-            "es-CR",
-            {
-                weekday: "long",
-                day: "numeric",
-                month: "long"
-            }
+    const jornada =
+        obtenerJornadaProgramada(
+            fecha
+        );
+
+
+    if (!horario.entrada ||
+        !horario.salida) {
+
+        return {
+
+            programado: 0,
+            trabajado: 0,
+            balance: 0,
+            registro: registro || null,
+            horario
+
+        };
+
+    }
+
+
+    if (
+        registro &&
+        registro.estado === "Ausente"
+    ) {
+
+        return {
+
+            programado: jornada,
+            trabajado: 0,
+            balance: -jornada,
+            registro,
+            horario
+
+        };
+
+    }
+
+
+    if (
+        registro &&
+        registro.estado === "Justificado" &&
+        !registro.entrada &&
+        !registro.salida
+    ) {
+
+        return {
+
+            programado: jornada,
+            trabajado: jornada,
+            balance: 0,
+            registro,
+            horario
+
+        };
+
+    }
+
+
+    if (
+        registro &&
+        registro.entrada &&
+        registro.salida
+    ) {
+
+        let trabajado =
+            calcularDuracion(
+                registro.entrada,
+                registro.salida
+            );
+
+
+        trabajado -=
+            obtenerAlmuerzoMinutos();
+
+
+        trabajado =
+            Math.max(
+                0,
+                trabajado
+            );
+
+
+        return {
+
+            programado: jornada,
+
+            trabajado,
+
+            balance:
+                trabajado - jornada,
+
+            registro,
+
+            horario
+
+        };
+
+    }
+
+
+    return {
+
+        programado: jornada,
+        trabajado: 0,
+        balance: 0,
+        registro: registro || null,
+        horario
+
+    };
+
+}
+
+
+/* =====================================================
+   FORMATO DE TIEMPO
+===================================================== */
+
+function formatearDuracion(
+    minutos
+) {
+
+    minutos =
+        Math.round(minutos);
+
+
+    const signo =
+        minutos < 0
+            ? "-"
+            : "";
+
+
+    minutos =
+        Math.abs(minutos);
+
+
+    const horas =
+        Math.floor(
+            minutos / 60
+        );
+
+
+    const mins =
+        minutos % 60;
+
+
+    if (horas === 0) {
+
+        return `${signo}${mins} min`;
+
+    }
+
+
+    if (mins === 0) {
+
+        return `${signo}${horas} h`;
+
+    }
+
+
+    return `${signo}${horas} h ${mins} min`;
+
+}
+
+
+function formatearBalance(
+    minutos
+) {
+
+    if (minutos > 0) {
+
+        return `+${formatearDuracion(
+            minutos
         )}`;
 
-
-    document.getElementById(
-        "horarioBaseEditor"
-    ).textContent =
-        `Horario base: ${horario.entrada} — ${horario.salida}`;
+    }
 
 
-    document.getElementById(
-        "horaEntrada"
-    ).value =
-        registro?.entrada ||
-        horario.entrada;
+    if (minutos < 0) {
+
+        return formatearDuracion(
+            minutos
+        );
+
+    }
 
 
-    document.getElementById(
-        "horaSalida"
-    ).value =
-        registro?.salida ||
-        horario.salida;
+    return "0 minutos";
+
+}
 
 
-    document.getElementById(
-        "estadoAsistencia"
-    ).value =
-        registro?.estado ||
-        "Completo";
+function formatearBalanceExcel(
+    minutos
+) {
+
+    if (minutos > 0) {
+
+        const abs =
+            Math.abs(minutos);
+
+        const horas =
+            Math.floor(
+                abs / 60
+            );
+
+        const mins =
+            abs % 60;
 
 
-    document.getElementById(
-        "observacion"
-    ).value =
-        registro?.observacion ||
-        "";
+        if (horas && mins) {
+
+            return `+${horas}h ${mins}m`;
+
+        }
 
 
-    actualizarCamposEstado();
+        if (horas) {
+
+            return `+${horas} horas`;
+
+        }
 
 
-    document.getElementById(
-        "editorAsistencia"
-    ).classList.remove(
-        "oculto"
+        return `+${mins} minutos`;
+
+    }
+
+
+    if (minutos < 0) {
+
+        const abs =
+            Math.abs(minutos);
+
+        const horas =
+            Math.floor(
+                abs / 60
+            );
+
+        const mins =
+            abs % 60;
+
+
+        if (horas && mins) {
+
+            return `-${horas}h ${mins}m`;
+
+        }
+
+
+        if (horas) {
+
+            return `-${horas} horas`;
+
+        }
+
+
+        return `-${mins} minutos`;
+
+    }
+
+
+    return "";
+
+}
+
+
+/* =====================================================
+   EMPLEADOS
+===================================================== */
+
+function generarId() {
+
+    return (
+        Date.now().toString(36) +
+        Math.random()
+            .toString(36)
+            .substring(2)
     );
 
-
-    document.getElementById(
-        "editorAsistencia"
-    ).scrollIntoView({
-        behavior: "smooth",
-        block: "center"
-    });
 }
 
 
-function actualizarCamposEstado() {
+function agregarEmpleado(
+    nombre,
+    identificacion
+) {
 
-    const estado =
-        document.getElementById(
-            "estadoAsistencia"
-        ).value;
+    const empleado = {
 
+        id: generarId(),
 
-    const entrada =
-        document.getElementById(
-            "horaEntrada"
-        );
+        nombre:
+            nombre.trim(),
 
-    const salida =
-        document.getElementById(
-            "horaSalida"
-        );
+        identificacion:
+            identificacion.trim(),
 
+        registros: {}
 
-    if (estado === "Ausente") {
-
-        entrada.disabled = true;
-        salida.disabled = true;
-
-    } else {
-
-        entrada.disabled = false;
-        salida.disabled = false;
-    }
-}
-
-
-function cerrarEditor() {
-
-    fechaEditando = null;
-
-    document.getElementById(
-        "editorAsistencia"
-    ).classList.add(
-        "oculto"
-    );
-}
-
-
-/* =========================================================
-   GUARDAR ASISTENCIA
-========================================================= */
-
-function guardarAsistencia() {
-
-    const empleado =
-        obtenerEmpleadoSeleccionado();
-
-    if (!empleado || !fechaEditando) {
-        return;
-    }
-
-
-    if (!empleado.registros) {
-        empleado.registros = {};
-    }
-
-
-    const clave =
-        fechaClave(
-            fechaEditando
-        );
-
-
-    const estado =
-        document.getElementById(
-            "estadoAsistencia"
-        ).value;
-
-
-    const entrada =
-        document.getElementById(
-            "horaEntrada"
-        ).value;
-
-
-    const salida =
-        document.getElementById(
-            "horaSalida"
-        ).value;
-
-
-    const observacion =
-        document.getElementById(
-            "observacion"
-        ).value.trim();
-
-
-    empleado.registros[clave] = {
-
-        entrada:
-            estado === "Ausente"
-                ? ""
-                : entrada,
-
-        salida:
-            estado === "Ausente"
-                ? ""
-                : salida,
-
-        estado,
-
-        observacion
     };
 
 
-    guardarDatos();
-
-    cerrarEditor();
-
-    renderizarSemana();
-
-    mostrarNotificacion(
-        "Asistencia guardada correctamente."
+    datos.empleados.push(
+        empleado
     );
-}
-
-
-/* =========================================================
-   RESTAURAR HORARIO
-========================================================= */
-
-function restaurarHorario() {
-
-    const empleado =
-        obtenerEmpleadoSeleccionado();
-
-    if (!empleado || !fechaEditando) {
-        return;
-    }
-
-
-    if (!empleado.registros) {
-        empleado.registros = {};
-    }
-
-
-    const clave =
-        fechaClave(
-            fechaEditando
-        );
-
-
-    delete empleado.registros[
-        clave
-    ];
 
 
     guardarDatos();
 
-    cerrarEditor();
 
-    renderizarSemana();
+    empleadoSeleccionadoId =
+        empleado.id;
 
-    mostrarNotificacion(
-        "Horario restaurado."
+
+    renderizarTodo();
+
+
+    mostrarToast(
+        "Empleado agregado correctamente"
     );
+
 }
 
 
-/* =========================================================
-   EMPLEADOS
-========================================================= */
-
-let empleadoEditandoId = null;
-
-
-function abrirAgregarEmpleado() {
-
-    empleadoEditandoId = null;
-
-
-    document.getElementById(
-        "tituloModalEmpleado"
-    ).textContent =
-        "Agregar empleado";
-
-
-    document.getElementById(
-        "nombreEmpleado"
-    ).value = "";
-
-
-    document.getElementById(
-        "identificacionEmpleado"
-    ).value = "";
-
-
-    document.getElementById(
-        "modalEmpleado"
-    ).classList.remove(
-        "oculto"
-    );
-
-
-    document.getElementById(
-        "nombreEmpleado"
-    ).focus();
-}
-
-
-function abrirEditarEmpleado(id) {
-
-    const empleado =
-        datos.empleados.find(
-            empleado =>
-                empleado.id === id
-        );
-
-
-    if (!empleado) {
-        return;
-    }
-
-
-    empleadoEditandoId = id;
-
+function editarEmpleado(
+    empleado
+) {
 
     document.getElementById(
         "tituloModalEmpleado"
@@ -1407,141 +827,37 @@ function abrirEditarEmpleado(id) {
 
 
     document.getElementById(
+        "empleadoId"
+    ).value =
+        empleado.id;
+
+
+    document.getElementById(
         "nombreEmpleado"
     ).value =
         empleado.nombre;
 
 
     document.getElementById(
-        "identificacionEmpleado"
+        "identificacionEmpleadoInput"
     ).value =
         empleado.identificacion;
 
 
-    document.getElementById(
+    abrirModal(
         "modalEmpleado"
-    ).classList.remove(
-        "oculto"
-    );
-}
-
-
-function cerrarModalEmpleado() {
-
-    document.getElementById(
-        "modalEmpleado"
-    ).classList.add(
-        "oculto"
     );
 
-    empleadoEditandoId = null;
 }
 
 
-function guardarEmpleado() {
-
-    const nombre =
-        document.getElementById(
-            "nombreEmpleado"
-        ).value.trim();
-
-
-    const identificacion =
-        document.getElementById(
-            "identificacionEmpleado"
-        ).value.trim();
-
-
-    if (!nombre) {
-
-        mostrarNotificacion(
-            "Escribe el nombre del empleado."
-        );
-
-        return;
-    }
-
-
-    if (!identificacion) {
-
-        mostrarNotificacion(
-            "Escribe la identificación."
-        );
-
-        return;
-    }
-
-
-    if (empleadoEditandoId) {
-
-        const empleado =
-            datos.empleados.find(
-                empleado =>
-                    empleado.id ===
-                    empleadoEditandoId
-            );
-
-
-        if (empleado) {
-
-            empleado.nombre =
-                nombre;
-
-            empleado.identificacion =
-                identificacion;
-        }
-
-
-        mostrarNotificacion(
-            "Empleado actualizado."
-        );
-
-    } else {
-
-        const nuevoEmpleado = {
-
-            id:
-                Date.now().toString(),
-
-            nombre,
-
-            identificacion,
-
-            registros: {}
-        };
-
-
-        datos.empleados.push(
-            nuevoEmpleado
-        );
-
-
-        empleadoSeleccionadoId =
-            nuevoEmpleado.id;
-
-
-        mostrarNotificacion(
-            "Empleado agregado."
-        );
-    }
-
-
-    guardarDatos();
-
-    cerrarModalEmpleado();
-
-    renderizarEmpleados();
-
-    renderizarEmpleado();
-}
-
-
-function eliminarEmpleado(id) {
+function eliminarEmpleado(
+    id
+) {
 
     const empleado =
         datos.empleados.find(
-            empleado =>
-                empleado.id === id
+            e => e.id === id
         );
 
 
@@ -1552,7 +868,7 @@ function eliminarEmpleado(id) {
 
     const confirmar =
         confirm(
-            `¿Seguro que quieres eliminar a ${empleado.nombre}?\n\nTambién se eliminarán todos sus registros de asistencia.`
+            `¿Desea eliminar a ${empleado.nombre}?`
         );
 
 
@@ -1563,8 +879,7 @@ function eliminarEmpleado(id) {
 
     datos.empleados =
         datos.empleados.filter(
-            empleado =>
-                empleado.id !== id
+            e => e.id !== id
         );
 
 
@@ -1573,63 +888,408 @@ function eliminarEmpleado(id) {
     ) {
 
         empleadoSeleccionadoId =
-            null;
+            datos.empleados.length
+                ? datos.empleados[0].id
+                : null;
 
-        cerrarEditor();
     }
 
 
     guardarDatos();
 
-    renderizarEmpleados();
-
-    renderizarEmpleado();
+    renderizarTodo();
 
 
-    mostrarNotificacion(
-        "Empleado eliminado."
+    mostrarToast(
+        "Empleado eliminado"
     );
+
 }
 
 
-/* =========================================================
-   EXCEL
-========================================================= */
+/* =====================================================
+   RENDER EMPLEADOS
+===================================================== */
 
-function descargarExcel() {
+function renderizarEmpleados() {
 
-    if (
-        typeof XLSX ===
-        "undefined"
-    ) {
-
-        mostrarNotificacion(
-            "No se pudo cargar la función de Excel. Revisa tu conexión a Internet."
+    const contenedor =
+        document.getElementById(
+            "listaEmpleados"
         );
 
+
+    const busqueda =
+        document.getElementById(
+            "buscarEmpleado"
+        ).value
+            .toLowerCase()
+            .trim();
+
+
+    const empleados =
+        datos.empleados.filter(
+            empleado =>
+
+                empleado.nombre
+                    .toLowerCase()
+                    .includes(busqueda)
+
+                ||
+
+                empleado.identificacion
+                    .toLowerCase()
+                    .includes(busqueda)
+        );
+
+
+    document.getElementById(
+        "contadorEmpleados"
+    ).textContent =
+
+        `${datos.empleados.length} ${
+            datos.empleados.length === 1
+                ? "empleado"
+                : "empleados"
+        }`;
+
+
+    contenedor.innerHTML = "";
+
+
+    if (!empleados.length) {
+
+        contenedor.innerHTML = `
+
+            <div class="no-employees">
+
+                <div>
+                    👤
+                </div>
+
+                <p>
+                    ${
+                        datos.empleados.length
+                            ? "No se encontraron empleados."
+                            : "No hay empleados registrados."
+                    }
+                </p>
+
+            </div>
+
+        `;
+
         return;
+
     }
 
 
-    if (
-        datos.empleados.length === 0
-    ) {
+    empleados.forEach(
+        empleado => {
 
-        mostrarNotificacion(
-            "No hay empleados para exportar."
+            const item =
+                document.createElement(
+                    "div"
+                );
+
+
+            item.className =
+                "employee-item";
+
+
+            if (
+                empleado.id ===
+                empleadoSeleccionadoId
+            ) {
+
+                item.classList.add(
+                    "active"
+                );
+
+            }
+
+
+            const inicial =
+                empleado.nombre
+                    .charAt(0)
+                    .toUpperCase();
+
+
+            item.innerHTML = `
+
+                <div class="employee-avatar">
+                    ${inicial}
+                </div>
+
+                <div class="employee-info">
+
+                    <strong>
+                        ${escapeHtml(
+                            empleado.nombre
+                        )}
+                    </strong>
+
+                    <span>
+                        ${escapeHtml(
+                            empleado.identificacion
+                        )}
+                    </span>
+
+                </div>
+
+                <div class="employee-actions">
+
+                    <button
+                        class="icon-btn edit-employee"
+                        title="Editar">
+                        ✏️
+                    </button>
+
+                    <button
+                        class="icon-btn delete-employee"
+                        title="Eliminar">
+                        🗑️
+                    </button>
+
+                </div>
+
+            `;
+
+
+            item.addEventListener(
+                "click",
+                () => {
+
+                    empleadoSeleccionadoId =
+                        empleado.id;
+
+                    renderizarTodo();
+
+                }
+            );
+
+
+            item.querySelector(
+                ".edit-employee"
+            ).addEventListener(
+                "click",
+                event => {
+
+                    event.stopPropagation();
+
+                    editarEmpleado(
+                        empleado
+                    );
+
+                }
+            );
+
+
+            item.querySelector(
+                ".delete-employee"
+            ).addEventListener(
+                "click",
+                event => {
+
+                    event.stopPropagation();
+
+                    eliminarEmpleado(
+                        empleado.id
+                    );
+
+                }
+            );
+
+
+            contenedor.appendChild(
+                item
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   RENDER SEMANA
+===================================================== */
+
+function renderizarSemana() {
+
+    const grid =
+        document.getElementById(
+            "weekGrid"
         );
 
+
+    grid.innerHTML = "";
+
+
+    const empleado =
+        datos.empleados.find(
+            e =>
+                e.id ===
+                empleadoSeleccionadoId
+        );
+
+
+    if (!empleado) {
+
+        document.getElementById(
+            "emptyState"
+        ).style.display = "flex";
+
+
+        document.getElementById(
+            "nombreEmpleadoSeleccionado"
+        ).textContent =
+            "Seleccione un empleado";
+
+
+        document.getElementById(
+            "identificacionEmpleado"
+        ).textContent =
+            "Seleccione un empleado para ver su asistencia";
+
+
+        actualizarResumen(null);
+
         return;
+
     }
+
+
+    document.getElementById(
+        "emptyState"
+    ).style.display = "none";
+
+
+    document.getElementById(
+        "nombreEmpleadoSeleccionado"
+    ).textContent =
+        empleado.nombre;
+
+
+    document.getElementById(
+        "identificacionEmpleado"
+    ).textContent =
+        `Identificación: ${empleado.identificacion}`;
 
 
     const numeroSemana =
         obtenerNumeroSemana(
-            semanaActual
+            fechaInicioSemana
         );
 
 
-    const nombresDias = [
+    document.getElementById(
+        "numeroSemana"
+    ).textContent =
+        `Semana ${numeroSemana}`;
+
+
+    const domingo =
+        crearFecha(
+            fechaInicioSemana,
+            6
+        );
+
+
+    document.getElementById(
+        "rangoSemana"
+    ).textContent =
+        `${formatearFechaCorta(
+            fechaInicioSemana
+        )} - ${formatearFechaCorta(
+            domingo
+        )}`;
+
+
+    let totalProgramado = 0;
+    let totalTrabajado = 0;
+    let totalBalance = 0;
+
+
+    for (
+        let i = 0;
+        i < 7;
+        i++
+    ) {
+
+        const fecha =
+            crearFecha(
+                fechaInicioSemana,
+                i
+            );
+
+
+        const info =
+            obtenerInformacionDia(
+                empleado,
+                fecha
+            );
+
+
+        totalProgramado +=
+            info.programado;
+
+
+        totalTrabajado +=
+            info.trabajado;
+
+
+        totalBalance +=
+            info.balance;
+
+
+        const card =
+            crearTarjetaDia(
+                fecha,
+                info
+            );
+
+
+        grid.appendChild(
+            card
+        );
+
+    }
+
+
+    actualizarResumen({
+
+        programado:
+            totalProgramado,
+
+        trabajado:
+            totalTrabajado,
+
+        balance:
+            totalBalance
+
+    });
+
+}
+
+
+function crearTarjetaDia(
+    fecha,
+    info
+) {
+
+    const card =
+        document.createElement(
+            "div"
+        );
+
+
+    const diaNumero =
+        fecha.getDay();
+
+
+    const nombres = [
+        "Domingo",
         "Lunes",
         "Martes",
         "Miércoles",
@@ -1639,39 +1299,730 @@ function descargarExcel() {
     ];
 
 
+    card.className =
+        "day-card";
+
+
+    if (diaNumero === 0) {
+
+        card.classList.add(
+            "sunday"
+        );
+
+    }
+
+
+    const hoy =
+        fechaClave(fecha) ===
+        fechaClave(new Date());
+
+
+    if (hoy) {
+
+        card.classList.add(
+            "today"
+        );
+
+    }
+
+
+    const balanceClass =
+        info.balance > 0
+            ? "positive"
+            : info.balance < 0
+                ? "negative"
+                : "neutral";
+
+
+    let estadoTexto =
+        "Sin registro";
+
+
+    if (
+        info.registro
+    ) {
+
+        estadoTexto =
+            info.registro.estado ||
+            "Registrado";
+
+    }
+
+
+    const entrada =
+        info.registro?.entrada ||
+        info.horario.entrada ||
+        "--:--";
+
+
+    const salida =
+        info.registro?.salida ||
+        info.horario.salida ||
+        "--:--";
+
+
+    card.innerHTML = `
+
+        <div class="day-header">
+
+            <div>
+
+                <strong>
+                    ${nombres[diaNumero]}
+                </strong>
+
+                <span>
+                    ${fecha.getDate()}
+                </span>
+
+            </div>
+
+            ${
+                hoy
+                    ? `<span class="today-badge">HOY</span>`
+                    : ""
+            }
+
+        </div>
+
+
+        <div class="day-schedule">
+
+            <span>
+                ${entrada}
+            </span>
+
+            <span>→</span>
+
+            <span>
+                ${salida}
+            </span>
+
+        </div>
+
+
+        <div class="day-status">
+
+            <span class="status-dot"></span>
+
+            ${estadoTexto}
+
+        </div>
+
+
+        <div class="day-balance ${balanceClass}">
+
+            ${
+                info.programado === 0
+                    ? "No laborable"
+                    : formatearBalance(
+                        info.balance
+                    )
+            }
+
+        </div>
+
+
+        <button class="day-edit">
+
+            ✏️ Editar
+
+        </button>
+
+    `;
+
+
+    card.querySelector(
+        ".day-edit"
+    ).addEventListener(
+        "click",
+        event => {
+
+            event.stopPropagation();
+
+            abrirModalAsistencia(
+                fecha
+            );
+
+        }
+    );
+
+
+    card.addEventListener(
+        "click",
+        () => {
+
+            abrirModalAsistencia(
+                fecha
+            );
+
+        }
+    );
+
+
+    return card;
+
+}
+
+
+/* =====================================================
+   RESUMEN
+===================================================== */
+
+function actualizarResumen(
+    resumen
+) {
+
+    if (!resumen) {
+
+        document.getElementById(
+            "horasProgramadas"
+        ).textContent =
+            "0h 0m";
+
+
+        document.getElementById(
+            "horasTrabajadas"
+        ).textContent =
+            "0h 0m";
+
+
+        document.getElementById(
+            "balanceSemanal"
+        ).textContent =
+            "0 minutos";
+
+        return;
+
+    }
+
+
+    document.getElementById(
+        "horasProgramadas"
+    ).textContent =
+        formatearDuracion(
+            resumen.programado
+        );
+
+
+    document.getElementById(
+        "horasTrabajadas"
+    ).textContent =
+        formatearDuracion(
+            resumen.trabajado
+        );
+
+
+    const balance =
+        document.getElementById(
+            "balanceSemanal"
+        );
+
+
+    balance.textContent =
+        formatearBalance(
+            resumen.balance
+        );
+
+
+    balance.classList.remove(
+        "positive",
+        "negative",
+        "neutral"
+    );
+
+
+    if (
+        resumen.balance > 0
+    ) {
+
+        balance.classList.add(
+            "positive"
+        );
+
+    } else if (
+        resumen.balance < 0
+    ) {
+
+        balance.classList.add(
+            "negative"
+        );
+
+    } else {
+
+        balance.classList.add(
+            "neutral"
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   MODAL EMPLEADO
+===================================================== */
+
+function abrirModal(id) {
+
+    document.getElementById(
+        id
+    ).classList.add(
+        "show"
+    );
+
+}
+
+
+function cerrarModal(id) {
+
+    document.getElementById(
+        id
+    ).classList.remove(
+        "show"
+    );
+
+}
+
+
+function abrirNuevoEmpleado() {
+
+    document.getElementById(
+        "tituloModalEmpleado"
+    ).textContent =
+        "Nuevo empleado";
+
+
+    document.getElementById(
+        "formEmpleado"
+    ).reset();
+
+
+    document.getElementById(
+        "empleadoId"
+    ).value = "";
+
+
+    abrirModal(
+        "modalEmpleado"
+    );
+
+}
+
+
+/* =====================================================
+   GUARDAR EMPLEADO
+===================================================== */
+
+function procesarEmpleado(
+    event
+) {
+
+    event.preventDefault();
+
+
+    const id =
+        document.getElementById(
+            "empleadoId"
+        ).value;
+
+
+    const nombre =
+        document.getElementById(
+            "nombreEmpleado"
+        ).value.trim();
+
+
+    const identificacion =
+        document.getElementById(
+            "identificacionEmpleadoInput"
+        ).value.trim();
+
+
+    if (!nombre || !identificacion) {
+
+        mostrarToast(
+            "Complete todos los campos"
+        );
+
+        return;
+
+    }
+
+
+    if (id) {
+
+        const empleado =
+            datos.empleados.find(
+                e => e.id === id
+            );
+
+
+        if (empleado) {
+
+            empleado.nombre =
+                nombre;
+
+            empleado.identificacion =
+                identificacion;
+
+        }
+
+
+        mostrarToast(
+            "Empleado actualizado"
+        );
+
+    } else {
+
+        agregarEmpleado(
+            nombre,
+            identificacion
+        );
+
+        cerrarModal(
+            "modalEmpleado"
+        );
+
+        document.getElementById(
+            "formEmpleado"
+        ).reset();
+
+        return;
+
+    }
+
+
+    guardarDatos();
+
+    cerrarModal(
+        "modalEmpleado"
+    );
+
+    renderizarTodo();
+
+}
+
+
+/* =====================================================
+   MODAL ASISTENCIA
+===================================================== */
+
+let fechaAsistenciaActual = null;
+
+
+function abrirModalAsistencia(
+    fecha
+) {
+
+    const empleado =
+        datos.empleados.find(
+            e =>
+                e.id ===
+                empleadoSeleccionadoId
+        );
+
+
+    if (!empleado) {
+        return;
+    }
+
+
+    fechaAsistenciaActual =
+        fecha;
+
+
+    const clave =
+        fechaClave(fecha);
+
+
+    const registro =
+        empleado.registros?.[clave];
+
+
+    const horario =
+        obtenerHorarioBase(fecha);
+
+
+    document.getElementById(
+        "asistenciaFecha"
+    ).value =
+        clave;
+
+
+    document.getElementById(
+        "tituloModalAsistencia"
+    ).textContent =
+        `Asistencia - ${
+            fecha.toLocaleDateString(
+                "es-CR",
+                {
+                    weekday: "long"
+                }
+            )
+        }`;
+
+
+    document.getElementById(
+        "fechaModalAsistencia"
+    ).textContent =
+        fecha.toLocaleDateString(
+            "es-CR",
+            {
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+            }
+        );
+
+
+    document.getElementById(
+        "horaEntrada"
+    ).value =
+        registro?.entrada ||
+        horario.entrada ||
+        "";
+
+
+    document.getElementById(
+        "horaSalida"
+    ).value =
+        registro?.salida ||
+        horario.salida ||
+        "";
+
+
+    document.getElementById(
+        "estadoAsistencia"
+    ).value =
+        registro?.estado ||
+        "Completo";
+
+
+    document.getElementById(
+        "observacionAsistencia"
+    ).value =
+        registro?.observacion ||
+        "";
+
+
+    abrirModal(
+        "modalAsistencia"
+    );
+
+}
+
+
+function guardarAsistencia(
+    event
+) {
+
+    event.preventDefault();
+
+
+    const empleado =
+        datos.empleados.find(
+            e =>
+                e.id ===
+                empleadoSeleccionadoId
+        );
+
+
+    if (!empleado) {
+        return;
+    }
+
+
+    const fecha =
+        document.getElementById(
+            "asistenciaFecha"
+        ).value;
+
+
+    const entrada =
+        document.getElementById(
+            "horaEntrada"
+        ).value;
+
+
+    const salida =
+        document.getElementById(
+            "horaSalida"
+        ).value;
+
+
+    const estado =
+        document.getElementById(
+            "estadoAsistencia"
+        ).value;
+
+
+    const observacion =
+        document.getElementById(
+            "observacionAsistencia"
+        ).value.trim();
+
+
+    if (!empleado.registros) {
+
+        empleado.registros = {};
+
+    }
+
+
+    empleado.registros[fecha] = {
+
+        entrada,
+
+        salida,
+
+        estado,
+
+        observacion
+
+    };
+
+
+    guardarDatos();
+
+
+    cerrarModal(
+        "modalAsistencia"
+    );
+
+
+    renderizarSemana();
+
+
+    mostrarToast(
+        "Asistencia guardada"
+    );
+
+}
+
+
+function restaurarHorario() {
+
+    const empleado =
+        datos.empleados.find(
+            e =>
+                e.id ===
+                empleadoSeleccionadoId
+        );
+
+
+    if (!empleado) {
+        return;
+    }
+
+
+    const fecha =
+        document.getElementById(
+            "asistenciaFecha"
+        ).value;
+
+
+    const fechaObjeto =
+        new Date(
+            `${fecha}T00:00:00`
+        );
+
+
+    const horario =
+        obtenerHorarioBase(
+            fechaObjeto
+        );
+
+
+    document.getElementById(
+        "horaEntrada"
+    ).value =
+        horario.entrada;
+
+
+    document.getElementById(
+        "horaSalida"
+    ).value =
+        horario.salida;
+
+
+    document.getElementById(
+        "estadoAsistencia"
+    ).value =
+        "Completo";
+
+
+    document.getElementById(
+        "observacionAsistencia"
+    ).value = "";
+
+}
+
+
+/* =====================================================
+   EXCEL
+===================================================== */
+
+function descargarExcel() {
+
+    if (
+        typeof XLSX ===
+        "undefined"
+    ) {
+
+        mostrarToast(
+            "No se pudo cargar el generador de Excel"
+        );
+
+        return;
+
+    }
+
+
+    if (
+        !datos.empleados.length
+    ) {
+
+        mostrarToast(
+            "No hay empleados registrados"
+        );
+
+        return;
+
+    }
+
+
     const filas = [];
 
-
-    /*
-       UNA FILA POR EMPLEADO
-    */
 
     datos.empleados.forEach(
         empleado => {
 
             const fila = {
 
-                "Empleado":
+                Empleado:
                     empleado.nombre,
 
-                "Lunes": "",
-                "Martes": "",
-                "Miércoles": "",
-                "Jueves": "",
-                "Viernes": "",
-                "Sábado": "",
+                Lunes: "",
 
-                "Total":
-                    "0 minutos"
+                Martes: "",
+
+                Miércoles: "",
+
+                Jueves: "",
+
+                Viernes: "",
+
+                Sábado: "",
+
+                Total: ""
+
             };
 
 
-            let total = 0;
+            let total =
+                0;
 
-
-            /*
-               LUNES A SÁBADO
-            */
 
             for (
                 let i = 0;
@@ -1681,12 +2032,12 @@ function descargarExcel() {
 
                 const fecha =
                     crearFecha(
-                        semanaActual,
+                        fechaInicioSemana,
                         i
                     );
 
 
-                const informacion =
+                const info =
                     obtenerInformacionDia(
                         empleado,
                         fecha
@@ -1694,37 +2045,61 @@ function descargarExcel() {
 
 
                 const balance =
-                    informacion.balance;
+                    info.balance;
 
 
-                total += balance;
+                total +=
+                    balance;
+
+
+                const columnas = [
+
+                    "Lunes",
+
+                    "Martes",
+
+                    "Miércoles",
+
+                    "Jueves",
+
+                    "Viernes",
+
+                    "Sábado"
+
+                ];
 
 
                 fila[
-                    nombresDias[i]
+                    columnas[i]
                 ] =
-                    balance === 0
-                        ? ""
-                        : formatearBalanceExcel(
-                            balance
-                        );
+                    formatearBalanceExcel(
+                        balance
+                    );
+
             }
 
 
-            fila["Total"] =
+            fila.Total =
                 formatearBalanceExcel(
                     total
                 );
 
 
-            filas.push(fila);
+            if (!fila.Total) {
+
+                fila.Total =
+                    "0 minutos";
+
+            }
+
+
+            filas.push(
+                fila
+            );
+
         }
     );
 
-
-    /*
-       CREAR HOJA
-    */
 
     const hoja =
         XLSX.utils.json_to_sheet(
@@ -1732,27 +2107,26 @@ function descargarExcel() {
         );
 
 
-    /*
-       ANCHOS DE COLUMNAS
-    */
-
     hoja["!cols"] = [
 
-        { wch: 28 },
-        { wch: 18 },
-        { wch: 18 },
-        { wch: 18 },
-        { wch: 18 },
-        { wch: 18 },
-        { wch: 18 },
-        { wch: 20 }
+        { wch: 25 },
+
+        { wch: 15 },
+
+        { wch: 15 },
+
+        { wch: 15 },
+
+        { wch: 15 },
+
+        { wch: 15 },
+
+        { wch: 15 },
+
+        { wch: 15 }
 
     ];
 
-
-    /*
-       CREAR LIBRO
-    */
 
     const libro =
         XLSX.utils.book_new();
@@ -1765,303 +2139,331 @@ function descargarExcel() {
     );
 
 
-    /*
-       NOMBRE DEL ARCHIVO
-    */
+    const numeroSemana =
+        obtenerNumeroSemana(
+            fechaInicioSemana
+        );
 
-    const nombreArchivo =
-        `Asistencia_Semana_${numeroSemana}.xlsx`;
-
-
-    /*
-       DESCARGAR
-    */
 
     XLSX.writeFile(
         libro,
-        nombreArchivo
+        `Asistencia_Semana_${numeroSemana}.xlsx`
     );
 
 
-    mostrarNotificacion(
-        `Excel descargado: ${nombreArchivo}`
+    mostrarToast(
+        "Excel descargado correctamente"
     );
+
 }
 
 
-/* =========================================================
-   EVENTOS
-========================================================= */
+/* =====================================================
+   MODO OSCURO
+===================================================== */
 
-function configurarEventos() {
+function aplicarModoOscuro() {
 
-    document.getElementById(
-        "btnAgregarEmpleado"
-    ).addEventListener(
-        "click",
-        abrirAgregarEmpleado
-    );
+    const activo =
+        localStorage.getItem(
+            "modo_oscuro"
+        ) === "true";
 
 
-    document.getElementById(
-        "btnGuardarEmpleado"
-    ).addEventListener(
-        "click",
-        guardarEmpleado
-    );
+    if (activo) {
 
+        document.body.classList.add(
+            "dark-mode"
+        );
 
-    document.getElementById(
-        "btnCancelarEmpleado"
-    ).addEventListener(
-        "click",
-        cerrarModalEmpleado
-    );
+    } else {
 
+        document.body.classList.remove(
+            "dark-mode"
+        );
 
-    document.getElementById(
-        "btnCerrarModalEmpleado"
-    ).addEventListener(
-        "click",
-        cerrarModalEmpleado
-    );
+    }
 
-
-    document.getElementById(
-        "btnEditarEmpleado"
-    ).addEventListener(
-        "click",
-        () => {
-
-            if (empleadoSeleccionadoId) {
-
-                abrirEditarEmpleado(
-                    empleadoSeleccionadoId
-                );
-            }
-        }
-    );
-
-
-    document.getElementById(
-        "btnEliminarEmpleado"
-    ).addEventListener(
-        "click",
-        () => {
-
-            if (empleadoSeleccionadoId) {
-
-                eliminarEmpleado(
-                    empleadoSeleccionadoId
-                );
-            }
-        }
-    );
-
-
-    document.getElementById(
-        "btnSemanaAnterior"
-    ).addEventListener(
-        "click",
-        () => {
-
-            semanaActual =
-                crearFecha(
-                    semanaActual,
-                    -7
-                );
-
-            cerrarEditor();
-
-            renderizarSemana();
-        }
-    );
-
-
-    document.getElementById(
-        "btnSemanaSiguiente"
-    ).addEventListener(
-        "click",
-        () => {
-
-            semanaActual =
-                crearFecha(
-                    semanaActual,
-                    7
-                );
-
-            cerrarEditor();
-
-            renderizarSemana();
-        }
-    );
-
-
-    document.getElementById(
-        "btnEstaSemana"
-    ).addEventListener(
-        "click",
-        () => {
-
-            semanaActual =
-                obtenerInicioSemana(
-                    new Date()
-                );
-
-            cerrarEditor();
-
-            renderizarSemana();
-        }
-    );
-
-
-    document.getElementById(
-        "btnCerrarEditor"
-    ).addEventListener(
-        "click",
-        cerrarEditor
-    );
-
-
-    document.getElementById(
-        "btnGuardarAsistencia"
-    ).addEventListener(
-        "click",
-        guardarAsistencia
-    );
-
-
-    document.getElementById(
-        "btnRestaurarHorario"
-    ).addEventListener(
-        "click",
-        restaurarHorario
-    );
-
-
-    document.getElementById(
-        "estadoAsistencia"
-    ).addEventListener(
-        "change",
-        actualizarCamposEstado
-    );
-
-
-    document.getElementById(
-        "buscarEmpleado"
-    ).addEventListener(
-        "input",
-        renderizarEmpleados
-    );
-
-
-    /*
-       BOTÓN EXCEL
-    */
-
-    document.getElementById(
-        "btnDescargarExcel"
-    ).addEventListener(
-        "click",
-        descargarExcel
-    );
-
-
-    /*
-       CERRAR MODAL AL HACER CLICK
-       FUERA DEL CONTENIDO
-    */
-
-    document.getElementById(
-        "modalEmpleado"
-    ).addEventListener(
-        "click",
-        evento => {
-
-            if (
-                evento.target.id ===
-                "modalEmpleado"
-            ) {
-
-                cerrarModalEmpleado();
-            }
-        }
-    );
-
-
-    /*
-       ESCAPE
-    */
-
-    document.addEventListener(
-        "keydown",
-        evento => {
-
-            if (
-                evento.key === "Escape"
-            ) {
-
-                cerrarModalEmpleado();
-
-                cerrarEditor();
-            }
-        }
-    );
 }
 
 
-/* =========================================================
-   NOTIFICACIONES
-========================================================= */
+/* =====================================================
+   NAVEGACIÓN
+===================================================== */
 
-function mostrarNotificacion(
+function cambiarSemana(
+    cantidad
+) {
+
+    fechaInicioSemana =
+        crearFecha(
+            fechaInicioSemana,
+            cantidad * 7
+        );
+
+
+    renderizarSemana();
+
+}
+
+
+function irSemanaActual() {
+
+    fechaInicioSemana =
+        obtenerInicioSemana(
+            new Date()
+        );
+
+
+    renderizarSemana();
+
+}
+
+
+/* =====================================================
+   TOAST
+===================================================== */
+
+function mostrarToast(
     mensaje
 ) {
 
-    const elemento =
+    const toast =
         document.getElementById(
-            "notificacion"
+            "toast"
         );
 
 
-    elemento.textContent =
+    toast.textContent =
         mensaje;
 
 
-    elemento.classList.add(
-        "mostrar"
+    toast.classList.add(
+        "show"
     );
 
 
-    clearTimeout(
-        mostrarNotificacion.timeout
+    setTimeout(
+        () => {
+
+            toast.classList.remove(
+                "show"
+            );
+
+        },
+        3000
     );
 
+}
 
-    mostrarNotificacion.timeout =
-        setTimeout(
+
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
+
+function escapeHtml(
+    texto
+) {
+
+    const div =
+        document.createElement(
+            "div"
+        );
+
+
+    div.textContent =
+        texto;
+
+
+    return div.innerHTML;
+
+}
+
+
+/* =====================================================
+   RENDER GENERAL
+===================================================== */
+
+function renderizarTodo() {
+
+    renderizarEmpleados();
+
+    renderizarSemana();
+
+}
+
+
+/* =====================================================
+   EVENTOS
+===================================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        cargarDatos();
+
+        aplicarModoOscuro();
+
+
+        if (
+            datos.empleados.length &&
+            !empleadoSeleccionadoId
+        ) {
+
+            empleadoSeleccionadoId =
+                datos.empleados[0].id;
+
+        }
+
+
+        renderizarTodo();
+
+
+        document.getElementById(
+            "btnNuevoEmpleado"
+        ).addEventListener(
+            "click",
+            abrirNuevoEmpleado
+        );
+
+
+        document.getElementById(
+            "cerrarModalEmpleado"
+        ).addEventListener(
+            "click",
+            () => cerrarModal(
+                "modalEmpleado"
+            )
+        );
+
+
+        document.getElementById(
+            "cancelarEmpleado"
+        ).addEventListener(
+            "click",
+            () => cerrarModal(
+                "modalEmpleado"
+            )
+        );
+
+
+        document.getElementById(
+            "formEmpleado"
+        ).addEventListener(
+            "submit",
+            procesarEmpleado
+        );
+
+
+        document.getElementById(
+            "cerrarModalAsistencia"
+        ).addEventListener(
+            "click",
+            () => cerrarModal(
+                "modalAsistencia"
+            )
+        );
+
+
+        document.getElementById(
+            "cancelarAsistencia"
+        ).addEventListener(
+            "click",
+            () => cerrarModal(
+                "modalAsistencia"
+            )
+        );
+
+
+        document.getElementById(
+            "formAsistencia"
+        ).addEventListener(
+            "submit",
+            guardarAsistencia
+        );
+
+
+        document.getElementById(
+            "btnRestaurarHorario"
+        ).addEventListener(
+            "click",
+            restaurarHorario
+        );
+
+
+        document.getElementById(
+            "buscarEmpleado"
+        ).addEventListener(
+            "input",
+            renderizarEmpleados
+        );
+
+
+        document.getElementById(
+            "btnSemanaAnterior"
+        ).addEventListener(
+            "click",
+            () => cambiarSemana(-1)
+        );
+
+
+        document.getElementById(
+            "btnSemanaSiguiente"
+        ).addEventListener(
+            "click",
+            () => cambiarSemana(1)
+        );
+
+
+        document.getElementById(
+            "btnSemanaActual"
+        ).addEventListener(
+            "click",
+            irSemanaActual
+        );
+
+
+        document.getElementById(
+            "btnDescargarExcel"
+        ).addEventListener(
+            "click",
+            descargarExcel
+        );
+
+
+        window.addEventListener(
+            "storage",
             () => {
 
-                elemento.classList.remove(
-                    "mostrar"
-                );
+                cargarDatos();
 
-            },
-            3000
+                aplicarModoOscuro();
+
+                renderizarTodo();
+
+            }
         );
-}
 
 
-/* =========================================================
-   SEGURIDAD HTML
-========================================================= */
+        document.addEventListener(
+            "click",
+            event => {
 
-function escapeHtml(texto) {
+                if (
+                    event.target.classList.contains(
+                        "modal-overlay"
+                    )
+                ) {
 
-    return String(texto)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-}
+                    event.target.classList.remove(
+                        "show"
+                    );
+
+                }
+
+            }
+        );
+
+    }
+);

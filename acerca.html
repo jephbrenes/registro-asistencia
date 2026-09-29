@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="theme-color"
+        content="#111111">
+
+    <title>Acerca de - Asistencia</title>
+
+    <link
+        rel="stylesheet"
+        href="estilos.css">
+
+</head>
+
+
+<body class="about-page">
+
+
+<header class="topbar">
+
+    <div class="topbar-left">
+
+        <button
+            class="back-button"
+            onclick="window.location.href='configuracion.html'">
+            ←
+        </button>
+
+        <div class="app-icon">
+            ℹ️
+        </div>
+
+        <div>
+
+            <h1>Acerca de</h1>
+
+            <span>
+                Información
+            </span>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<main class="about-container">
+
+    <div class="about-logo">
+        ✔️
+    </div>
+
+
+    <h1>
+        Registro de Asistencia
+    </h1>
+
+    <p class="about-version">
+        Versión 1.0.0
+    </p>
+
+
+    <div class="about-description">
+
+        <p>
+            Sistema para registrar y controlar la asistencia
+            de los empleados de forma sencilla.
+        </p>
+
+        <p>
+            Permite consultar horarios, registrar incidencias,
+            calcular balances semanales y generar reportes
+            en Excel.
+        </p>
+
+    </div>
+
+
+    <div class="about-features">
+
+        <div>
+            <span>✓</span>
+            Registro de asistencia
+        </div>
+
+        <div>
+            <span>✓</span>
+            Control de horas extra
+        </div>
+
+        <div>
+            <span>✓</span>
+            Configuración de horarios
+        </div>
+
+        <div>
+            <span>✓</span>
+            Cálculo de almuerzo
+        </div>
+
+        <div>
+            <span>✓</span>
+            Reportes Excel
+        </div>
+
+    </div>
+
+
+    <div class="about-footer">
+
+        <p>
+            © 2026 Registro de Asistencia
+        </p>
+
+        <button
+            class="btn-secondary"
+            onclick="window.location.href='index.html'">
+
+            ← Volver al sistema
+
+        </button>
+
+    </div>
+
+</main>
+
+
+<script>
+
+const modoOscuro =
+    localStorage.getItem("modo_oscuro") === "true";
+
+if (modoOscuro) {
+    document.body.classList.add("dark-mode");
+}
+
+</script>
+
+</body>
+</html>
