@@ -1,10 +1,32 @@
+/* =========================================================
+   RESET
+========================================================= */
+
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
+html {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+
+/* =========================================================
+   VARIABLES
+========================================================= */
+
 :root {
+
     --bg: #f5f5f7;
     --surface: #ffffff;
     --surface-2: #f1f1f3;
@@ -26,20 +48,17 @@
     --orange: #c76b00;
     --orange-bg: #fff5e6;
 
-    --shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    --shadow: 0 10px 30px rgba(0, 0, 0, .06);
 
     --radius: 18px;
 }
 
-html {
-    width: 100%;
-    min-height: 100%;
-    overflow-x: hidden;
-}
+
+/* =========================================================
+   BODY
+========================================================= */
 
 body {
-    width: 100%;
-    min-height: 100vh;
 
     font-family:
         -apple-system,
@@ -50,14 +69,16 @@ body {
         sans-serif;
 
     background: var(--bg);
+
     color: var(--text);
 
-    transition:
-        background 0.25s ease,
-        color 0.25s ease;
+    min-height: 100vh;
 
-    overflow-x: hidden;
+    transition:
+        background .25s ease,
+        color .25s ease;
 }
+
 
 button,
 input,
@@ -70,85 +91,137 @@ button {
     cursor: pointer;
 }
 
-img {
-    max-width: 100%;
-}
 
-/* =========================================
+/* =========================================================
    TOPBAR
-========================================= */
+========================================================= */
 
 .topbar {
-    height: 76px;
+
+    min-height: 76px;
 
     background: var(--surface);
 
     border-bottom: 1px solid var(--border);
 
     display: flex;
+
     align-items: center;
+
     justify-content: space-between;
+
+    gap: 15px;
 
     padding: 0 28px;
 
     position: sticky;
+
     top: 0;
 
     z-index: 20;
+
 }
 
+
 .topbar-left {
+
     display: flex;
+
     align-items: center;
 
     gap: 12px;
 
     min-width: 0;
+
+    flex: 1;
 }
 
+
 .app-icon {
+
+    flex: 0 0 42px;
+
     width: 42px;
-    min-width: 42px;
+
     height: 42px;
 
     border-radius: 12px;
 
     background: var(--primary);
+
     color: white;
 
     display: flex;
+
     align-items: center;
+
     justify-content: center;
 
     font-size: 22px;
+
     font-weight: 700;
 }
 
-.topbar h1 {
-    font-size: 19px;
-    line-height: 1.1;
+
+.topbar-left > div:last-child {
+
+    min-width: 0;
 }
+
+
+.topbar h1 {
+
+    font-size: 19px;
+
+    line-height: 1.1;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
 
 .topbar-left span {
+
+    display: block;
+
     color: var(--text-secondary);
+
     font-size: 12px;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
 }
 
+
 .topbar-actions {
+
     display: flex;
+
+    align-items: center;
+
     gap: 10px;
+
     flex-shrink: 0;
 }
 
-/* =========================================
+
+/* =========================================================
    BOTONES
-========================================= */
+========================================================= */
 
 .btn-primary,
 .btn-secondary,
 .btn-excel,
 .btn-danger-outline {
+
     border: 0;
+
     border-radius: 12px;
 
     padding: 11px 16px;
@@ -156,33 +229,62 @@ img {
     font-weight: 600;
 
     transition:
-        transform 0.2s ease,
-        background 0.2s ease,
-        border-color 0.2s ease;
+        transform .2s ease,
+        background .2s ease,
+        border-color .2s ease;
+
 }
 
+
 .btn-primary {
+
     background: var(--primary);
+
     color: var(--primary-text);
 }
 
+
 .btn-primary:hover {
+
     transform: translateY(-1px);
 }
 
+
 .btn-secondary {
+
     background: var(--surface-2);
+
     color: var(--text);
 
     border: 1px solid var(--border);
+
 }
 
+
+.btn-secondary:hover {
+
+    background: var(--border);
+}
+
+
 .btn-excel {
+
     background: #16803c;
+
     color: white;
 }
 
+
+.btn-excel:hover {
+
+    background: #116b31;
+
+    transform: translateY(-1px);
+}
+
+
 .btn-danger-outline {
+
     background: transparent;
 
     border: 1px solid #e8b0aa;
@@ -190,13 +292,17 @@ img {
     color: var(--red);
 }
 
+
 .back-button {
+
     width: 40px;
+
     height: 40px;
 
     border: 0;
 
     background: var(--surface-2);
+
     color: var(--text);
 
     border-radius: 10px;
@@ -204,69 +310,127 @@ img {
     font-size: 20px;
 }
 
-/* =========================================
+
+/* =========================================================
+   BOTONES DE LA BARRA SUPERIOR
+========================================================= */
+
+/*
+   IMPORTANTE:
+   No usamos font-size: 0 aquí.
+   Así el ⚙️ y el 📊 nunca desaparecen.
+*/
+
+.topbar-actions .btn-secondary,
+.topbar-actions .btn-excel {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    white-space: nowrap;
+}
+
+
+.topbar-actions .btn-secondary span,
+.topbar-actions .btn-excel span {
+
+    display: inline;
+}
+
+
+/* =========================================================
    APP
-========================================= */
+========================================================= */
 
 .app-container {
-    width: 100%;
 
     display: grid;
+
     grid-template-columns: 300px minmax(0, 1fr);
 
     min-height: calc(100vh - 76px);
+
+    width: 100%;
+
+    max-width: 100%;
 }
 
-/* =========================================
+
+/* =========================================================
    SIDEBAR
-========================================= */
+========================================================= */
 
 .sidebar {
-    min-width: 0;
 
     background: var(--surface);
 
     border-right: 1px solid var(--border);
 
     padding: 22px;
+
+    min-width: 0;
 }
 
+
 .sidebar-header {
+
     display: flex;
 
     justify-content: space-between;
+
     align-items: center;
+
+    gap: 10px;
 
     margin-bottom: 20px;
 }
 
+
 .sidebar-header h2 {
+
     font-size: 18px;
 }
 
+
 .sidebar-header span {
+
     color: var(--text-secondary);
+
     font-size: 12px;
 }
 
+
 .btn-add {
+
+    flex: 0 0 40px;
+
     width: 40px;
+
     height: 40px;
 
     border: 0;
+
     border-radius: 12px;
 
     background: var(--primary);
+
     color: white;
 
     font-size: 25px;
+
     line-height: 1;
 }
 
+
 .search-box {
-    width: 100%;
 
     display: flex;
+
     align-items: center;
 
     gap: 8px;
@@ -280,19 +444,29 @@ img {
     border-radius: 12px;
 
     margin-bottom: 16px;
+
+    min-width: 0;
 }
 
+
 .search-box span {
+
+    flex: 0 0 auto;
+
     font-size: 20px;
+
     color: var(--text-secondary);
 }
 
+
 .search-box input {
+
     width: 100%;
 
     min-width: 0;
 
     border: 0;
+
     outline: 0;
 
     background: transparent;
@@ -300,7 +474,9 @@ img {
     color: var(--text);
 }
 
+
 .lista-empleados {
+
     display: flex;
 
     flex-direction: column;
@@ -310,10 +486,11 @@ img {
     min-width: 0;
 }
 
+
 .employee-item {
-    width: 100%;
 
     display: flex;
+
     align-items: center;
 
     gap: 10px;
@@ -324,40 +501,58 @@ img {
 
     cursor: pointer;
 
-    transition: 0.2s;
+    transition: .2s;
+
+    min-width: 0;
 }
+
 
 .employee-item:hover {
+
     background: var(--surface-2);
 }
+
 
 .employee-item.active {
+
     background: var(--surface-2);
 }
 
+
 .employee-avatar {
+
     min-width: 40px;
+
     width: 40px;
+
     height: 40px;
 
     border-radius: 50%;
 
     background: var(--primary);
+
     color: white;
 
     display: flex;
+
     align-items: center;
+
     justify-content: center;
 
     font-weight: 700;
 }
 
+
 .employee-info {
+
     min-width: 0;
+
     flex: 1;
 }
 
+
 .employee-info strong {
+
     display: block;
 
     font-size: 14px;
@@ -369,7 +564,9 @@ img {
     text-overflow: ellipsis;
 }
 
+
 .employee-info span {
+
     display: block;
 
     color: var(--text-secondary);
@@ -379,37 +576,50 @@ img {
     margin-top: 2px;
 }
 
+
 .employee-actions {
+
     display: flex;
 
     gap: 2px;
 
     opacity: 0;
 
-    transition: 0.2s;
+    transition: .2s;
+
+    flex-shrink: 0;
 }
+
 
 .employee-item:hover .employee-actions,
 .employee-item.active .employee-actions {
+
     opacity: 1;
 }
 
+
 .icon-btn {
+
     border: 0;
 
     background: transparent;
 
     width: 28px;
+
     height: 28px;
 
     border-radius: 8px;
 }
 
+
 .icon-btn:hover {
+
     background: var(--border);
 }
 
+
 .no-employees {
+
     text-align: center;
 
     padding: 30px 10px;
@@ -417,33 +627,41 @@ img {
     color: var(--text-secondary);
 }
 
+
 .no-employees div {
+
     font-size: 30px;
 
     margin-bottom: 8px;
 }
 
-/* =========================================
+
+/* =========================================================
    CONTENT
-========================================= */
+========================================================= */
 
 .content {
-    width: 100%;
-    max-width: 1500px;
-
-    min-width: 0;
 
     padding: 28px;
+
+    max-width: 1500px;
+
+    width: 100%;
+
+    min-width: 0;
 
     margin: 0 auto;
 
     overflow: hidden;
 }
 
+
 .content-header {
+
     display: flex;
 
     justify-content: space-between;
+
     align-items: center;
 
     gap: 20px;
@@ -453,18 +671,24 @@ img {
     min-width: 0;
 }
 
+
 .content-header > div:first-child {
+
     min-width: 0;
 }
 
+
 .content-header h2 {
+
     font-size: 25px;
 
     overflow-wrap: anywhere;
 }
 
+
 .content-header p,
 .content-header > div > p {
+
     color: var(--text-secondary);
 
     font-size: 13px;
@@ -472,11 +696,13 @@ img {
     margin-top: 4px;
 }
 
-/* =========================================
-   NAVEGACIÓN DE SEMANA
-========================================= */
+
+/* =========================================================
+   NAVEGACIÓN DE SEMANAS
+========================================================= */
 
 .week-navigation {
+
     display: flex;
 
     align-items: center;
@@ -486,9 +712,12 @@ img {
     flex-shrink: 0;
 }
 
+
 .week-btn {
+
+    flex: 0 0 38px;
+
     width: 38px;
-    min-width: 38px;
 
     height: 38px;
 
@@ -503,53 +732,78 @@ img {
     font-size: 24px;
 
     display: flex;
+
     align-items: center;
+
     justify-content: center;
 }
 
+
+.week-btn:hover {
+
+    background: var(--surface-2);
+}
+
+
 .week-info {
+
     text-align: center;
 
     min-width: 130px;
 
+    max-width: 100%;
+
     overflow: hidden;
 }
 
+
 .week-info strong {
+
     display: block;
 
     font-size: 14px;
 
     white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
 }
 
+
 .week-info span {
+
     color: var(--text-secondary);
 
     font-size: 11px;
 
     white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
 }
 
-/* =========================================
+
+/* =========================================================
    SUMMARY
-========================================= */
+========================================================= */
 
 .summary-grid {
-    width: 100%;
 
     display: grid;
 
-    grid-template-columns:
-        repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
 
     gap: 14px;
 
     margin-bottom: 28px;
+
+    min-width: 0;
 }
 
+
 .summary-card {
-    min-width: 0;
 
     background: var(--surface);
 
@@ -560,16 +814,22 @@ img {
     padding: 18px;
 
     display: flex;
+
     align-items: center;
 
     gap: 14px;
 
     box-shadow: var(--shadow);
+
+    min-width: 0;
 }
 
+
 .summary-icon {
+
+    flex: 0 0 45px;
+
     width: 45px;
-    min-width: 45px;
 
     height: 45px;
 
@@ -578,13 +838,17 @@ img {
     background: var(--surface-2);
 
     display: flex;
+
     align-items: center;
+
     justify-content: center;
 
     font-size: 20px;
 }
 
+
 .summary-card small {
+
     display: block;
 
     color: var(--text-secondary);
@@ -594,51 +858,62 @@ img {
     margin-bottom: 5px;
 }
 
+
 .summary-card strong {
+
     font-size: 20px;
 
     overflow-wrap: anywhere;
 }
 
+
 .positive {
+
     color: var(--green) !important;
 }
 
+
 .negative {
+
     color: var(--red) !important;
 }
 
+
 .neutral {
+
     color: var(--text) !important;
 }
 
-/* =========================================
-   WEEK
-========================================= */
+
+/* =========================================================
+   WEEK / DÍAS
+========================================================= */
 
 .week-title {
-    width: 100%;
 
     margin-bottom: 14px;
+
+    min-width: 0;
 }
 
+
 .week-title h3 {
+
     font-size: 18px;
 }
 
+
 .week-title span {
+
     color: var(--text-secondary);
 
     font-size: 12px;
 }
 
-/* =========================================
-   GRID DE LOS 7 DÍAS
-========================================= */
+
+/* Escritorio */
 
 .week-grid {
-    width: 100%;
-    max-width: 100%;
 
     display: grid;
 
@@ -647,21 +922,24 @@ img {
 
     gap: 10px;
 
-    overflow-x: auto;
-    overflow-y: hidden;
+    width: 100%;
 
-    padding-bottom: 8px;
+    max-width: 100%;
 
     min-width: 0;
+
+    overflow-x: auto;
+
+    overflow-y: hidden;
+
+    padding: 2px 2px 10px;
 
     -webkit-overflow-scrolling: touch;
 }
 
-/* =========================================
-   TARJETA DE DÍA
-========================================= */
 
 .day-card {
+
     min-width: 150px;
 
     background: var(--surface);
@@ -675,29 +953,38 @@ img {
     cursor: pointer;
 
     transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease,
-        background 0.2s ease;
+        transform .2s ease,
+        box-shadow .2s ease;
+
 }
 
+
 .day-card:hover {
+
     transform: translateY(-2px);
 
     box-shadow: var(--shadow);
 }
 
+
 .day-card.today {
+
     border: 2px solid var(--primary);
 }
 
+
 .day-card.sunday {
-    opacity: 0.65;
+
+    opacity: .65;
 }
 
+
 .day-header {
+
     display: flex;
 
     justify-content: space-between;
+
     align-items: center;
 
     gap: 8px;
@@ -705,35 +992,41 @@ img {
     margin-bottom: 15px;
 }
 
+
 .day-header strong {
+
     display: block;
 
     font-size: 13px;
-
-    white-space: nowrap;
 }
 
+
 .day-header span:not(.today-badge) {
+
     color: var(--text-secondary);
 
     font-size: 11px;
-
-    white-space: nowrap;
 }
 
+
 .today-badge {
+
     background: var(--primary);
 
-    color: var(--primary-text);
+    color: white;
 
     font-size: 8px;
 
     padding: 4px 6px;
 
     border-radius: 5px;
+
+    white-space: nowrap;
 }
 
+
 .day-schedule {
+
     display: flex;
 
     justify-content: space-between;
@@ -751,7 +1044,9 @@ img {
     margin-bottom: 12px;
 }
 
+
 .day-status {
+
     display: flex;
 
     align-items: center;
@@ -765,9 +1060,12 @@ img {
     margin-bottom: 10px;
 }
 
+
 .status-dot {
+
+    flex: 0 0 7px;
+
     width: 7px;
-    min-width: 7px;
 
     height: 7px;
 
@@ -776,7 +1074,9 @@ img {
     border-radius: 50%;
 }
 
+
 .day-balance {
+
     font-size: 15px;
 
     font-weight: 700;
@@ -786,7 +1086,9 @@ img {
     overflow-wrap: anywhere;
 }
 
+
 .day-edit {
+
     width: 100%;
 
     border: 1px solid var(--border);
@@ -802,16 +1104,21 @@ img {
     font-size: 11px;
 }
 
-/* =========================================
-   EMPTY STATE
-========================================= */
+
+.day-edit:hover {
+
+    background: var(--surface-2);
+}
+
 
 .empty-state {
+
     min-height: 350px;
 
     display: none;
 
     align-items: center;
+
     justify-content: center;
 
     flex-direction: column;
@@ -821,32 +1128,39 @@ img {
     color: var(--text-secondary);
 }
 
+
 .empty-icon {
+
     font-size: 50px;
 
     margin-bottom: 10px;
 }
 
+
 .empty-state h3 {
+
     color: var(--text);
 
     margin-bottom: 5px;
 }
 
-/* =========================================
+
+/* =========================================================
    MODALS
-========================================= */
+========================================================= */
 
 .modal-overlay {
+
     position: fixed;
 
     inset: 0;
 
-    background: rgba(0, 0, 0, 0.45);
+    background: rgba(0, 0, 0, .45);
 
     display: none;
 
     align-items: center;
+
     justify-content: center;
 
     padding: 20px;
@@ -854,11 +1168,15 @@ img {
     z-index: 100;
 }
 
+
 .modal-overlay.show {
+
     display: flex;
 }
 
+
 .modal {
+
     width: 100%;
 
     max-width: 500px;
@@ -877,17 +1195,20 @@ img {
 
     position: relative;
 
-    box-shadow:
-        0 25px 80px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 25px 80px rgba(0, 0, 0, .2);
 }
 
+
 .modal-close {
+
     position: absolute;
 
     right: 18px;
+
     top: 15px;
 
     width: 35px;
+
     height: 35px;
 
     border: 0;
@@ -901,7 +1222,9 @@ img {
     font-size: 20px;
 }
 
+
 .modal-header {
+
     display: flex;
 
     align-items: center;
@@ -909,13 +1232,12 @@ img {
     gap: 12px;
 
     margin-bottom: 25px;
-
-    padding-right: 35px;
 }
 
+
 .modal-icon {
+
     width: 45px;
-    min-width: 45px;
 
     height: 45px;
 
@@ -924,17 +1246,23 @@ img {
     background: var(--surface-2);
 
     display: flex;
+
     align-items: center;
+
     justify-content: center;
 
     font-size: 20px;
 }
 
+
 .modal-header h2 {
+
     font-size: 19px;
 }
 
+
 .modal-header p {
+
     color: var(--text-secondary);
 
     font-size: 12px;
@@ -942,7 +1270,9 @@ img {
     margin-top: 3px;
 }
 
+
 .modal label {
+
     display: block;
 
     color: var(--text-secondary);
@@ -954,9 +1284,11 @@ img {
     margin-bottom: 15px;
 }
 
+
 .modal input,
 .modal select,
 .modal textarea {
+
     width: 100%;
 
     margin-top: 7px;
@@ -974,20 +1306,25 @@ img {
     outline: none;
 }
 
+
 .modal textarea {
+
     resize: vertical;
 }
 
+
 .form-grid {
+
     display: grid;
 
-    grid-template-columns:
-        repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr 1fr;
 
     gap: 12px;
 }
 
+
 .modal-actions {
+
     display: flex;
 
     justify-content: flex-end;
@@ -999,11 +1336,13 @@ img {
     flex-wrap: wrap;
 }
 
-/* =========================================
+
+/* =========================================================
    CONFIGURACIÓN
-========================================= */
+========================================================= */
 
 .settings-container {
+
     width: min(900px, calc(100% - 32px));
 
     margin: 30px auto;
@@ -1015,7 +1354,9 @@ img {
     gap: 18px;
 }
 
+
 .settings-card {
+
     background: var(--surface);
 
     border: 1px solid var(--border);
@@ -1027,7 +1368,9 @@ img {
     box-shadow: var(--shadow);
 }
 
+
 .settings-card-header {
+
     display: flex;
 
     align-items: center;
@@ -1035,11 +1378,16 @@ img {
     gap: 14px;
 
     position: relative;
+
+    min-width: 0;
 }
 
+
 .settings-card-icon {
+
+    flex: 0 0 48px;
+
     width: 48px;
-    min-width: 48px;
 
     height: 48px;
 
@@ -1048,17 +1396,23 @@ img {
     background: var(--surface-2);
 
     display: flex;
+
     align-items: center;
+
     justify-content: center;
 
     font-size: 21px;
 }
 
+
 .settings-card h2 {
+
     font-size: 18px;
 }
 
+
 .settings-card-header p {
+
     color: var(--text-secondary);
 
     font-size: 12px;
@@ -1066,16 +1420,21 @@ img {
     margin-top: 4px;
 }
 
+
 .schedule-list {
+
     margin-top: 25px;
 
     border-top: 1px solid var(--border);
 }
 
+
 .schedule-row {
+
     display: flex;
 
     justify-content: space-between;
+
     align-items: center;
 
     gap: 20px;
@@ -1085,19 +1444,25 @@ img {
     border-bottom: 1px solid var(--border);
 }
 
+
 .day-name strong {
+
     display: block;
 
     font-size: 14px;
 }
 
+
 .day-name span {
+
     font-size: 11px;
 
     color: var(--text-secondary);
 }
 
+
 .schedule-input {
+
     display: flex;
 
     align-items: center;
@@ -1105,14 +1470,18 @@ img {
     gap: 10px;
 }
 
+
 .schedule-input label {
+
     color: var(--text-secondary);
 
     font-size: 10px;
 }
 
+
 .schedule-input input,
 .lunch-controls input {
+
     display: block;
 
     margin-top: 5px;
@@ -1128,7 +1497,9 @@ img {
     border-radius: 9px;
 }
 
+
 .lunch-section {
+
     margin-top: 25px;
 
     padding-top: 25px;
@@ -1136,7 +1507,9 @@ img {
     border-top: 1px solid var(--border);
 }
 
+
 .section-title {
+
     display: flex;
 
     gap: 12px;
@@ -1144,15 +1517,21 @@ img {
     align-items: flex-start;
 }
 
+
 .section-title > span {
+
     font-size: 25px;
 }
 
+
 .section-title h3 {
+
     font-size: 16px;
 }
 
+
 .section-title p {
+
     color: var(--text-secondary);
 
     font-size: 12px;
@@ -1160,7 +1539,9 @@ img {
     margin-top: 4px;
 }
 
+
 .lunch-controls {
+
     display: flex;
 
     align-items: flex-end;
@@ -1170,13 +1551,17 @@ img {
     margin-top: 20px;
 }
 
+
 .lunch-controls label {
+
     color: var(--text-secondary);
 
     font-size: 11px;
 }
 
+
 .check-option {
+
     display: flex !important;
 
     align-items: center;
@@ -1186,14 +1571,19 @@ img {
     padding-bottom: 9px;
 }
 
+
 .check-option input {
+
     width: 18px;
+
     height: 18px;
 
     margin: 0;
 }
 
+
 .info-box {
+
     display: flex;
 
     gap: 10px;
@@ -1211,7 +1601,9 @@ img {
     color: var(--text-secondary);
 }
 
+
 .settings-footer {
+
     display: flex;
 
     justify-content: flex-end;
@@ -1219,10 +1611,13 @@ img {
     margin-top: 25px;
 }
 
+
 .dark-mode-option {
+
     display: flex;
 
     justify-content: space-between;
+
     align-items: center;
 
     gap: 20px;
@@ -1234,13 +1629,17 @@ img {
     border-top: 1px solid var(--border);
 }
 
+
 .dark-mode-option strong {
+
     display: block;
 
     font-size: 14px;
 }
 
+
 .dark-mode-option span {
+
     display: block;
 
     color: var(--text-secondary);
@@ -1250,25 +1649,33 @@ img {
     margin-top: 3px;
 }
 
+
 .switch {
+
     position: relative;
 
     display: inline-block;
 
     width: 48px;
-    min-width: 48px;
 
     height: 26px;
+
+    flex-shrink: 0;
 }
 
+
 .switch input {
+
     opacity: 0;
 
     width: 0;
+
     height: 0;
 }
 
+
 .slider {
+
     position: absolute;
 
     inset: 0;
@@ -1277,44 +1684,58 @@ img {
 
     border-radius: 30px;
 
-    transition: 0.25s;
+    transition: .25s;
 }
 
+
 .slider::before {
+
     content: "";
 
     position: absolute;
 
     width: 20px;
+
     height: 20px;
 
     left: 3px;
+
     top: 3px;
 
     background: white;
 
     border-radius: 50%;
 
-    transition: 0.25s;
+    transition: .25s;
 }
 
+
 .switch input:checked + .slider {
+
     background: #111;
 }
 
+
 .switch input:checked + .slider::before {
+
     transform: translateX(22px);
 }
 
+
 .clickable-card {
+
     cursor: pointer;
 }
 
+
 .clickable-card:hover {
+
     transform: translateY(-1px);
 }
 
+
 .card-arrow {
+
     margin-left: auto;
 
     font-size: 22px;
@@ -1322,11 +1743,13 @@ img {
     color: var(--text-secondary);
 }
 
-/* =========================================
+
+/* =========================================================
    ABOUT
-========================================= */
+========================================================= */
 
 .about-container {
+
     width: min(650px, calc(100% - 32px));
 
     margin: 50px auto;
@@ -1344,8 +1767,11 @@ img {
     box-shadow: var(--shadow);
 }
 
+
 .about-logo {
+
     width: 80px;
+
     height: 80px;
 
     margin: 0 auto 20px;
@@ -1357,7 +1783,9 @@ img {
     color: white;
 
     display: flex;
+
     align-items: center;
+
     justify-content: center;
 
     font-size: 40px;
@@ -1365,11 +1793,15 @@ img {
     font-weight: 700;
 }
 
+
 .about-container h1 {
+
     font-size: 25px;
 }
 
+
 .about-version {
+
     color: var(--text-secondary);
 
     font-size: 12px;
@@ -1377,7 +1809,9 @@ img {
     margin-top: 5px;
 }
 
+
 .about-description {
+
     margin: 25px auto;
 
     max-width: 500px;
@@ -1389,15 +1823,18 @@ img {
     line-height: 1.6;
 }
 
+
 .about-description p + p {
+
     margin-top: 10px;
 }
 
+
 .about-features {
+
     display: grid;
 
-    grid-template-columns:
-        repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr 1fr;
 
     gap: 10px;
 
@@ -1406,7 +1843,9 @@ img {
     margin: 25px 0;
 }
 
+
 .about-features div {
+
     padding: 12px;
 
     background: var(--surface-2);
@@ -1416,13 +1855,17 @@ img {
     font-size: 12px;
 }
 
+
 .about-features span {
+
     color: var(--green);
 
     margin-right: 5px;
 }
 
+
 .about-footer {
+
     border-top: 1px solid var(--border);
 
     padding-top: 20px;
@@ -1436,20 +1879,25 @@ img {
     gap: 15px;
 }
 
+
 .about-footer p {
+
     color: var(--text-secondary);
 
     font-size: 11px;
 }
 
-/* =========================================
+
+/* =========================================================
    TOAST
-========================================= */
+========================================================= */
 
 .toast {
+
     position: fixed;
 
     bottom: 25px;
+
     left: 50%;
 
     transform: translate(-50%, 100px);
@@ -1468,59 +1916,84 @@ img {
 
     opacity: 0;
 
-    transition: 0.3s;
+    transition: .3s;
 }
 
+
 .toast.show {
+
     opacity: 1;
 
     transform: translate(-50%, 0);
 }
 
-/* =========================================
+
+/* =========================================================
    MODO OSCURO
-========================================= */
+========================================================= */
 
 body.dark-mode {
+
     --bg: #0f0f10;
+
     --surface: #18181a;
+
     --surface-2: #232326;
 
     --text: #f5f5f7;
+
     --text-secondary: #a1a1a6;
 
     --border: #343438;
 
     --primary: #f5f5f7;
+
     --primary-text: #111111;
 
     --green: #55d98b;
+
     --green-bg: #173522;
 
     --red: #ff7068;
+
     --red-bg: #3a1917;
 
     --orange: #ffb454;
+
     --orange-bg: #3a2915;
 
-    --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    --shadow: 0 10px 30px rgba(0, 0, 0, .35);
 
     color-scheme: dark;
 }
 
+
+/* =========================================================
+   DARK - TOPBAR
+========================================================= */
+
 body.dark-mode .topbar {
+
     background: var(--surface);
 
     border-color: var(--border);
 }
 
+
 body.dark-mode .app-icon {
+
     background: #f5f5f7;
 
     color: #111111;
 }
 
+
+/* =========================================================
+   DARK - BOTONES
+========================================================= */
+
 body.dark-mode .btn-secondary {
+
     background: #252527;
 
     border-color: #3a3a3e;
@@ -1528,13 +2001,23 @@ body.dark-mode .btn-secondary {
     color: #f5f5f7;
 }
 
+
+body.dark-mode .btn-secondary:hover {
+
+    background: #303034;
+}
+
+
 body.dark-mode .btn-primary {
+
     background: #f5f5f7;
 
     color: #111111;
 }
 
+
 body.dark-mode .btn-danger-outline {
+
     background: transparent;
 
     border-color: #713c39;
@@ -1542,35 +2025,61 @@ body.dark-mode .btn-danger-outline {
     color: #ff7068;
 }
 
+
+/* =========================================================
+   DARK - BUSCADOR
+========================================================= */
+
 body.dark-mode .search-box {
+
     background: #232326;
 
     border-color: #343438;
 }
 
+
 body.dark-mode .search-box input {
+
     color: #f5f5f7;
 }
 
+
 body.dark-mode .search-box input::placeholder {
+
     color: #77777d;
 }
 
+
+/* =========================================================
+   DARK - EMPLEADOS
+========================================================= */
+
 body.dark-mode .employee-item:hover {
+
     background: #252527;
 }
 
+
 body.dark-mode .employee-item.active {
+
     background: #29292c;
 }
 
+
 body.dark-mode .employee-avatar {
+
     background: #f5f5f7;
 
     color: #111111;
 }
 
+
+/* =========================================================
+   DARK - SEMANAS
+========================================================= */
+
 body.dark-mode .week-btn {
+
     background: #19191b;
 
     border-color: #343438;
@@ -1578,43 +2087,67 @@ body.dark-mode .week-btn {
     color: #f5f5f7;
 }
 
+
 body.dark-mode .week-btn:hover {
+
     background: #29292c;
 }
 
+
+/* =========================================================
+   DARK - RESUMEN
+========================================================= */
+
 body.dark-mode .summary-card {
+
     background: #18181a;
 
     border-color: #343438;
 }
 
+
 body.dark-mode .summary-icon {
+
     background: #252527;
 
     color: #f5f5f7;
 }
 
+
+/* =========================================================
+   DARK - DÍAS
+========================================================= */
+
 body.dark-mode .day-card {
+
     background: #18181a;
 
     border-color: #343438;
 }
 
+
 body.dark-mode .day-card:hover {
+
     background: #1e1e20;
 }
 
+
 body.dark-mode .day-card.today {
+
     border-color: #f5f5f7;
 }
 
+
 body.dark-mode .day-schedule {
+
     background: #242427;
 
     color: #f5f5f7;
 }
 
+
 body.dark-mode .day-edit {
+
     background: #1c1c1f;
 
     border-color: #38383c;
@@ -1622,29 +2155,43 @@ body.dark-mode .day-edit {
     color: #f5f5f7;
 }
 
+
 body.dark-mode .day-edit:hover {
+
     background: #29292c;
 }
 
+
+/* =========================================================
+   DARK - MODALES
+========================================================= */
+
 body.dark-mode .modal-overlay {
-    background: rgba(0, 0, 0, 0.75);
+
+    background: rgba(0, 0, 0, .75);
 }
 
+
 body.dark-mode .modal {
+
     background: #18181a;
 
     color: #f5f5f7;
 }
 
+
 body.dark-mode .modal-close {
+
     background: #29292c;
 
     color: #f5f5f7;
 }
+
 
 body.dark-mode .modal input,
 body.dark-mode .modal select,
 body.dark-mode .modal textarea {
+
     background: #232326;
 
     border-color: #3a3a3e;
@@ -1652,35 +2199,51 @@ body.dark-mode .modal textarea {
     color: #f5f5f7;
 }
 
+
 body.dark-mode .modal input::placeholder,
 body.dark-mode .modal textarea::placeholder {
+
     color: #77777d;
 }
+
 
 body.dark-mode .modal input:focus,
 body.dark-mode .modal select:focus,
 body.dark-mode .modal textarea:focus {
+
     border-color: #77777d;
 }
 
+
+/* =========================================================
+   DARK - CONFIGURACIÓN
+========================================================= */
+
 body.dark-mode .settings-card {
+
     background: #18181a;
 
     border-color: #343438;
 }
 
+
 body.dark-mode .settings-card-icon {
+
     background: #252527;
 
     color: #f5f5f7;
 }
 
+
 body.dark-mode .schedule-row {
+
     border-color: #303034;
 }
 
+
 body.dark-mode .schedule-input input,
 body.dark-mode .lunch-controls input {
+
     background: #232326;
 
     border-color: #3a3a3e;
@@ -1688,201 +2251,333 @@ body.dark-mode .lunch-controls input {
     color: #f5f5f7;
 }
 
+
 body.dark-mode .schedule-input input:focus,
 body.dark-mode .lunch-controls input:focus {
+
     border-color: #77777d;
 }
 
-body.dark-mode input[type="time"] {
-    color-scheme: dark;
-}
 
-body.dark-mode select {
-    color-scheme: dark;
-}
-
-body.dark-mode .info-box {
-    background: #232326;
-
-    color: #b4b4b9;
-}
-
-body.dark-mode .slider {
-    background: #45454a;
-}
-
-body.dark-mode .switch input:checked + .slider {
-    background: #f5f5f7;
-}
-
-body.dark-mode .switch input:checked + .slider::before {
-    background: #111111;
-}
-
-body.dark-mode .about-container {
-    background: #18181a;
-
-    border-color: #343438;
-}
-
-body.dark-mode .about-logo {
-    background: #f5f5f7;
-
-    color: #111111;
-}
-
-body.dark-mode .about-features div {
-    background: #232326;
-}
-
-body.dark-mode .about-footer {
-    border-color: #343438;
-}
-
-body.dark-mode .back-button {
-    background: #252527;
-
-    color: #f5f5f7;
-}
-
-body.dark-mode .toast {
-    background: #f5f5f7;
-
-    color: #111111;
-}
-
-body.dark-mode .positive {
-    color: #55d98b !important;
-}
-
-body.dark-mode .negative {
-    color: #ff7068 !important;
-}
-
-body.dark-mode .neutral {
-    color: #f5f5f7 !important;
-}
-
-body.dark-mode .schedule-list,
-body.dark-mode .lunch-section,
-body.dark-mode .dark-mode-option {
-    border-color: #303034;
-}
+/* =========================================================
+   DARK - CONTROLES NATIVOS
+========================================================= */
 
 body.dark-mode input,
 body.dark-mode textarea,
 body.dark-mode select,
 body.dark-mode button {
+
     color-scheme: dark;
 }
 
+
 body.dark-mode input[type="checkbox"] {
+
     accent-color: #f5f5f7;
 }
 
+
 body.dark-mode input[type="time"]::-webkit-calendar-picker-indicator {
+
     filter: invert(1);
 }
 
+
 body.dark-mode ::selection {
+
     background: #f5f5f7;
 
     color: #111111;
 }
 
-/* =========================================
-   SCROLLBAR GENERAL
-========================================= */
 
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+body.dark-mode select {
+
+    color-scheme: dark;
 }
 
-::-webkit-scrollbar-track {
+
+body.dark-mode input[type="time"] {
+
+    color-scheme: dark;
+}
+
+
+/* =========================================================
+   DARK - INFO
+========================================================= */
+
+body.dark-mode .info-box {
+
+    background: #232326;
+
+    color: #b4b4b9;
+}
+
+
+/* =========================================================
+   DARK - SWITCH
+========================================================= */
+
+body.dark-mode .slider {
+
+    background: #45454a;
+}
+
+
+body.dark-mode .switch input:checked + .slider {
+
+    background: #f5f5f7;
+}
+
+
+body.dark-mode .switch input:checked + .slider::before {
+
+    background: #111111;
+}
+
+
+/* =========================================================
+   DARK - ACERCA DE
+========================================================= */
+
+body.dark-mode .about-container {
+
+    background: #18181a;
+
+    border-color: #343438;
+}
+
+
+body.dark-mode .about-logo {
+
+    background: #f5f5f7;
+
+    color: #111111;
+}
+
+
+body.dark-mode .about-features div {
+
+    background: #232326;
+}
+
+
+body.dark-mode .about-footer {
+
+    border-color: #343438;
+}
+
+
+/* =========================================================
+   DARK - BOTÓN VOLVER
+========================================================= */
+
+body.dark-mode .back-button {
+
+    background: #252527;
+
+    color: #f5f5f7;
+}
+
+
+/* =========================================================
+   DARK - TOAST
+========================================================= */
+
+body.dark-mode .toast {
+
+    background: #f5f5f7;
+
+    color: #111111;
+}
+
+
+/* =========================================================
+   DARK - ESTADOS
+========================================================= */
+
+body.dark-mode .positive {
+
+    color: #55d98b !important;
+}
+
+
+body.dark-mode .negative {
+
+    color: #ff7068 !important;
+}
+
+
+body.dark-mode .neutral {
+
+    color: #f5f5f7 !important;
+}
+
+
+/* =========================================================
+   DARK - SEPARADORES
+========================================================= */
+
+body.dark-mode .schedule-list,
+body.dark-mode .lunch-section,
+body.dark-mode .dark-mode-option {
+
+    border-color: #303034;
+}
+
+
+/* =========================================================
+   SCROLLBAR
+========================================================= */
+
+body::-webkit-scrollbar {
+
+    width: 10px;
+
+    height: 10px;
+}
+
+
+body::-webkit-scrollbar-track {
+
+    background: var(--bg);
+}
+
+
+body::-webkit-scrollbar-thumb {
+
+    background: var(--border);
+
+    border-radius: 10px;
+}
+
+
+body::-webkit-scrollbar-thumb:hover {
+
+    background: #999;
+}
+
+
+/* =========================================================
+   SCROLLBAR DE LOS DÍAS
+========================================================= */
+
+.week-grid::-webkit-scrollbar {
+
+    height: 7px;
+}
+
+
+.week-grid::-webkit-scrollbar-track {
+
     background: transparent;
 }
 
-::-webkit-scrollbar-thumb {
-    background: #c8c8cc;
+
+.week-grid::-webkit-scrollbar-thumb {
+
+    background: var(--border);
 
     border-radius: 10px;
 }
 
-::-webkit-scrollbar-thumb:hover {
-    background: #99999f;
-}
 
-body.dark-mode::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
+body.dark-mode .week-grid::-webkit-scrollbar-thumb {
 
-body.dark-mode::-webkit-scrollbar-track {
-    background: #101011;
-}
-
-body.dark-mode::-webkit-scrollbar-thumb {
     background: #3a3a3e;
-
-    border-radius: 10px;
 }
 
-body.dark-mode::-webkit-scrollbar-thumb:hover {
-    background: #55555b;
+
+body.dark-mode .week-grid::-webkit-scrollbar-track {
+
+    background: transparent;
 }
 
-/* =========================================
+
+/* =========================================================
    RESPONSIVE - TABLET
-========================================= */
+========================================================= */
 
 @media (max-width: 1100px) {
 
+    .content {
+
+        padding: 24px;
+    }
+
     .week-grid {
+
         grid-template-columns:
             repeat(4, minmax(150px, 1fr));
     }
 
 }
 
-/* =========================================
-   RESPONSIVE - TABLET PEQUEÑA
-========================================= */
+
+/* =========================================================
+   RESPONSIVE - 850px
+========================================================= */
 
 @media (max-width: 850px) {
 
     .app-container {
+
         grid-template-columns: 1fr;
+
     }
+
 
     .sidebar {
+
         border-right: 0;
 
-        border-bottom:
-            1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+
     }
+
 
     .lista-empleados {
+
         display: grid;
 
-        grid-template-columns:
-            repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+
     }
+
 
     .content-header {
+
         flex-direction: column;
 
-        align-items: stretch;
+        align-items: flex-start;
+
     }
+
+
+    .week-navigation {
+
+        width: 100%;
+
+    }
+
 
     .summary-grid {
+
         grid-template-columns: 1fr;
+
     }
 
-    .week-grid {
-        display: flex;
 
-        flex-direction: row;
+    /*
+       En tablet los días empiezan a funcionar
+       como carrusel horizontal.
+    */
+
+    .week-grid {
+
+        display: flex;
 
         flex-wrap: nowrap;
 
@@ -1892,199 +2587,229 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
 
         overflow-y: hidden;
 
-        padding-bottom: 12px;
+        scroll-snap-type: x proximity;
 
-        -webkit-overflow-scrolling: touch;
+        touch-action: pan-x;
+
     }
 
-    .week-grid .day-card {
-        flex: 0 0 190px;
 
-        width: 190px;
+    .day-card {
 
-        min-width: 190px;
+        flex: 0 0 260px;
 
-        max-width: 190px;
+        width: 260px;
+
+        min-width: 260px;
+
+        scroll-snap-align: start;
+
     }
+
 }
 
-/* =========================================
+
+/* =========================================================
    RESPONSIVE - CELULAR
-========================================= */
+========================================================= */
 
 @media (max-width: 600px) {
 
-    /* =====================================
+    /* -------------------------
        TOPBAR
-    ===================================== */
+    ------------------------- */
 
     .topbar {
-        height: auto;
 
         min-height: 70px;
 
+        height: auto;
+
         padding: 12px 15px;
+
     }
+
 
     .topbar-left {
-        min-width: 0;
+
+        gap: 9px;
+
     }
 
-    .topbar-left > div:last-child {
-        min-width: 0;
-    }
-
-    .topbar h1 {
-        font-size: 17px;
-    }
-
-    .topbar-left span {
-        font-size: 10px;
-    }
 
     .app-icon {
+
+        flex-basis: 38px;
+
         width: 38px;
-        min-width: 38px;
 
         height: 38px;
 
-        border-radius: 11px;
+        border-radius: 10px;
 
         font-size: 19px;
+
     }
+
+
+    .topbar h1 {
+
+        font-size: 16px;
+
+    }
+
+
+    .topbar-left span {
+
+        font-size: 10px;
+
+    }
+
 
     .topbar-actions {
-        gap: 5px;
 
-        flex-shrink: 0;
+        gap: 6px;
+
     }
 
-    .topbar-actions button {
-        width: 40px;
-        min-width: 40px;
 
-        height: 40px;
+    /*
+       IMPORTANTE:
+       El ícono permanece visible.
+       Solo ocultamos el texto.
+    */
+
+    .topbar-actions .btn-secondary,
+    .topbar-actions .btn-excel {
+
+        width: 42px;
+
+        min-width: 42px;
+
+        height: 42px;
 
         padding: 0;
 
-        font-size: 0;
+        border-radius: 10px;
+
+        font-size: 20px;
 
         display: flex;
+
         align-items: center;
+
         justify-content: center;
+
     }
 
-    .topbar-actions button:first-letter {
-        font-size: 18px;
+
+    .topbar-actions .btn-secondary span,
+    .topbar-actions .btn-excel span {
+
+        display: none;
+
     }
 
-    /* =====================================
-       APP
-    ===================================== */
 
-    .app-container {
-        width: 100%;
-
-        display: block;
-
-        min-height: auto;
-    }
-
-    /* =====================================
-       SIDEBAR
-    ===================================== */
-
-    .sidebar {
-        width: 100%;
-
-        padding: 15px;
-    }
-
-    .lista-empleados {
-        grid-template-columns: 1fr;
-    }
-
-    /* =====================================
+    /* -------------------------
        CONTENT
-    ===================================== */
+    ------------------------- */
 
     .content {
+
         width: 100%;
+
         max-width: 100%;
 
         padding: 18px 14px;
 
         overflow: hidden;
+
     }
 
-    /* =====================================
-       ENCABEZADO
-    ===================================== */
+
+    .sidebar {
+
+        padding: 15px;
+
+    }
+
+
+    .lista-empleados {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    /* -------------------------
+       HEADER
+    ------------------------- */
 
     .content-header {
+
         width: 100%;
 
-        display: flex;
+        gap: 14px;
 
-        flex-direction: column;
-
-        align-items: stretch;
-
-        gap: 16px;
-
-        margin-bottom: 20px;
     }
 
-    .content-header > div:first-child {
-        width: 100%;
-
-        min-width: 0;
-    }
 
     .content-header h2 {
+
         font-size: 21px;
 
-        line-height: 1.25;
-
-        overflow-wrap: anywhere;
     }
 
-    .content-header p {
-        font-size: 12px;
 
-        line-height: 1.4;
-    }
-
-    /* =====================================
+    /* =====================================================
        SELECTOR DE SEMANA
-    ===================================== */
+    ===================================================== */
 
     .week-navigation {
+
         width: 100%;
-        max-width: 100%;
 
         display: grid;
 
         grid-template-columns:
-            44px minmax(0, 1fr) 44px;
+            42px
+            minmax(0, 1fr)
+            42px;
 
         grid-template-rows:
-            44px 40px;
+            auto
+            auto;
 
         gap: 8px;
 
         align-items: center;
 
-        box-sizing: border-box;
     }
 
-    .week-navigation #btnSemanaAnterior {
+
+    .week-navigation .week-btn {
+
+        width: 42px;
+
+        height: 42px;
+
+        min-width: 42px;
+
+    }
+
+
+    .week-navigation .week-btn:first-child {
+
         grid-column: 1;
 
         grid-row: 1;
+
     }
 
+
     .week-navigation .week-info {
+
         grid-column: 2;
 
         grid-row: 1;
@@ -2093,138 +2818,101 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
 
         min-width: 0;
 
-        display: flex;
-
-        flex-direction: column;
-
-        align-items: center;
-
-        justify-content: center;
-
-        text-align: center;
-
-        overflow: hidden;
     }
 
-    .week-navigation .week-info strong {
-        display: block;
 
-        width: 100%;
+    .week-navigation .week-btn:last-of-type {
 
-        font-size: 15px;
-
-        line-height: 19px;
-
-        white-space: nowrap;
-
-        overflow: hidden;
-
-        text-overflow: ellipsis;
-    }
-
-    .week-navigation .week-info span {
-        display: block;
-
-        width: 100%;
-
-        font-size: 11px;
-
-        line-height: 16px;
-
-        white-space: nowrap;
-
-        overflow: hidden;
-
-        text-overflow: ellipsis;
-    }
-
-    .week-navigation #btnSemanaSiguiente {
         grid-column: 3;
 
         grid-row: 1;
+
     }
 
+
+    /*
+       BOTÓN HOY:
+       Segunda fila completa.
+       Esto evita que se aplaste o se salga
+       de la pantalla.
+    */
+
     .week-navigation #btnSemanaActual {
-        grid-column: 1 / 4;
+
+        grid-column: 1 / -1;
 
         grid-row: 2;
 
         width: 100%;
 
-        height: 40px;
+        min-height: 40px;
 
-        margin: 0;
+        padding: 9px 12px;
+
     }
 
-    .week-navigation .week-btn {
-        width: 44px;
-        min-width: 44px;
-        max-width: 44px;
 
-        height: 44px;
-        min-height: 44px;
+    .week-info strong {
 
-        padding: 0;
+        font-size: 13px;
 
-        display: flex;
-
-        align-items: center;
-        justify-content: center;
-
-        font-size: 25px;
-
-        border-radius: 12px;
     }
 
-    /* =====================================
-       RESUMEN
-    ===================================== */
+
+    .week-info span {
+
+        font-size: 10px;
+
+    }
+
+
+    /* -------------------------
+       SUMMARY
+    ------------------------- */
 
     .summary-grid {
-        width: 100%;
 
         grid-template-columns: 1fr;
 
         gap: 10px;
 
-        margin-bottom: 24px;
+        margin-bottom: 22px;
+
     }
+
 
     .summary-card {
-        width: 100%;
 
-        min-width: 0;
+        padding: 15px;
+
     }
 
-    /* =====================================
-       TÍTULO SEMANAL
-    ===================================== */
+
+    /* =====================================================
+       SELECTOR DE DÍAS
+    ===================================================== */
 
     .week-title {
-        width: 100%;
 
         margin-bottom: 12px;
+
     }
+
 
     .week-title h3 {
-        font-size: 18px;
+
+        font-size: 17px;
+
     }
 
-    .week-title span {
-        display: block;
 
-        font-size: 11px;
-
-        line-height: 1.4;
-    }
-
-    /* =====================================
-       DÍAS DE LA SEMANA
-    ===================================== */
+    /*
+       Carrusel horizontal de los 7 días.
+       La página NO se mueve lateralmente;
+       solamente esta zona.
+    */
 
     .week-grid {
-        width: 100%;
-        max-width: 100%;
 
         display: flex;
 
@@ -2232,252 +2920,302 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
 
         flex-wrap: nowrap;
 
+        align-items: stretch;
+
         gap: 10px;
+
+        width: 100%;
+
+        max-width: 100%;
+
+        min-width: 0;
 
         overflow-x: auto;
 
         overflow-y: hidden;
 
-        padding:
-            3px 3px 15px 3px;
-
-        margin: 0;
-
-        box-sizing: border-box;
-
-        -webkit-overflow-scrolling: touch;
+        padding: 2px 2px 13px;
 
         scroll-snap-type: x mandatory;
 
-        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+
+        touch-action: pan-x;
+
     }
 
-    .week-grid::-webkit-scrollbar {
-        display: none;
-    }
 
-    .week-grid .day-card {
-        flex: 0 0 245px;
+    /*
+       Cada día ocupa aproximadamente el 84%
+       de la pantalla para que se vea que hay
+       más días disponibles al deslizar.
+    */
 
-        width: 245px;
+    .day-card {
 
-        min-width: 245px;
+        flex: 0 0 84%;
 
-        max-width: 245px;
+        width: 84%;
 
-        box-sizing: border-box;
+        min-width: 0;
+
+        max-width: 320px;
 
         scroll-snap-align: start;
+
     }
 
-    .day-header {
-        margin-bottom: 14px;
+
+    .day-card:hover {
+
+        transform: none;
+
     }
 
-    .day-header strong {
-        font-size: 13px;
-    }
 
     .day-schedule {
-        font-size: 11px;
+
+        gap: 5px;
+
     }
 
-    .day-status {
-        font-size: 11px;
+
+    /* -------------------------
+       EMPLEADOS
+    ------------------------- */
+
+    .employee-actions {
+
+        opacity: 1;
+
     }
 
-    .day-balance {
-        font-size: 15px;
-    }
 
-    /* =====================================
-       MODALES
-    ===================================== */
-
-    .modal-overlay {
-        padding: 12px;
-    }
-
-    .modal {
-        max-height: 92vh;
-
-        padding: 20px;
-
-        border-radius: 18px;
-    }
-
-    .form-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .modal-actions {
-        flex-direction: column;
-    }
-
-    .modal-actions button {
-        width: 100%;
-    }
-
-    /* =====================================
+    /* -------------------------
        CONFIGURACIÓN
-    ===================================== */
+    ------------------------- */
 
     .settings-container {
+
         width: calc(100% - 20px);
 
         margin: 15px auto;
+
     }
+
 
     .settings-card {
+
         padding: 18px;
+
     }
 
+
+    .settings-card-header {
+
+        align-items: flex-start;
+
+    }
+
+
     .schedule-row {
+
         align-items: flex-start;
 
         flex-direction: column;
 
         gap: 10px;
+
     }
+
 
     .schedule-input {
+
         width: 100%;
+
     }
+
 
     .schedule-input label {
+
         flex: 1;
+
     }
+
 
     .schedule-input input {
+
         width: 100%;
+
     }
 
+
     .lunch-controls {
+
         flex-direction: column;
 
         align-items: flex-start;
 
         gap: 15px;
+
     }
 
-    /* =====================================
-       ACERCA DE
-    ===================================== */
+
+    /* -------------------------
+       ABOUT
+    ------------------------- */
 
     .about-container {
+
         width: calc(100% - 20px);
 
         padding: 28px 18px;
 
         margin: 25px auto;
+
     }
+
 
     .about-features {
+
         grid-template-columns: 1fr;
+
     }
+
+
+    /* -------------------------
+       MODALES
+    ------------------------- */
+
+    .modal-overlay {
+
+        padding: 12px;
+
+    }
+
+
+    .modal {
+
+        max-height: 92vh;
+
+        padding: 20px;
+
+        border-radius: 18px;
+
+    }
+
+
+    .form-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .modal-actions {
+
+        flex-direction: column;
+
+    }
+
+
+    .modal-actions button {
+
+        width: 100%;
+
+    }
+
+
+    /* -------------------------
+       DARK MODE
+    ------------------------- */
+
+    body.dark-mode input[type="time"]::-webkit-calendar-picker-indicator {
+
+        filter: invert(1);
+
+    }
+
 }
 
-/* =========================================
-   CELULARES MUY PEQUEÑOS
-========================================= */
+
+/* =========================================================
+   RESPONSIVE - CELULARES MUY PEQUEÑOS
+========================================================= */
 
 @media (max-width: 380px) {
 
-    .content {
-        padding: 16px 10px;
+    .topbar {
+
+        padding: 10px 12px;
+
     }
 
-    .topbar {
-        padding-left: 10px;
-        padding-right: 10px;
-    }
 
     .topbar h1 {
-        font-size: 16px;
+
+        font-size: 14px;
+
     }
+
 
     .topbar-left span {
-        display: none;
+
+        font-size: 9px;
+
     }
 
-    .app-icon {
-        width: 36px;
-        min-width: 36px;
 
-        height: 36px;
-    }
+    .topbar-actions .btn-secondary,
+    .topbar-actions .btn-excel {
 
-    .topbar-actions button {
         width: 38px;
+
         min-width: 38px;
 
         height: 38px;
+
+        font-size: 18px;
+
     }
 
-    /* =====================================
-       SEMANA
-    ===================================== */
+
+    .content {
+
+        padding-left: 11px;
+
+        padding-right: 11px;
+
+    }
+
 
     .week-navigation {
-        grid-template-columns:
-            40px minmax(0, 1fr) 40px;
 
-        gap: 6px;
+        grid-template-columns:
+            40px
+            minmax(0, 1fr)
+            40px;
+
     }
+
 
     .week-navigation .week-btn {
+
         width: 40px;
+
         min-width: 40px;
-        max-width: 40px;
 
         height: 40px;
-        min-height: 40px;
+
     }
 
-    .week-navigation .week-info strong {
-        font-size: 14px;
+
+    .day-card {
+
+        flex-basis: 88%;
+
+        width: 88%;
+
     }
 
-    .week-navigation .week-info span {
-        font-size: 10px;
-    }
-
-    /* =====================================
-       DÍAS
-    ===================================== */
-
-    .week-grid .day-card {
-        flex: 0 0 225px;
-
-        width: 225px;
-
-        min-width: 225px;
-
-        max-width: 225px;
-    }
-}
-
-/* =========================================
-   ACCESIBILIDAD / CONTROLES NATIVOS
-========================================= */
-
-body.dark-mode input,
-body.dark-mode textarea,
-body.dark-mode select,
-body.dark-mode button {
-    color-scheme: dark;
-}
-
-body.dark-mode input[type="checkbox"] {
-    accent-color: #f5f5f7;
-}
-
-body.dark-mode input[type="time"]::-webkit-calendar-picker-indicator {
-    filter: invert(1);
-}
-
-body.dark-mode ::selection {
-    background: #f5f5f7;
-
-    color: #111111;
 }
